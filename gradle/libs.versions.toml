@@ -1,4 +1,6 @@
 [versions]
+# The app's own speech (spec 082 research R1): sherpa-onnx's Android library, from its GitHub release (settings.gradle.kts)
+sherpaOnnx = "2.0.2"
 # Toolchain (research.md R1) - verified 2026-10-20
 kotlin = "2.4.21"
 agp = "9.4.1"

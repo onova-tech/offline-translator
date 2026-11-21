@@ -72,6 +72,18 @@ android {
     }
 
     assetPacks += bundledPacks.map { ":packs:$it" }
+
+    // The engines run on 64-bit phones only, as Bergamot's (spec 012): sherpa-onnx's 32-bit libraries stay out.
+    packaging {
+        jniLibs {
+            excludes +=
+                setOf(
+                    "lib/armeabi-v7a/libsherpa-onnx-jni.so",
+                    "lib/x86/libsherpa-onnx-jni.so",
+                    "lib/x86/libonnxruntime.so",
+                )
+        }
+    }
 }
 
 // Spec 012 research R6: a release bundle without the models would offer packs that can't translate.
@@ -125,6 +137,8 @@ dependencies {
     // ports; no feature module depends on them.
     implementation(project(":core:content"))
     implementation(project(":core:translation"))
+    // Spec 082 (the app's own speech): debug builds only, for the speech probe, until the feature is built.
+    debugImplementation(project(":core:speech"))
 
     implementation(libs.compose.runtime)
     implementation(libs.compose.foundation)

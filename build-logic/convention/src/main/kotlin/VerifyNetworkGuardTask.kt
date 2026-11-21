@@ -66,7 +66,7 @@ abstract class VerifyNetworkGuardTask : DefaultTask() {
         const val DOMAIN_MODULE = ":core:domain"
         const val FEATURE_PREFIX = ":feature:"
 
-        /** The language packs and the engine, bound to their ports in the app only (spec 012, spec 081). */
-        val APP_ONLY_MODULES = setOf(":core:content", ":core:translation")
+        /** The language packs and the engines, bound to their ports in the app only (specs 012, 081, 082). */
+        val APP_ONLY_MODULES = setOf(":core:content", ":core:translation", ":core:speech")
     }
 }

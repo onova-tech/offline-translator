@@ -12,6 +12,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Spec 082 research R1: sherpa-onnx publishes its Android library only on its GitHub releases. This repository
+        // serves that one group and nothing else; gradle/verification-metadata.xml pins the file's SHA-256.
+        exclusiveContent {
+            forRepository {
+                ivy("https://github.com/k2-fsa/sherpa-onnx/releases/download") {
+                    name = "sherpaOnnxReleases"
+                    patternLayout { artifact("v[revision]/[module]-[revision].[ext]") }
+                    metadataSources { artifact() }
+                }
+            }
+            filter { includeGroup("com.k2fsa.sherpa.onnx") }
+        }
     }
 }
 
@@ -26,6 +38,7 @@ include(
     ":core:tool-api",
     ":core:content",
     ":core:translation",
+    ":core:speech",
     ":feature:settings",
     ":feature:tools-translate",
     ":tooling:architecture-tests",
