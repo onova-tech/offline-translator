@@ -37,7 +37,7 @@ std::vector<std::string> stringsOf(JNIEnv* env, jobjectArray values) {
 
 }  // namespace
 
-extern "C" JNIEXPORT jlong JNICALL Java_tech_onova_polytools_core_translation_BergamotNative_open(
+extern "C" JNIEXPORT jlong JNICALL Java_tech_onova_offlinetranslator_core_translation_BergamotNative_open(
     JNIEnv* env, jclass, jobjectArray names, jobjectArray models, jobjectArray shortlists, jobjectArray sourceVocabs,
     jobjectArray targetVocabs) {
   const std::vector<std::string> n = stringsOf(env, names);
@@ -63,7 +63,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_tech_onova_polytools_core_translation_Be
   return reinterpret_cast<jlong>(engine);
 }
 
-extern "C" JNIEXPORT jbyteArray JNICALL Java_tech_onova_polytools_core_translation_BergamotNative_translate(
+extern "C" JNIEXPORT jbyteArray JNICALL Java_tech_onova_offlinetranslator_core_translation_BergamotNative_translate(
     JNIEnv* env, jclass, jlong handle, jstring first, jstring second, jbyteArray text) {
   const std::string firstName = stringOf(env, first);
   const std::string secondName = stringOf(env, second);
@@ -88,7 +88,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_tech_onova_polytools_core_translati
   return out;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_tech_onova_polytools_core_translation_BergamotNative_close(JNIEnv*, jclass,
+extern "C" JNIEXPORT void JNICALL Java_tech_onova_offlinetranslator_core_translation_BergamotNative_close(JNIEnv*, jclass,
                                                                                                 jlong handle) {
   bergamot_close(reinterpret_cast<bergamot_engine*>(handle));
 }

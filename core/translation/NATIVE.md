@@ -5,13 +5,16 @@
 (`native/bergamot_jni.cpp`). It is built by `scripts/build-bergamot-android.sh`. Gradle never compiles it: the files
 below are committed, so `./gradlew check` and GitHub Actions don't need the NDK.
 
+The JNI functions carry the Kotlin class's package in their names, so a package rename needs a rebuild too
+(`NativeNamesTest` checks it; relinked for `tech.onova.offlinetranslator` on 2026-11-21).
+
 To rebuild: install the NDK and CMake named below with `sdkmanager`, stop Gradle (the machine has 2 cores and 7 GB),
 then run the script. It prints the table below for the new files.
 
 | ABI | File | SHA-256 | Built from |
 |---|---|---|---|
-| arm64-v8a | `src/androidMain/jniLibs/arm64-v8a/libbergamot.so` (8.2 MB) | `d7534ef89031b817324c38f474e607fd25e7d5523e5c6a70a806d9fc71be4864` | `8eada038fd45`, NDK 30.0.16248370, 2026-11-17 |
-| x86_64 | `src/androidMain/jniLibs/x86_64/libbergamot.so` (8.5 MB) | `782032d6bac0c37c6c8abc00c437d85b092bdc9a23d71158e8bfa83785b4b91c` | `8eada038fd45`, NDK 30.0.16248370, 2026-11-17 |
+| arm64-v8a | `src/androidMain/jniLibs/arm64-v8a/libbergamot.so` (8.2 MB) | `24afb2de00392bdf43ac651cd08e29c5de634ecab748f685b099ba5f64d28a5e` | `8eada038fd45`, NDK 30.0.16248370, 2026-11-17 |
+| x86_64 | `src/androidMain/jniLibs/x86_64/libbergamot.so` (8.5 MB) | `8bc6f6664b6d000864a74d4e5bc7413b9912a6be9de48710caeec8cc9accc658` | `8eada038fd45`, NDK 30.0.16248370, 2026-11-17 |
 
 | Tool | Version |
 |---|---|
