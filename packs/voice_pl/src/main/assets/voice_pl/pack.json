@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_pl",
+  "kind": "voice",
+  "language": "pl",
+  "voice": "pl_PL-darkman-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "8d860f0cf7dd85e84c923006c5aeaa779a2ff3b1fe89cf499116d93e3a62a4bd",
+    "pl_PL-darkman-medium.onnx": "3a59233dbd67d1c8d705efe58a0f5c7cf106205d7f741c72fef645422ae302c2",
+    "tokens.txt": "2619c1a9de1bcf928162f40c583caf39368cfd6b2340c7bcad51dc634411ec36"
+  }
+}

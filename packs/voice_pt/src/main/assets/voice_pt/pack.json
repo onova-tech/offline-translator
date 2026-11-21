@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_pt",
+  "kind": "voice",
+  "language": "pt",
+  "voice": "pt_BR-cadu-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "b867e819f48365b592c7789f71bba5ca79e1cb3b8a499853485db417d8031427",
+    "pt_BR-cadu-medium.onnx": "47a0ac5b9a726d286f1fc42745ffbc990c2e1fe526995c2535cbddcfbe26fd6b",
+    "tokens.txt": "e8a50ae0c75612d18cfcf3f90800dca79f961e3ed97f9574f3535194469187fd"
+  }
+}

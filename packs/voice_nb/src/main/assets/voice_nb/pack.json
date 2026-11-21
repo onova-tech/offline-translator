@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_nb",
+  "kind": "voice",
+  "language": "nb",
+  "voice": "no_NO-talesyntese-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "0a03b201db00e1bdc384e2dee4f8710075ef8d32ca3c64ed16782b04d2605f6c",
+    "no_NO-talesyntese-medium.onnx": "4009736f39124ee0666c398e459b87be46a66f1b5e13dd54526b5b2611215e11",
+    "tokens.txt": "87c8ef66eae5473ed0cc0366b3964c736ca6c5f676c979522ea31234e47430b9"
+  }
+}

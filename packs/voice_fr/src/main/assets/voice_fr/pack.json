@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_fr",
+  "kind": "voice",
+  "language": "fr",
+  "voice": "fr_FR-siwis-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "bd8b8d079d4d3d2c4cc20345889bbcd586d72f021a132f93357a763eb5232cce",
+    "fr_FR-siwis-medium.onnx": "ac51a90dca3b6e8e601524ba7d5a6f9827449ad2a81802b64bee6d834d3af83b",
+    "tokens.txt": "87c8ef66eae5473ed0cc0366b3964c736ca6c5f676c979522ea31234e47430b9"
+  }
+}

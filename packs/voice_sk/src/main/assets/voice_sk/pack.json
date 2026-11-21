@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_sk",
+  "kind": "voice",
+  "language": "sk",
+  "voice": "sk_SK-lili-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "9f779cd3b68fe0f1b6a354a63f348a348f6776ebcbc5d961f1db0cb0e1bc62bd",
+    "sk_SK-lili-medium.onnx": "22b29b728c17340950b086ad53a3971e8110fa9798b1e4554d9682ce9aeee6c8",
+    "tokens.txt": "ef3a7e4a8d1af0c9d4dc45aaae1a6242ebe24a7ed6f3d025a49eb29682784c6d"
+  }
+}

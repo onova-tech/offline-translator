@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_lv",
+  "kind": "voice",
+  "language": "lv",
+  "voice": "lv_LV-aivars-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "6a950a9f9c95b893b7fd3553f5b42f5b1025fb5fbc004d3924d99e92250b69cf",
+    "lv_LV-aivars-medium.onnx": "f953488bd3f05347357c89f99db0371e3b108673aac3e4238c8449cd2bbc4522",
+    "tokens.txt": "ef3a7e4a8d1af0c9d4dc45aaae1a6242ebe24a7ed6f3d025a49eb29682784c6d"
+  }
+}

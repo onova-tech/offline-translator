@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_sv",
+  "kind": "voice",
+  "language": "sv",
+  "voice": "sv_SE-nst-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "c85d3e26e47d93e9d9b8572d3c89537c3f8ff212595cb9a3fbd2e07c19432317",
+    "sv_SE-nst-medium.onnx": "f8c5879be9bfe67ce252186a13faf2d9f6f0959fede75bb370ea1d2ac9d155c8",
+    "tokens.txt": "42d1a69ed2b91a51928a711aa228ed9f3dc021c6d359a3e9c4f37eb1d20f80bd"
+  }
+}

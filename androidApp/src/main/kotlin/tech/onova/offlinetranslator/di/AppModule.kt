@@ -32,6 +32,8 @@ import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
 import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.ports.TranslationEngine
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
+import tech.onova.offlinetranslator.core.domain.speech.packs
 import tech.onova.offlinetranslator.core.domain.translation.LanguageCatalog
 import tech.onova.offlinetranslator.core.platform.AndroidClipboardWriter
 import tech.onova.offlinetranslator.core.platform.AndroidDeviceCapabilities
@@ -84,13 +86,13 @@ val appModule =
         single<ScreenReader> { AndroidScreenReader(androidContext()) }
         // Bergamot, on its own thread; it reads the packs ContentPacks installs (spec 012 research R3).
         single<TranslationEngine> { BergamotEngine() }
-        // The language packs through Google Play, the app's only network (spec 012 research R5): one per language of
-        // the catalog (spec 080), the same packs as build.gradle.kts's assetPacks.
+        // The packs through Google Play, the app's only network (spec 012 research R5): one per language of the catalog
+        // (spec 080) and the speech packs (spec 082), the same packs as build.gradle.kts's assetPacks.
         single<ContentPacks> {
             val screen = get<CurrentActivityTracker>()
             PlayContentPacks(
                 androidContext(),
-                LanguageCatalog.all.mapNotNull { it.pack },
+                LanguageCatalog.all.mapNotNull { it.pack } + SpeechCatalog.packs,
                 screen = { screen.current() },
                 bundled =
                     BuildConfig.BUNDLED_PACKS

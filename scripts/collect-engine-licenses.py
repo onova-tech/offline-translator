@@ -7,7 +7,7 @@ shows each project's own copyright notice, as MIT, BSD, ISC and zlib ask. Which 
 build's own record of the files it compiled and the headers they included (core/translation/NATIVE.md).
 
 Run with `python3 -I scripts/collect-engine-licenses.py` after rebuilding the engine. It writes
-config/libraries/licenses/polytools-*.json; the libraries themselves are config/libraries/libraries/*.json.
+config/libraries/licenses/offlinetranslator-*.json; the libraries themselves are config/libraries/libraries/*.json.
 """
 
 import json

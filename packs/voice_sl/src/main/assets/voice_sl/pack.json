@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_sl",
+  "kind": "voice",
+  "language": "sl",
+  "voice": "sl_SI-artur-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "fe8431d0830a41260379ba7f8813e3dfb515c02684a0663702f45e047e31bba9",
+    "sl_SI-artur-medium.onnx": "7e3ea01aa40011f2761542d9595af6c2e3188314d56025035d27c7ed482b6551",
+    "tokens.txt": "ef3a7e4a8d1af0c9d4dc45aaae1a6242ebe24a7ed6f3d025a49eb29682784c6d"
+  }
+}

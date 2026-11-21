@@ -17,15 +17,19 @@ needs the owner's phone and their consent at that moment, with the app in front.
 
 ## Phase 2: The speech packs (research R4, R5)
 
-- [ ] T006 `scripts/update-speech-catalog.py`: from Piper's `voices.json` and the MODEL_CARDs, the licence rule of
+- [X] T006 `scripts/update-speech-catalog.py`: from Piper's `voices.json` and the MODEL_CARDs, the licence rule of
   research R4 (free dataset, and a free base when fine-tuned) and the app's catalog, write `packs/speech.tsv` (pack,
   language, voice, quality, licence, files with SHA-256) and `core/domain/.../speech/SpeechCatalog.kt`; `--check`
-- [ ] T007 `scripts/fetch-speech-packs.sh`: Whisper Base's int8 pair and tokens (`speech_whisper`), espeak-ng's data
+- [X] T007 `scripts/fetch-speech-packs.sh`: Whisper Base's int8 pair and tokens (`speech_whisper`), espeak-ng's data
   once (`speech_espeak`) and each voice (`voice_<lang>`), every file checked against `speech.tsv`
-- [ ] T008 Gradle: a pack module per row of `speech.tsv` with the shared `packs/pack.gradle.kts`; debug builds bundle
+- [X] T008 Gradle: a pack module per row of `speech.tsv` with the shared `packs/pack.gradle.kts`; debug builds bundle
   only fetched packs, release builds all and fail on an empty one (as spec 080)
-- [ ] T009 [P] `SpeechCatalogTest` (core/domain): every voice's language is in the catalog, one voice per language,
+- [X] T009 [P] `SpeechCatalogTest` (core/domain): every voice's language is in the catalog, one voice per language,
   every licence in the free list
+
+Phase 2 as built (2026-11-21): 25 voices (six free ones, bg bn el et mr te, aren't in sherpa-onnx's converted set yet)
+and recognition for 53 of 54 languages (Whisper doesn't know Uyghur); `packs/.gitignore` keeps every fetched file out
+of git; a pack counts as fetched when its folder holds anything besides pack.json.
 
 ## Phase 3: User story 1, speak a language the phone can't recognize (P1)
 

@@ -2,3 +2,8 @@
 # pack, too big for git. pack.json, which names them with their SHA-256, is committed.
 */src/main/assets/**/*.bin
 */src/main/assets/**/*.spm
+# The speech packs (spec 082): scripts/fetch-speech-packs.sh fetches and checks every file but pack.json.
+speech_*/src/main/assets/*/*
+voice_*/src/main/assets/*/*
+!speech_*/src/main/assets/*/pack.json
+!voice_*/src/main/assets/*/pack.json

@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_ca",
+  "kind": "voice",
+  "language": "ca",
+  "voice": "ca_ES-upc_ona-x_low",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "f2163819cd82d535c060affadf04ffbb7b918cd4f5249e636c41d816fa40ba16",
+    "ca_ES-upc_ona-x_low.onnx": "ea69c59a021a8b5480bed1cf69f8befcd2931c6a13e67447ee8c7fbde846026c",
+    "tokens.txt": "42d1a69ed2b91a51928a711aa228ed9f3dc021c6d359a3e9c4f37eb1d20f80bd"
+  }
+}

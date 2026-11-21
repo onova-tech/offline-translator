@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_hu",
+  "kind": "voice",
+  "language": "hu",
+  "voice": "hu_HU-anna-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "95e4260972d732b8c4559e47e9488da3653a8777fccfa87b4642f8e5bf7b4113",
+    "hu_HU-anna-medium.onnx": "e967f10ee5db04c634db3f67130ecba1244cbd5e4eb6dceefae4f884b7c03b5c",
+    "tokens.txt": "620e1aecf1a68fea3ba5850d137b0138fa2037c9b372dad13b95a2a215d0849a"
+  }
+}

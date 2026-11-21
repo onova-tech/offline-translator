@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_en",
+  "kind": "voice",
+  "language": "en",
+  "voice": "en_GB-cori-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "38d76dfde845837b184668f8bab1c6426ad740b1af0fcebc349037822739e536",
+    "en_GB-cori-medium.onnx": "2e390818b07a426469f204a2e9c865d9c3f612af58f32839f646bc1010078574",
+    "tokens.txt": "ef3a7e4a8d1af0c9d4dc45aaae1a6242ebe24a7ed6f3d025a49eb29682784c6d"
+  }
+}

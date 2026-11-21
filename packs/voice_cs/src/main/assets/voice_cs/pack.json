@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_cs",
+  "kind": "voice",
+  "language": "cs",
+  "voice": "cs_CZ-jirka-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "27f3ecff306b91dfa8a16b9666f01a7244ca3f03d48f942a02ad4788405e5166",
+    "cs_CZ-jirka-medium.onnx": "29f4b76a62b985301237b341fcb0064b5ec957d3916159dd95e9e6abb9c4e571",
+    "tokens.txt": "620e1aecf1a68fea3ba5850d137b0138fa2037c9b372dad13b95a2a215d0849a"
+  }
+}

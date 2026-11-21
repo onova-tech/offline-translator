@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_ru",
+  "kind": "voice",
+  "language": "ru",
+  "voice": "ru_RU-denis-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "f037c8ec8b6574de644bf9e5916c749e83d4ff297facd97895b56d733f6ba3fe",
+    "ru_RU-denis-medium.onnx": "17c2e7eb5c3876e62e0028549c3a91a344c658db2eb7a2f137bf0337b9342276",
+    "tokens.txt": "2619c1a9de1bcf928162f40c583caf39368cfd6b2340c7bcad51dc634411ec36"
+  }
+}

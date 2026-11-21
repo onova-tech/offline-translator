@@ -31,7 +31,7 @@ BASE = "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-trans
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TSV = os.path.join(REPO, "packs", "languages.tsv")
 KOTLIN = os.path.join(
-    REPO, "core", "domain", "src", "commonMain", "kotlin", "tech", "onova", "polytools", "core", "domain",
+    REPO, "core", "domain", "src", "commonMain", "kotlin", "tech", "onova", "offlinetranslator", "core", "domain",
     "translation", "LanguageCatalog.kt",
 )
 CACHE = os.path.join(REPO, "build", "language-catalog")

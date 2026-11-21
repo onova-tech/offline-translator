@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_ur",
+  "kind": "voice",
+  "language": "ur",
+  "voice": "ur_PK-fasih-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "0d6419e74f99fdb0240180fc26067e2f71cff465c61b59e218a7cf53351cf91f",
+    "tokens.txt": "e8a50ae0c75612d18cfcf3f90800dca79f961e3ed97f9574f3535194469187fd",
+    "ur_PK-fasih-medium.onnx": "a7f96389ab4304bf1c07b1b94ab47e8857e626717a772bf26c381133dadb39c6"
+  }
+}

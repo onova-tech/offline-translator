@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_eu",
+  "kind": "voice",
+  "language": "eu",
+  "voice": "eu_ES-antton-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "61e1cf7bba48a290be225a1afb3167094fc16c479cea655b11c8ff87e9245264",
+    "eu_ES-antton-medium.onnx": "8f5e0d24302ba36c88be392b0562b95a49c05c12b5b6fd3d7c57c227735c5fd1",
+    "tokens.txt": "e8a50ae0c75612d18cfcf3f90800dca79f961e3ed97f9574f3535194469187fd"
+  }
+}

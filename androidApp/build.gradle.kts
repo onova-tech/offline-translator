@@ -24,6 +24,18 @@ val languagePacks: List<String> =
         .map { "translate_" + it.substringBefore('\t') }
         .distinct()
 
+// Spec 082: the app's own speech, one pack per line of packs/speech.tsv (scripts/update-speech-catalog.py): Whisper,
+// espeak-ng's data and a voice per language.
+val speechPacks: List<String> =
+    rootProject
+        .file("packs/speech.tsv")
+        .readLines()
+        .filterNot { it.isBlank() || it.startsWith("#") || it.startsWith("pack\t") }
+        .map { it.substringBefore('\t') }
+
+/** Every on-demand pack, translation and speech. */
+val allPacks: List<String> = languagePacks + speechPacks
+
 /**
  * The packs whose models were fetched (pack.json is committed, the models aren't), as a value source: the configuration
  * cache checks it on every build, so fetching or removing a pack's models changes the next bundle. A plain walk at
@@ -42,7 +54,7 @@ abstract class FetchedPacks : ValueSource<List<String>, FetchedPacks.Parameters>
                 .get()
                 .asFile
                 .walkTopDown()
-                .any { it.name.endsWith(".intgemm.alphas.bin") }
+                .any { it.isFile && it.name != "pack.json" }
         }
 }
 
@@ -58,10 +70,10 @@ val fetchedPacks: List<String> =
         .of(FetchedPacks::class) {
             parameters {
                 packsFolder.set(rootProject.layout.projectDirectory.dir("packs"))
-                packs.set(languagePacks)
+                packs.set(allPacks)
             }
         }.get()
-val bundledPacks: List<String> = if (releaseBuild) languagePacks else fetchedPacks
+val bundledPacks: List<String> = if (releaseBuild) allPacks else fetchedPacks
 
 android {
     defaultConfig {
@@ -90,19 +102,19 @@ android {
 val verifyLanguagePacks =
     tasks.register("verifyLanguagePacks") {
         group = "verification"
-        description = "Fails a release bundle whose language packs have no models (spec 012 research R6)."
-        val packs = languagePacks
+        description = "Fails a release bundle with an empty pack (spec 012 research R6, spec 082)."
+        val packs = allPacks
         val folders = packs.associateWith { rootProject.layout.projectDirectory.dir("packs/$it/src/main/assets/$it") }
         doLast {
             val missing =
                 folders
-                    .filterValues { folder ->
-                        folder.asFile.walkTopDown().none { it.name.endsWith(".intgemm.alphas.bin") }
-                    }.keys
+                    // A pack's files are fetched when its folder holds anything besides the committed pack.json.
+                    .filterValues { folder -> folder.asFile.walkTopDown().none { it.isFile && it.name != "pack.json" } }
+                    .keys
             if (missing.isNotEmpty()) {
                 throw GradleException(
-                    "Language packs without models: ${missing.joinToString()}. " +
-                        "Run scripts/fetch-language-packs.sh --all first.",
+                    "Packs without their files: ${missing.joinToString()}. Run " +
+                        "scripts/fetch-language-packs.sh --all and scripts/fetch-speech-packs.sh --all first.",
                 )
             }
         }

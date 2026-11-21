@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_de",
+  "kind": "voice",
+  "language": "de",
+  "voice": "de_DE-thorsten-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "5196b5ab0794e6056263a1f37c18bec407b61ac187529bee29d1c366871e5c9e",
+    "de_DE-thorsten-medium.onnx": "27de87dd2c2ab15ae281a064d64e1482f917c78c89bb636a0a1dea14b4dc3e09",
+    "tokens.txt": "2619c1a9de1bcf928162f40c583caf39368cfd6b2340c7bcad51dc634411ec36"
+  }
+}

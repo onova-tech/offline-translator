@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_uk",
+  "kind": "voice",
+  "language": "uk",
+  "voice": "uk_UA-ukrainian_tts-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "cb77fd7742b78f3bdfd2457c7ef712cfb153193af3b21325821df4ca8d8030de",
+    "tokens.txt": "67a6c6b42c95340c3bd64dabcd74259bb12839ffcd5fe347700dcb2656e90d52",
+    "uk_UA-ukrainian_tts-medium.onnx": "1ce2b419f4fbdd60999493c43e27d5a660e6a222409bea574209efc9e9c2223f"
+  }
+}

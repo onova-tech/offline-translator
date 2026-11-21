@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_it",
+  "kind": "voice",
+  "language": "it",
+  "voice": "it_IT-paola-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "c53fd0070dc93b438edbce06728eb83759ba030fff0cce523209ee4a0a6363c0",
+    "it_IT-paola-medium.onnx": "5b600d7ad2db980f77a520c3498bcdfc208c0cb6471558d1639a6eb4e1a01be6",
+    "tokens.txt": "95064d2a5d6b029c6710f9c83062a4401cbcee9678e419f381ca3b18a690983d"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_fa",
+  "kind": "voice",
+  "language": "fa",
+  "voice": "fa_IR-amir-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "0d7d315699945ac830162f82d485d79af51a33081a7649e8992726bd4bba2384",
+    "fa_IR-amir-medium.onnx": "146e290712074e54bfcd262295d2f6eac91aac2f56dd46a6b5d1e7f92146a8c7",
+    "tokens.txt": "ef3a7e4a8d1af0c9d4dc45aaae1a6242ebe24a7ed6f3d025a49eb29682784c6d"
+  }
+}

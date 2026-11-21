@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_ro",
+  "kind": "voice",
+  "language": "ro",
+  "voice": "ro_RO-mihai-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "f5d53558c24f8585b9c46072700c9396165c090d10c6bf0b15bce1944fd5adb1",
+    "ro_RO-mihai-medium.onnx": "c9e05e272fb6b854ee9275726813a9b47de2711afd8af8c6c14b9af7151ec679",
+    "tokens.txt": "87c8ef66eae5473ed0cc0366b3964c736ca6c5f676c979522ea31234e47430b9"
+  }
+}

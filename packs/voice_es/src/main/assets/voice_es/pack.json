@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "voice_es",
+  "kind": "voice",
+  "language": "es",
+  "voice": "es_ES-davefx-medium",
+  "version": 1,
+  "sha256": {
+    "MODEL_CARD": "17523d253d605b262341aac23226b49686c31992af90236bd0abb7d4d154774d",
+    "es_ES-davefx-medium.onnx": "5bcc8b713aca175a262c793454b46082d457054a1cbdc3d18590e0a7cb5cca5a",
+    "tokens.txt": "2619c1a9de1bcf928162f40c583caf39368cfd6b2340c7bcad51dc634411ec36"
+  }
+}
