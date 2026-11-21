@@ -59,7 +59,7 @@ internal sealed interface SetupNeed {
         override val key: SetupKey get() = SetupKey(SetupKind.VOICE, side)
     }
 
-    /** The phone can't, and the app's own recognition can, once downloaded or when it's in ([downloading]) (spec 082). */
+    /** The phone can't, and the app's own recognition can, once downloaded or when in ([downloading]) (spec 082). */
     data class AppRecognition(
         val side: Side,
         val downloading: Boolean,

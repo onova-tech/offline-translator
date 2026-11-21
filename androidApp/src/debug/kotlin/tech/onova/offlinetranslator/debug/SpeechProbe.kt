@@ -180,7 +180,10 @@ private fun speechProbe(
             val heard = whisper.transcribe(audio.samples, audio.sampleRate, case.whisper)
             report("Whisper wrote (${SystemClock.elapsedRealtime() - start} ms)" to heard.ifEmpty { "(nothing)" })
         }
-    } catch (failure: Throwable) {
+    } catch (
+        // A probe reports whatever went wrong on the page, whatever it was.
+        @Suppress("TooGenericExceptionCaught") failure: Throwable,
+    ) {
         report("Failed" to "${failure::class.simpleName}: ${failure.message}")
     } finally {
         whisper.release()

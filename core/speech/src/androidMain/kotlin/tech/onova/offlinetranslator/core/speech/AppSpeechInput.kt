@@ -8,6 +8,7 @@ import android.media.AudioRecord
 import android.media.MediaRecorder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -88,18 +89,22 @@ public class AppSpeechInput(
 internal object Microphone {
     const val RATE = 16_000
     private const val CHUNK = RATE / 10
+    private const val BUFFER_CHUNKS = 4
     private const val SPEECH_LEVEL = 0.02
     private const val END_SILENCE_MILLIS = 1_500
     private const val NOTHING_MILLIS = 7_000
     private const val LONGEST_MILLIS = 30_000
     private const val MILLIS = 1_000
 
-    /** The recording until 1.5 s of quiet after speech; empty when nothing was said; null when the microphone is busy. */
+    /**
+     * The recording until 1.5 s of quiet after speech; empty when nothing was said; null when the microphone is busy
+     * (another app has it, or Android refuses it).
+     */
     suspend fun record(): FloatArray? {
         val size =
             maxOf(
                 AudioRecord.getMinBufferSize(RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT),
-                CHUNK * 4,
+                CHUNK * BUFFER_CHUNKS,
             )
         val audio =
             try {
@@ -110,7 +115,10 @@ internal object Microphone {
                     AudioFormat.ENCODING_PCM_FLOAT,
                     size,
                 )
-            } catch (refused: SecurityException) {
+            } catch (
+                @Suppress("SwallowedException") refused: SecurityException,
+            ) {
+                // The caller says the microphone is busy; nothing more to tell.
                 return null
             }
         if (audio.state != AudioRecord.STATE_INITIALIZED) {
@@ -129,26 +137,43 @@ internal object Microphone {
     private suspend fun read(audio: AudioRecord): FloatArray {
         val heard = ArrayList<FloatArray>()
         val chunk = FloatArray(CHUNK)
-        var spoke = false
-        var quiet = 0
-        var total = 0
-        while (true) {
-            kotlinx.coroutines.currentCoroutineContext().ensureActive()
-            val count = audio.read(chunk, 0, chunk.size, AudioRecord.READ_BLOCKING)
-            if (count <= 0) break
+        val listening = Listening()
+        var count = audio.read(chunk, 0, chunk.size, AudioRecord.READ_BLOCKING)
+        while (count > 0 && !listening.finished) {
+            currentCoroutineContext().ensureActive()
             heard += chunk.copyOf(count)
-            val millis = count * MILLIS / RATE
+            listening.add(count * MILLIS / RATE, loud = level(chunk, count) > SPEECH_LEVEL)
+            count = audio.read(chunk, 0, chunk.size, AudioRecord.READ_BLOCKING)
+        }
+        return if (listening.spoke) heard.flatten() else FloatArray(0)
+    }
+
+    /** What has been heard so far: whether anyone spoke, the quiet since, and the whole time. */
+    private class Listening {
+        var spoke = false
+            private set
+        private var quiet = 0
+        private var total = 0
+
+        /** Done once the person has been quiet a while after speaking, it's too long, or nobody spoke at all. */
+        val finished: Boolean
+            get() =
+                (spoke && quiet >= END_SILENCE_MILLIS) ||
+                    total >= LONGEST_MILLIS ||
+                    (!spoke && total >= NOTHING_MILLIS)
+
+        fun add(
+            millis: Int,
+            loud: Boolean,
+        ) {
             total += millis
-            if (level(chunk, count) > SPEECH_LEVEL) {
+            if (loud) {
                 spoke = true
                 quiet = 0
             } else {
                 quiet += millis
             }
-            if ((spoke && quiet >= END_SILENCE_MILLIS) || total >= LONGEST_MILLIS) break
-            if (!spoke && total >= NOTHING_MILLIS) return FloatArray(0)
         }
-        return if (spoke) heard.flatten() else FloatArray(0)
     }
 
     private fun level(

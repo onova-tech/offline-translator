@@ -7,8 +7,8 @@ import kotlin.test.assertTrue
 
 /**
  * The engine's JNI functions are found by the Kotlin class's full name, so a package rename must rebuild
- * `libbergamot.so` too (spec 081, 2026-11-21: the renamed app crashed on its first translation). Both the C++ source and
- * each committed library must export the names of the class as it is now.
+ * `libbergamot.so` too (spec 081, 2026-11-21: the renamed app crashed on its first translation). Both the C++ source
+ * and each committed library must export the names of the class as it is now.
  */
 class NativeNamesTest {
     private val translation = File(ProjectSources.root, "core/translation")

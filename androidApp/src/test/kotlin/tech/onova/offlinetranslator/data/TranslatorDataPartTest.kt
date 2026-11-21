@@ -28,6 +28,8 @@ class TranslatorDataPartTest : AppUiTest() {
                     "farHalfTurned",
                     // Spec 080 FR-007: the checked languages travel with the settings.
                     "languages",
+                    // Spec 082 FR-007: the phone's or the app's speech per language, a setting, never a pack.
+                    "speech",
                 )
             assertTrue(document.keys.isNotEmpty() && settings.containsAll(document.keys), "keys: ${document.keys}")
             val text = document.toString()

@@ -104,7 +104,7 @@ class SetupNeedsTest {
         assertFalse(SetupNeeds.waiting(cantRecognize, ready))
     }
 
-    /** Spec 082: where the phone can't, the app's own recognition and voice are offered, then followed until they're in. */
+    /** Spec 082: where the phone can't, the app's recognition and voice are offered, then followed till they're in. */
     @Test
     fun theAppsOwnSpeechIsOfferedWhereThePhoneCant() {
         val appCanHear = SideSupport(recognition = RecognitionSupport.APP_CAN_DOWNLOAD)

@@ -62,10 +62,9 @@ public class AppSpeechOutput(
     override fun openVoiceSettings(): Unit = Unit
 
     private fun folders(speechTag: String): Pair<String, String>? {
-        val language = SpeechTags.languageOf(speechTag) ?: return null
-        val folder = voiceFolder(language) ?: return null
-        val espeak = espeakFolder() ?: return null
-        return folder to File(espeak, "espeak-ng-data").path
+        val folder = SpeechTags.languageOf(speechTag)?.let(voiceFolder)
+        val espeak = espeakFolder()
+        return if (folder != null && espeak != null) folder to File(espeak, "espeak-ng-data").path else null
     }
 
     private fun voiceFrom(

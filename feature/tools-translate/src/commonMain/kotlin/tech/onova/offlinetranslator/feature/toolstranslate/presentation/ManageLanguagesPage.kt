@@ -114,23 +114,7 @@ internal fun ManageLanguagesPage(
                 if (ui.loaded && ui.rows.isEmpty()) {
                     MainReading(value = NO_READING, caption = stringResource(Res.string.translator_languages_none))
                 } else {
-                    val byId = packUi.packs.associateBy { it.id }
-                    val state = { row: LanguageRow ->
-                        LanguageState(
-                            packOf(known, row.code),
-                            speechUi.parts[row.code],
-                            speechUi.serviceUpdatable,
-                            appRecognition =
-                                byId[SpeechCatalog.recognitionPack].takeIf {
-                                    row.code in
-                                        SpeechCatalog.recognition
-                                },
-                            appVoice =
-                                SpeechCatalog.voices[row.code]
-                                    ?.let { listOfNotNull(byId[it.pack], byId[SpeechCatalog.voiceDataPack]) }
-                                    .orEmpty(),
-                        )
-                    }
+                    val state = { row: LanguageRow -> languageState(row.code, known, packUi.packs, speechUi) }
                     LanguageList(ui, sections, state, actions, Modifier.weight(1f))
                 }
             }
@@ -314,3 +298,23 @@ private fun DeleteConfirmation(
 
 private const val HEADER_MINE = "header-yours"
 private const val HEADER_OTHERS = "header-others"
+
+/** One language's card: its translation pack, the phone's speech and voice, and the app's speech packs (spec 082). */
+private fun languageState(
+    code: LanguageCode,
+    known: Map<LanguageCode, PackStatus>,
+    packs: List<PackStatus>,
+    speechUi: SpeechPartsUi,
+): LanguageState {
+    val byId = packs.associateBy { it.id }
+    return LanguageState(
+        packOf(known, code),
+        speechUi.parts[code],
+        speechUi.serviceUpdatable,
+        appRecognition = byId[SpeechCatalog.recognitionPack].takeIf { code in SpeechCatalog.recognition },
+        appVoice =
+            SpeechCatalog.voices[code]
+                ?.let { listOfNotNull(byId[it.pack], byId[SpeechCatalog.voiceDataPack]) }
+                .orEmpty(),
+    )
+}
