@@ -37,17 +37,25 @@ Whisper and a Piper voice, back to 166 MB once both are released. Kokoro makes s
 voice. Japanese through Kokoro and Arabic through Piper or Whisper Base lose accuracy; the phone run decides whether
 they're good enough.
 
-## R2. Whisper Base on the owner's phone (open)
+## R2, R3. The owner's phone (2026-11-21, Samsung SM-G780G, Snapdragon 865, Android 13; over Tailscale)
 
-The release's `sherpa-onnx-whisper-base.tar.bz2` (197 MB) holds the float and int8 encoder and decoder; only the int8
-pair and the tokens ship. To measure on the SM-G780G with a debug probe: load time, time for a 5-second sentence in
-Portuguese, Arabic and Japanese, and memory. Target to agree with the owner: about 2 s for 5 s of speech.
+The same probe, no sound played, the phone in front:
 
-## R3. Kokoro (open)
+| Language | Voice | Voice: load, making | Whisper wrote back | Whisper time |
+|---|---|---|---|---|
+| English | Kokoro, speaker 3 | 3.3 s, **5.1 s for 2.6 s of speech** | exactly the sentence | 0.64 s |
+| Portuguese | Kokoro, speaker 42 | 1.9 s, **5.2 s for 3.7 s** | exactly the sentence | 0.77 s |
+| Japanese | Kokoro, speaker 37 | 1.9 s, **7.0 s for 3.9 s** | first clause right, "一番近い駅" lost | 1.04 s |
+| Arabic | Piper `ar_JO-kareem` | 1.4 s, **1.0 s for 3.2 s** | understandable, several words wrong | 0.87 s |
 
-`kokoro-int8-multi-lang-v1_0.tar.bz2` (126 MB; Apache-2.0 weights): English, Spanish, French, Hindi, Italian,
-Japanese, Brazilian Portuguese and Mandarin, with espeak-ng data and the Chinese lexicons. To measure: load time and
-seconds of audio per second on the phone. v1.1 (140 MB) adds Chinese voices only.
+- **Whisper Base: decided.** It loads in 1.6–2.2 s and writes a 3–4 s sentence in under a second and a half, exactly
+  in English and Portuguese. Japanese and Arabic here came from imperfect voices, so their accuracy needs real speech
+  (the owner's, in the feature itself) before a verdict.
+- **Kokoro: slower than speech.** It needs 1.4 to 2 seconds of work per second of speech on this phone, so a sentence
+  waits 5–7 s before it can play, and its Japanese, read through espeak-ng, garbles kanji (Kokoro's own Japanese
+  reader isn't in sherpa-onnx). Memory reaches about 790 MB with Whisper.
+- **Piper: fast.** About 0.3 seconds of work per second of speech, so it can start almost at once.
+- Memory: PSS 356 MB with Whisper loaded, 760–790 MB with Kokoro as well, 558 MB with a Piper voice.
 
 ## R4. Piper voices and their licences (open)
 
