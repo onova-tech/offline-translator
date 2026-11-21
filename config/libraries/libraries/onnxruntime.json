@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.onnxruntime",
+  "developers": [
+    {
+      "name": "Microsoft",
+      "organisationUrl": "https://www.microsoft.com"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Runs the speech models; built into sherpa-onnx.",
+  "name": "ONNX Runtime",
+  "website": "https://github.com/microsoft/onnxruntime",
+  "licenses": [
+    "offlinetranslator-mit"
+  ]
+}

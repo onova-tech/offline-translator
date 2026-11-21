@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.sherpa-onnx",
+  "developers": [
+    {
+      "name": "Next-gen Kaldi (k2-fsa)",
+      "organisationUrl": "https://github.com/k2-fsa"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The engine that runs the app's own speech recognition and voices on the phone (spec 082).",
+  "name": "sherpa-onnx 1.13.8",
+  "website": "https://github.com/k2-fsa/sherpa-onnx",
+  "licenses": [
+    "Apache-2.0"
+  ]
+}

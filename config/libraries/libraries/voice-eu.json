@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-eu",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"eu\" (spec 082), from Piper's voices: dataset licence Creative Commons Attribution 4.0. Fine-tuned from the rdh base model (medium quality; nl_BE, one Flemish speaker, CC0), with MRD and SDP.",
+  "name": "Piper voice eu_ES-antton-medium",
+  "website": "https://huggingface.co/datasets/itzune/antton-dataset",
+  "licenses": [
+    "offlinetranslator-cc-by-4.0"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-ur",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"ur\" (spec 082), from Piper's voices: dataset licence mit.",
+  "name": "Piper voice ur_PK-fasih-medium",
+  "website": "https://huggingface.co/rhasspy/piper-voices",
+  "licenses": [
+    "offlinetranslator-mit"
+  ]
+}

@@ -146,11 +146,17 @@ def choose_voices(languages, assets):
             card_path = next(f for f in info["files"] if f.endswith("MODEL_CARD"))
             card = open(fetch(f"{PIPER}/{card_path}", os.path.join(CACHE, "cards", card_path)), errors="replace").read()
             free, licence, base = licence_of(card)
+            url = re.search(r"(?i)\burl:\s*(\S+)", card)
             if free:
-                candidates.append(((QUALITY[info["quality"]], bool(base), key), key, info["quality"], licence, base, archive))
+                candidates.append(
+                    ((QUALITY[info["quality"]], bool(base), key), key, info["quality"], licence, base, archive,
+                     url.group(1) if url else "")
+                )
         if candidates:
-            _, key, quality, licence, base, archive = min(candidates)
-            chosen[language] = {"voice": key, "quality": quality, "licence": licence, "base": base, "archive": archive}
+            _, key, quality, licence, base, archive, url = min(candidates)
+            chosen[language] = {
+                "voice": key, "quality": quality, "licence": licence, "base": base, "archive": archive, "url": url,
+            }
     return chosen
 
 
@@ -187,7 +193,41 @@ def rows():
             lambda n: not n.split("/", 1)[-1].startswith("espeak-ng-data/") and n.rsplit("/", 1)[-1] in ("tokens.txt", "MODEL_CARD") or n.endswith(".onnx"),
         )
         out.append((f"voice_{language}", "voice", language, voice["voice"], voice["quality"], voice["licence"], voice["base"], voice["archive"], sha, files))
+        DATASETS[f"voice_{language}"] = voice["url"]
     return languages, out
+
+
+DATASETS = {}
+LIBRARIES = os.path.join(REPO, "config", "libraries", "libraries")
+
+
+def licence_key(licence):
+    """The licence entry in config/libraries/licenses for a model card's licence text."""
+    text = licence.lower()
+    if "cc0" in text or "public domain" in text:
+        return "offlinetranslator-cc0-1.0"
+    if "by-sa" in text or "sharealike" in text or "by sa" in text:
+        return "offlinetranslator-cc-by-sa-3.0" if "3.0" in text else "offlinetranslator-cc-by-4.0"
+    if re.search(r"\bmit\b", text):
+        return "offlinetranslator-mit"
+    return "offlinetranslator-cc-by-4.0"
+
+
+def voice_library(pack, language, voice, licence, base):
+    """Settings → About → Open-source licenses' entry for one voice: its dataset, licence and base (FR-009)."""
+    description = f"The app's voice for language \"{language}\" (spec 082), from Piper's voices: dataset licence {licence}."
+    if base and base != "-":
+        description += f" Fine-tuned from {base.rstrip('.')}."
+    entry = {
+        "uniqueId": f"offlinetranslator.{pack.replace('_', '-')}",
+        "developers": [{"name": "Piper voices (rhasspy)", "organisationUrl": "https://github.com/rhasspy/piper"}],
+        "artifactVersion": "",
+        "description": description,
+        "name": f"Piper voice {voice}",
+        "website": DATASETS.get(pack) or "https://huggingface.co/rhasspy/piper-voices",
+        "licenses": [licence_key(licence)],
+    }
+    return json.dumps(entry, indent=2, ensure_ascii=False) + "\n"
 
 
 def tsv_text(packs):
@@ -263,8 +303,10 @@ def main():
     args = parser.parse_args()
     languages, packs = rows()
     outputs = {TSV: tsv_text(packs), KOTLIN: kotlin_text(languages, packs)}
-    for pack, kind, language, voice, *_, files in packs:
+    for pack, kind, language, voice, quality, licence, base, *_, files in packs:
         outputs[os.path.join(REPO, "packs", pack, "src", "main", "assets", pack, "pack.json")] = pack_json(pack, kind, language, voice, files)
+        if kind == "voice":
+            outputs[os.path.join(LIBRARIES, f"{pack.replace('_', '-')}.json")] = voice_library(pack, language, voice, licence, base)
     differ = []
     for path, text in outputs.items():
         current = open(path).read() if os.path.exists(path) else None

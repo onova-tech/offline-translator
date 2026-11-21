@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-en",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"en\" (spec 082), from Piper's voices: dataset licence CC BY 4.0 (Hi-Fi Multi-Speaker English TTS Dataset, NVIDIA Corporation).",
+  "name": "Piper voice en_GB-cori-medium",
+  "website": "https://www.openslr.org/109/",
+  "licenses": [
+    "offlinetranslator-cc-by-4.0"
+  ]
+}

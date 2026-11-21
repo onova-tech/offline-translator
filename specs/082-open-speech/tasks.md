@@ -54,8 +54,9 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 - [ ] T017 Manage languages: Speech recognition and Voice rows with "Phone" or "App" where both exist, the app's
   download, delete and size (FR-006); rules in `docs/ui-rules.md`. Done so far: the rows show the app's download with
   its size, Download and Cancel; to do: the Phone/App choice and Delete
-- [ ] T018 Settings → Offline languages counts the speech packs (done); Open-source licenses credits sherpa-onnx,
-  onnxruntime, espeak-ng, Whisper and every voice (FR-009)
+- [X] T018 Settings → Offline languages counts the speech packs; Open-source licenses credits sherpa-onnx,
+  onnxruntime, espeak-ng, Whisper and every voice (FR-009): the catalog script writes each voice's entry, with its
+  dataset, licence and base
 
 ## Phase 6: Polish
 

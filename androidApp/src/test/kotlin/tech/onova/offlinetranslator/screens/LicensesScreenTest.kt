@@ -54,6 +54,11 @@ class LicensesScreenTest : AppUiTest() {
             "Feather",
             "Bergamot translator",
             "Translation models (53 languages with English)",
+            // Spec 082 FR-009: the app's own speech, its engine and every voice.
+            "sherpa-onnx 1.13.8",
+            "eSpeak NG",
+            "Whisper Base (speech recognition model)",
+            "Piper voice pt_BR-cadu-medium",
         )) {
             scrollTo(project)
             compose.onNodeWithText(project).assertExists()

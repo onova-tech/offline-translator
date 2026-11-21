@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-ca",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"ca\" (spec 082), from Piper's voices: dataset licence CC BY-SA 3.0 ES.",
+  "name": "Piper voice ca_ES-upc_ona-x_low",
+  "website": "https://collectivat.cat/asr#upc-festcat-tts-corpora",
+  "licenses": [
+    "offlinetranslator-cc-by-sa-3.0"
+  ]
+}

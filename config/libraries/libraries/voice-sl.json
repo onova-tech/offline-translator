@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-sl",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"sl\" (spec 082), from Piper's voices: dataset licence https://creativecommons.org/licenses/by/4.0/.",
+  "name": "Piper voice sl_SI-artur-medium",
+  "website": "https://huggingface.co/datasets/ppisljar/artur_studio_tts/",
+  "licenses": [
+    "offlinetranslator-cc-by-4.0"
+  ]
+}

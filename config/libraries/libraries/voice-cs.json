@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-cs",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"cs\" (spec 082), from Piper's voices: dataset licence CC0. Fine-tuned from the U.S. English hifi_tts_92 base model (medium quality; the voice of Cori Samuel, Hi-Fi TTS reader 92), with MRD and SDP.",
+  "name": "Piper voice cs_CZ-jirka-medium",
+  "website": "https://github.com/OHF-Voice/voice-datasets",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-de",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"de\" (spec 082), from Piper's voices: dataset licence CC0. Fine-tuned from the rdh base model (medium quality; nl_BE, one Flemish speaker, CC0), with MRD and SDP.",
+  "name": "Piper voice de_DE-thorsten-medium",
+  "website": "https://github.com/thorstenMueller/Thorsten-Voice",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

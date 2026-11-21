@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.espeak-ng",
+  "developers": [
+    {
+      "name": "The eSpeak NG authors",
+      "organisationUrl": "https://github.com/espeak-ng"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Turns text into the sounds the app's voices read; built into sherpa-onnx, with its data in the voices' pack.",
+  "name": "eSpeak NG",
+  "website": "https://github.com/espeak-ng/espeak-ng",
+  "licenses": [
+    "offlinetranslator-gpl-3.0"
+  ]
+}

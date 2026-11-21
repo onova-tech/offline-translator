@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-sv",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"sv\" (spec 082), from Piper's voices: dataset licence CC0.",
+  "name": "Piper voice sv_SE-nst-medium",
+  "website": "https://www.nb.no/sprakbanken/en/resource-catalogue/oai-nb-no-sbr-17/",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

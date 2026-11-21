@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-uk",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"uk\" (spec 082), from Piper's voices: dataset licence CC0.",
+  "name": "Piper voice uk_UA-ukrainian_tts-medium",
+  "website": "https://github.com/OHF-Voice/voice-datasets",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

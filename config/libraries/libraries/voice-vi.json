@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-vi",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"vi\" (spec 082), from Piper's voices: dataset licence https://creativecommons.org/licenses/by/4.0/. Fine-tuned from the U.S. English hifi_tts_92 base model (medium quality; the voice of Cori Samuel, Hi-Fi TTS reader 92), with MRD and SDP.",
+  "name": "Piper voice vi_VN-vais1000-medium",
+  "website": "https://ieee-dataport.org/documents/vais-1000-vietnamese-speech-synthesis-corpus",
+  "licenses": [
+    "offlinetranslator-cc-by-4.0"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-lv",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"lv\" (spec 082), from Piper's voices: dataset licence CC0 1.0 Universal.",
+  "name": "Piper voice lv_LV-aivars-medium",
+  "website": "https://huggingface.co/RaivisDejus/Piper-lv_LV-Aivars-medium",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

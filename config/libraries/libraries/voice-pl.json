@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-pl",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"pl\" (spec 082), from Piper's voices: dataset licence CC0. Fine-tuned from the rdh base model (medium quality; nl_BE, one Flemish speaker, CC0), with MRD and SDP.",
+  "name": "Piper voice pl_PL-darkman-medium",
+  "website": "https://github.com/OHF-Voice/voice-datasets",
+  "licenses": [
+    "offlinetranslator-cc0-1.0"
+  ]
+}

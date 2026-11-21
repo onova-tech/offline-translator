@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.whisper",
+  "developers": [
+    {
+      "name": "OpenAI",
+      "organisationUrl": "https://openai.com"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's own speech recognition, in sherpa-onnx's int8 version.",
+  "name": "Whisper Base (speech recognition model)",
+  "website": "https://github.com/openai/whisper",
+  "licenses": [
+    "offlinetranslator-mit"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.voice-fr",
+  "developers": [
+    {
+      "name": "Piper voices (rhasspy)",
+      "organisationUrl": "https://github.com/rhasspy/piper"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The app's voice for language \"fr\" (spec 082), from Piper's voices: dataset licence CC-BY 4.0. Fine-tuned from the U.S. English hifi_tts_92 base model (medium quality; the voice of Cori Samuel, Hi-Fi TTS reader 92), with MRD and SDP.",
+  "name": "Piper voice fr_FR-siwis-medium",
+  "website": "https://datashare.is.ed.ac.uk/handle/10283/2353",
+  "licenses": [
+    "offlinetranslator-cc-by-4.0"
+  ]
+}
