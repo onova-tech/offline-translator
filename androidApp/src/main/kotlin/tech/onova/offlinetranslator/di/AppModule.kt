@@ -53,7 +53,7 @@ import tech.onova.offlinetranslator.core.toolapi.ToolRegistry
 import tech.onova.offlinetranslator.core.translation.BergamotEngine
 import kotlin.time.Clock
 
-/** The app's bindings (spec 081): the settings, the phone's pieces the Translator reaches through ports, and the store. */
+/** The app's bindings (spec 081): the settings, and the phone's pieces the Translator reaches through ports. */
 val appModule =
     module {
         single<Clock> { Clock.System }

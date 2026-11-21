@@ -98,18 +98,25 @@ class TranslatorAccessibilityAuditTest : AppUiTest() {
 
     @Test
     fun typeOrSpeak() =
-        assertAccessible(navigate = { waitForText("Type or speak") }) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
+        assertAccessible(
+            navigate = { waitForText("Type or speak") },
+        ) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
 
     @Test
     fun typeOrSpeakTranslatedLargeTextDark() {
         RuntimeEnvironment.setFontScale(2f)
-        assertAccessible(darkTheme = true, navigate = ::translated) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
+        assertAccessible(
+            darkTheme = true,
+            navigate = ::translated,
+        ) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
     }
 
     @Test
     fun thePackOffer() {
         fakes.contentPacks.put(FakeContentPacks.notInstalled(PackId("translate_es")))
-        assertAccessible(navigate = { waitForText("Download") }) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
+        assertAccessible(
+            navigate = { waitForText("Download") },
+        ) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
     }
 
     @Test
@@ -171,7 +178,10 @@ class TranslatorAccessibilityAuditTest : AppUiTest() {
     @Test
     fun theLanguagePageLargeTextDark() {
         RuntimeEnvironment.setFontScale(2f)
-        assertAccessible(darkTheme = true, navigate = ::languagePage) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
+        assertAccessible(
+            darkTheme = true,
+            navigate = ::languagePage,
+        ) { ToolScreen(toolId = "translator", onOpenSettings = {}) }
     }
 
     private fun scrollToOfflineLanguages() {

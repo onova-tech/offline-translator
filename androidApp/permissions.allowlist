@@ -10,6 +10,11 @@ android.permission.RECORD_AUDIO
 # declaration of this type at release.
 android.permission.FOREGROUND_SERVICE
 android.permission.FOREGROUND_SERVICE_DATA_SYNC
+# The same library brings WorkManager (androidx.work 2.9.1), which merges these for its own scheduling: whether a
+# network is up, a short wake lock while a job runs, and its jobs kept across a restart. None is a runtime permission.
+android.permission.ACCESS_NETWORK_STATE
+android.permission.WAKE_LOCK
+android.permission.RECEIVE_BOOT_COMPLETED
 
 # AndroidX core: protects the app's own non-exported dynamic broadcast receivers.
 tech.onova.offlinetranslator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION

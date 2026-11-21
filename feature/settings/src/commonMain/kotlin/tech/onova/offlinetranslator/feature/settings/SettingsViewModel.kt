@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import tech.onova.offlinetranslator.core.domain.ports.AppInfo
 import tech.onova.offlinetranslator.core.domain.ports.AppLanguageController
+import tech.onova.offlinetranslator.core.domain.ports.AppSettingsRepository
 import tech.onova.offlinetranslator.core.domain.ports.DeviceCapabilities
 import tech.onova.offlinetranslator.core.domain.settings.AppLanguage
 import tech.onova.offlinetranslator.core.domain.settings.AppSettings
-import tech.onova.offlinetranslator.core.domain.ports.AppSettingsRepository
 import tech.onova.offlinetranslator.core.domain.settings.ThemeMode
 
 internal data class SettingsUiState(

@@ -16,9 +16,11 @@ import tech.onova.offlinetranslator.R
 import tech.onova.offlinetranslator.debug.debugAboutRows
 import tech.onova.offlinetranslator.feature.settings.SettingsScreen
 import tech.onova.offlinetranslator.feature.settings.licenses.LicensesScreen
-import tech.onova.offlinetranslator.feature.toolstranslate.TranslatorEntry
 import tech.onova.offlinetranslator.feature.toolstranslate.presentation.OfflineLanguagesSection
 import tech.onova.offlinetranslator.tool.ToolScreen
+
+/** The Translator's permanent id (spec 012). */
+private const val TRANSLATOR = "translator"
 
 /** The Translator, where the app opens (spec 081). */
 @Serializable
@@ -49,7 +51,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
         entryProvider =
             entryProvider {
                 entry<TranslatorKey> {
-                    ToolScreen(toolId = TranslatorEntry.ID, onOpenSettings = { open(SettingsKey) })
+                    ToolScreen(toolId = TRANSLATOR, onOpenSettings = { open(SettingsKey) })
                 }
                 entry<SettingsKey> {
                     SettingsScreen(

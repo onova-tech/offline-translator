@@ -82,7 +82,9 @@ class HelpTextsTest {
         const val LINE_BREAK = "\\n"
         const val ITEM_MARK = "- "
         const val LANGUAGES = 3
-        const val MIN_TOOLS = 38
+
+        /** The Translator's help and Manage languages' help (spec 081). */
+        const val MIN_TOOLS = 2
         const val MAX_BLOCK = 180
     }
 }

@@ -35,7 +35,7 @@ class LicensesScreenTest : AppUiTest() {
         compose.waitUntil(WAIT_MILLIS) {
             compose
                 .onAllNodesWithText(
-                    "PolyTools is built with these open-source projects. Thank you.",
+                    "Offline Translator is built with these open-source projects. Thank you.",
                 ).fetchSemanticsNodes()
                 .isNotEmpty()
         }

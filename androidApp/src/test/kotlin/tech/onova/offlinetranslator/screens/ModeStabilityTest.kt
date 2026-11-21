@@ -25,9 +25,6 @@ import tech.onova.offlinetranslator.core.designsystem.components.UiRoleKey
 import tech.onova.offlinetranslator.core.designsystem.theme.PocketTheme
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
-import tech.onova.offlinetranslator.core.domain.ports.SensorAccuracy
-import tech.onova.offlinetranslator.core.domain.ports.SensorKind
-import tech.onova.offlinetranslator.core.domain.ports.SensorSample
 import tech.onova.offlinetranslator.support.AppUiTest
 import tech.onova.offlinetranslator.tool.ToolScreen
 import java.io.File

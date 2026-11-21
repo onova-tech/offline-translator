@@ -9,9 +9,10 @@ import androidx.compose.ui.unit.TextUnit
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import tech.onova.offlinetranslator.R
 import tech.onova.offlinetranslator.core.designsystem.tokens.PocketTypography
+import tech.onova.offlinetranslator.feature.settings.licenses.LicensesScreen
 import tech.onova.offlinetranslator.support.AppUiTest
-import tech.onova.offlinetranslator.tool.ToolScreen
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -86,11 +87,19 @@ class TextSettingPhoneTest : TextSettingTest()
 /** Spec 015 FR-020: at 200 % in a tiny window a title that can't fit beside the actions takes its own row, whole. */
 @Config(qualifiers = "w240dp-h360dp-port-xhdpi")
 class TitleRowTest : AppUiTest() {
+    /** The licenses page has the longest title beside Back. */
     private fun titleAgainstBack(fontScale: Float): Pair<Float, Float> {
         RuntimeEnvironment.setFontScale(fontScale)
-        show { ToolScreen(toolId = "translator", onOpenSettings = {}) }
-        val title = compose.onNode(hasText("Translator")).getUnclippedBoundsInRoot()
-        val back = compose.onNodeWithContentDescription("How to use").getUnclippedBoundsInRoot()
+        val list =
+            RuntimeEnvironment
+                .getApplication()
+                .resources
+                .openRawResource(R.raw.aboutlibraries)
+                .bufferedReader()
+                .use { it.readText() }
+        show { LicensesScreen(onBack = {}, readList = { list }) }
+        val title = compose.onNode(hasText("Open-source licenses")).getUnclippedBoundsInRoot()
+        val back = compose.onNodeWithContentDescription("Back").getUnclippedBoundsInRoot()
         return title.top.value to back.bottom.value
     }
 

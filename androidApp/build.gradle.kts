@@ -71,7 +71,6 @@ android {
         buildConfigField("String", "BUNDLED_PACKS", quoted(bundledPacks.joinToString(",")))
     }
 
-
     assetPacks += bundledPacks.map { ":packs:$it" }
 }
 

@@ -76,19 +76,20 @@ class OfflineLanguagesSectionTest : AppUiTest() {
         waitFor { compose.onAllNodes(hasText("Downloaded languages") and inDialog).fetchSemanticsNodes().isNotEmpty() }
     }
 
+    /** Spec 081: after Language, before About. */
     @Test
-    fun theSectionSitsAfterYourDataAndBeforePrivacy() {
+    fun theSectionSitsAfterLanguageAndBeforeAbout() {
         showSettings()
         compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Offline languages"))
         compose.waitForIdle()
-        val importRow = compose.onNodeWithText("Import data").getUnclippedBoundsInRoot()
+        val languageRow = compose.onNodeWithText("App language").getUnclippedBoundsInRoot()
         val section = compose.onNodeWithText("Offline languages").getUnclippedBoundsInRoot()
-        assertTrue(importRow.bottom <= section.top, "after Your data: $importRow $section")
-        compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Privacy"))
+        assertTrue(languageRow.bottom <= section.top, "after Language: $languageRow $section")
+        compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("About"))
         compose.waitForIdle()
         val manage = compose.onNodeWithText(MANAGE).getUnclippedBoundsInRoot()
-        val privacy = compose.onNodeWithText("Privacy").getUnclippedBoundsInRoot()
-        assertTrue(manage.bottom <= privacy.top, "before Privacy: $manage $privacy")
+        val about = compose.onNodeWithText("About").getUnclippedBoundsInRoot()
+        assertTrue(manage.bottom <= about.top, "before About: $manage $about")
     }
 
     @Test

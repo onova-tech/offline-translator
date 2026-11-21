@@ -1,7 +1,5 @@
 package tech.onova.offlinetranslator.support
 
-import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import tech.onova.offlinetranslator.core.domain.catalog.HardwareRequirement
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
@@ -20,6 +18,8 @@ import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
 import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.settings.AppLanguage
 import tech.onova.offlinetranslator.core.domain.settings.AppSettings
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 class InMemoryAppSettings : AppSettingsRepository {
     override val settings = MutableStateFlow(AppSettings())

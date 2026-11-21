@@ -10,19 +10,6 @@ public interface ScreenReader {
     public val on: StateFlow<Boolean>
 }
 
-public interface ScreenBrightness {
-    /** 0.1f..1f, or null to give the brightness back to the system. */
-    public fun set(level: Float?)
-}
-
-/** The system's share sheet for an image the app made (spec 019). */
-public interface ImageSharer {
-    public fun sharePng(
-        bytes: ByteArray,
-        fileName: String,
-    )
-}
-
 public interface TextSharer {
     public fun share(text: String)
 }

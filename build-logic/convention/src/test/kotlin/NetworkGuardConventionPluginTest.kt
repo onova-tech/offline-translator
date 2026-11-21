@@ -20,10 +20,10 @@ class NetworkGuardConventionPluginTest {
             dependencyResolutionManagement {
                 repositories { maven { url = uri("${projectDir.resolve("repo").toURI()}") } }
             }
-            include(":feature:alpha", ":feature:beta", ":core:domain", ":androidApp", ":core:monetization:ads")
+            include(":feature:alpha", ":feature:beta", ":core:domain", ":androidApp", ":core:content")
             """.trimIndent(),
         )
-        listOf("feature/alpha", "feature/beta", "core/domain", "androidApp", "core/monetization/ads")
+        listOf("feature/alpha", "feature/beta", "core/domain", "androidApp", "core/content")
             .forEach { module(it, dependencies = "") }
     }
 
@@ -61,22 +61,22 @@ class NetworkGuardConventionPluginTest {
     }
 
     @Test
-    fun networkLibraryThroughTheAdsModuleIsAllowedForTheApp() {
-        module("core/monetization/ads", dependencies = """implementation("com.squareup.okhttp3:okhttp:1.0")""")
-        module("androidApp", dependencies = """implementation(project(":core:monetization:ads"))""")
+    fun networkLibraryThroughTheContentModuleIsAllowedForTheApp() {
+        module("core/content", dependencies = """implementation("com.squareup.okhttp3:okhttp:1.0")""")
+        module("androidApp", dependencies = """implementation(project(":core:content"))""")
         val result = runner().build()
         assertContains(result.output, "BUILD SUCCESSFUL")
     }
 
     @Test
     fun networkLibraryThroughAnotherModuleStillFailsTheApp() {
-        module("core/monetization/ads", dependencies = """implementation("com.squareup.okhttp3:okhttp:1.0")""")
+        module("core/content", dependencies = """implementation("com.squareup.okhttp3:okhttp:1.0")""")
         module("feature/alpha", dependencies = """implementation("com.squareup.okhttp3:okhttp:1.0")""")
         module(
             "androidApp",
             dependencies =
                 """
-                implementation(project(":core:monetization:ads"))
+                implementation(project(":core:content"))
                 implementation(project(":feature:alpha"))
                 """.trimIndent(),
         )
@@ -86,10 +86,10 @@ class NetworkGuardConventionPluginTest {
     }
 
     @Test
-    fun onlyTheAppMayDependOnTheAdsModule() {
-        module("feature/alpha", dependencies = """implementation(project(":core:monetization:ads"))""")
+    fun onlyTheAppMayDependOnTheContentModule() {
+        module("feature/alpha", dependencies = """implementation(project(":core:content"))""")
         val result = runner().buildAndFail()
-        assertContains(result.output, "only :androidApp may depend on :core:monetization:ads")
+        assertContains(result.output, "only :androidApp may depend on :core:content")
     }
 
     private fun runner(task: String = "verifyNetworkGuard"): GradleRunner =

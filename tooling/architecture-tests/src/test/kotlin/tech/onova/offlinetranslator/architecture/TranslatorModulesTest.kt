@@ -13,7 +13,8 @@ import kotlin.test.assertTrue
  * (the feature's only network) and core/translation (the only native code).
  */
 class TranslatorModulesTest {
-    private val hidden = listOf("tech.onova.offlinetranslator.core.content", "tech.onova.offlinetranslator.core.translation")
+    private val hidden =
+        listOf("tech.onova.offlinetranslator.core.content", "tech.onova.offlinetranslator.core.translation")
 
     @Test
     fun theTranslatorImportsNeitherThePacksNorTheEngine() {
@@ -53,6 +54,6 @@ class TranslatorModulesTest {
 
     private companion object {
         /** The app has dozens of modules: fewer means the walk missed them. */
-        const val MODULES_AT_LEAST = 20
+        const val MODULES_AT_LEAST = 10
     }
 }

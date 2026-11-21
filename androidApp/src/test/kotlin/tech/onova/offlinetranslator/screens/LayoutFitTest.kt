@@ -14,46 +14,33 @@ import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasScrollToNodeAction
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
-import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.test.espresso.IdlingPolicies
-import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.dsl.module
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import tech.onova.offlinetranslator.OfflineTranslatorApp
 import tech.onova.offlinetranslator.core.designsystem.theme.PocketTheme
 import tech.onova.offlinetranslator.core.designsystem.tokens.PocketSizes
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
-import tech.onova.offlinetranslator.core.domain.ports.DeviceCapabilities
 import tech.onova.offlinetranslator.feature.settings.SettingsScreen
-import tech.onova.offlinetranslator.OfflineTranslatorApp
 import tech.onova.offlinetranslator.support.AppUiTest
-import tech.onova.offlinetranslator.support.FakeCapabilities
 import tech.onova.offlinetranslator.support.LayoutFit
 import tech.onova.offlinetranslator.tool.ToolScreen
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertTrue
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Instant
-import org.koin.core.context.GlobalContext.get as getKoin
 
 /** What a window's run must prove. */
 enum class FitRule {
@@ -264,10 +251,6 @@ abstract class LayoutFitTest(
             ) { SettingsScreen(onBack = {}) },
         )
 
-    private fun capabilities(fake: DeviceCapabilities) {
-        getKoin().loadModules(listOf(module { single<DeviceCapabilities> { fake } }), allowOverride = true)
-    }
-
     private fun surface(
         name: String,
         tool: String,
@@ -285,7 +268,8 @@ abstract class LayoutFitTest(
             ) { ToolScreen(toolId = surface.toolId, onOpenSettings = {}) }
         }
 
-    private fun idleCases(): List<Case> = TOOL_IDS.map { id -> Case(id) { ToolScreen(toolId = id, onOpenSettings = {}) } }
+    private fun idleCases(): List<Case> =
+        TOOL_IDS.map { id -> Case(id) { ToolScreen(toolId = id, onOpenSettings = {}) } }
 
     private fun hostCases(): List<Case> =
         listOf(
@@ -402,7 +386,3 @@ class LayoutFitWindowFloorTest : LayoutFitTest("window-220x220-f1.0", 1f)
 
 @Config(qualifiers = "w420dp-h240dp-land-xhdpi")
 class LayoutFitWindowShortTest : LayoutFitTest("window-420x240-f1.0", 1f)
-
-/** The NDEF type of a link record. */
-
-/** When the histories' rows were made (spec 044). */

@@ -25,7 +25,6 @@ class AppPartsTest {
         }
     }
 
-
     @Test
     fun settingsCarryTheLanguageAndApplyItAfterTheImport() =
         runTest {

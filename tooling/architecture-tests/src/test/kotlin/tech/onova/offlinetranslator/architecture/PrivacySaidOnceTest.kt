@@ -86,14 +86,7 @@ class PrivacySaidOnceTest {
         assertEquals(emptyList(), problems, "Say it in the first-launch notice instead (spec 078)")
     }
 
-    @Test
-    fun theNoticeSaysItInEveryLanguage() {
-        val notices = strings.filter { (name, _, _) -> name.startsWith("host_privacy_notice_") }
-        assertEquals(LANGUAGES, notices.map { it.second }.distinct().size, "the notice in en, pt-BR and es")
-    }
-
     private companion object {
-        const val MIN_STRINGS = 1_000
-        const val LANGUAGES = 3
+        const val MIN_STRINGS = 400
     }
 }

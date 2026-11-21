@@ -82,7 +82,7 @@ import tech.onova.offlinetranslator.feature.settings.resources.version_label
 public fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    /** The Translator's "Offline languages" (spec 012 story 3), passed in by the app: features don't depend on each other. */
+    /** The Translator's "Offline languages" (spec 012 story 3), passed in by the app: features stay apart. */
     offlineLanguages: (@Composable (Modifier) -> Unit)? = null,
     /** Rows the app adds under About, after the licenses: the debug build's phone probe (spec 012 T032). */
     about: (@Composable (Modifier) -> Unit)? = null,
@@ -247,11 +247,6 @@ private fun ThemeChoice(
 @Composable
 private fun Modifier.settingsWidth(): Modifier =
     fillMaxWidth().widthIn(max = PocketSizes.contentMaxWidth).padding(horizontal = PocketSpacing.md)
-
-@Composable
-private fun SettingsSection(title: StringResource) {
-    SectionHeader(text = stringResource(title), modifier = Modifier.settingsWidth().padding(top = PocketSpacing.sm))
-}
 
 @Composable
 private fun SettingsSection(title: StringResource) {

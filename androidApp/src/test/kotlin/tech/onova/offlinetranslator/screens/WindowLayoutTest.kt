@@ -76,6 +76,9 @@ class ToolLayoutHeightTest : AppUiTest() {
     }
 }
 
+/** Principle X in a reduced window. */
+private val SMALLEST_TARGET = 36.dp
+
 /** Spec 015 FR-023, FR-025: a resize changes the configuration, without recreating the activity. */
 class ManifestWindowTest : AppUiTest() {
     private val info: ActivityInfo =
