@@ -106,4 +106,20 @@ class SpeechDownloadsTest {
         const val SECOND = 1_000L
         const val READS = 100
     }
+
+    /** The router's question changes nothing: the screens' reading of the phone goes on as before. */
+    @Test
+    fun neverInstallsOnlyReads() {
+        assertEquals(false, downloads.neverInstalls("ja-JP"))
+        downloads.asked("ja-JP")
+        assertEquals(false, downloads.neverInstalls("ja-JP"), "still within the time to start")
+        now += SpeechDownloads.ASKED_MILLIS + 1
+        assertEquals(true, downloads.neverInstalls("ja-JP"))
+        assertEquals(RecognitionSupport.NOT_INSTALLED, downloads.read("ja-JP", RecognitionSupport.CAN_DOWNLOAD))
+        assertEquals(true, downloads.neverInstalls("ja-JP"))
+        assertEquals(RecognitionSupport.APP_CAN_DOWNLOAD, downloads.read("ja-JP", RecognitionSupport.APP_CAN_DOWNLOAD))
+        assertEquals(true, downloads.neverInstalls("ja-JP"), "the app's answer keeps what was learned")
+        downloads.read("ja-JP", RecognitionSupport.READY)
+        assertEquals(false, downloads.neverInstalls("ja-JP"))
+    }
 }

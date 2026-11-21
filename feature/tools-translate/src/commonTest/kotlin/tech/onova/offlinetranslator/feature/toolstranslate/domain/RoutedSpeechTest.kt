@@ -10,6 +10,7 @@ import tech.onova.offlinetranslator.core.domain.ports.PackStatus
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.SpeechEvent
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.AppSpeechPart
 import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeContentPacks
@@ -47,7 +48,11 @@ class RoutedSpeechTest {
         )
     }
 
-    private fun input(packs: FakeContentPacks) = RoutedSpeechInput(phoneIn, appIn, AppSpeechParts(packs), settings)
+    private var now = 0L
+    private val downloads = SpeechDownloads { now }
+
+    private fun input(packs: FakeContentPacks) =
+        RoutedSpeechInput(phoneIn, appIn, AppSpeechParts(packs), settings, downloads)
 
     private fun output(packs: FakeContentPacks) = RoutedSpeechOutput(phoneOut, appOut, AppSpeechParts(packs), settings)
 
@@ -118,5 +123,55 @@ class RoutedSpeechTest {
         output(packs()).stop()
         assertEquals(1, phoneOut.stops)
         assertEquals(1, appOut.stops)
+    }
+
+    /** The owner's Japanese: asked for, never installed; the app's recognition is offered instead of asking again. */
+    @Test
+    fun aLanguageThePhoneNeverInstallsGoesToTheApp() =
+        runTest {
+            phoneIn.support["ja-JP"] = RecognitionSupport.CAN_DOWNLOAD
+            downloads.asked("ja-JP")
+            now += SpeechDownloads.ASKED_MILLIS + 1
+            assertEquals(RecognitionSupport.APP_CAN_DOWNLOAD, input(packs()).support("ja-JP"))
+            // A screen reads the routed answer again: what was learned about the phone stays.
+            assertEquals(
+                RecognitionSupport.APP_CAN_DOWNLOAD,
+                downloads.read("ja-JP", RecognitionSupport.APP_CAN_DOWNLOAD),
+            )
+            assertEquals(RecognitionSupport.APP_CAN_DOWNLOAD, input(packs()).support("ja-JP"), "it stays with the app")
+        }
+
+    /** Without the app's recognition (Uyghur), the phone's own answer goes on, for the screens to read. */
+    @Test
+    fun withoutTheAppsRecognitionThePhonesAnswerGoesOn() =
+        runTest {
+            phoneIn.support["ug-CN"] = RecognitionSupport.CAN_DOWNLOAD
+            downloads.asked("ug-CN")
+            now += SpeechDownloads.ASKED_MILLIS + 1
+            assertEquals(RecognitionSupport.CAN_DOWNLOAD, input(packs()).support("ug-CN"))
+        }
+
+    /** Spec 082 US3: the choice is offered only where both can, and shows the person's even before the app's is in. */
+    @Test
+    fun theChoiceIsOfferedWhereBothCan() =
+        runTest {
+            phoneIn.support["pt-BR"] = RecognitionSupport.READY
+            phoneIn.support["ar-SA"] = RecognitionSupport.UNSUPPORTED
+            val input = input(packs())
+            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), input.use("pt-BR"))
+            assertEquals(EngineUse(SpeechEngine.APP, null, choosable = false), input.use("ar-SA"))
+            val choices = SpeechChoices(input, output(packs()), settings)
+            choices.choose(LanguageCode("pt"), SpeechKind.RECOGNITION, SpeechEngine.APP)
+            assertEquals(EngineUse(SpeechEngine.PHONE, SpeechEngine.APP, choosable = true), input.use("pt-BR"))
+            assertEquals(true, input.use("pt-BR").app, "the row offers the app's download")
+            phoneOut.voices["pt-BR"] = VoiceSupport.READY
+            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), choices.use(SpeechKind.VOICE, "pt-BR"))
+        }
+
+    /** A pack this build doesn't have (no Spanish voice among the test's packs) is no app speech at all. */
+    @Test
+    fun aPackTheBuildDoesntKnowIsNoAppSpeech() {
+        assertEquals(AppSpeechPart.NONE, AppSpeechParts(packs()).voice(LanguageCode("es")))
+        assertEquals(AppSpeechPart.NOT_DOWNLOADED, AppSpeechParts(packs()).voice(LanguageCode("pt")))
     }
 }

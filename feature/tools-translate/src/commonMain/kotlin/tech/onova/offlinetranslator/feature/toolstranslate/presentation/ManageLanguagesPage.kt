@@ -52,8 +52,11 @@ import tech.onova.offlinetranslator.feature.toolstranslate.domain.Routes
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.Res
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_cancel
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete_recognition_text
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete_recognition_title
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete_text
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete_title
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete_voice_title
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_downloaded_languages
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_languages_back
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_languages_clear
@@ -91,9 +94,14 @@ internal fun ManageLanguagesPage(
     var expanded by rememberSaveable { mutableStateOf(listOfNotNull(focus?.value)) }
     val asked = downloaded + expanded.map(::LanguageCode)
     LaunchedEffect(asked, phoneLocales) { speech.show(asked.toList(), phoneLocales) }
-    var deleting by rememberSaveable { mutableStateOf<String?>(null) }
+    // The packs a Delete asks about, by id; a voice's takes espeak-ng's data with the last of the app's voices.
+    var deleting by rememberSaveable { mutableStateOf<List<String>?>(null) }
     var helping by rememberSaveable { mutableStateOf(false) }
-    val actions = partActions(languages, packs, speech) { deleting = it.value }
+    val actions =
+        partActions(languages, packs, speech) { ids ->
+            deleting =
+                withVoiceData(ids, packUi.packs).map { it.value }
+        }
     val sections =
         Sections(downloaded, expanded.toSet(), focus) { code, open ->
             expanded = if (open) expanded + code.value else expanded - code.value
@@ -119,9 +127,10 @@ internal fun ManageLanguagesPage(
                 }
             }
         }
-        deleting?.let { id ->
-            val bytes = packUi.packs.firstOrNull { it.id.value == id }?.installedBytes
-            DeleteConfirmation(PackId(id), bytes, onDelete = packs::remove) { deleting = null }
+        deleting?.let { ids ->
+            val chosen = ids.map(::PackId)
+            val bytes = packUi.packs.filter { it.id in chosen }.sumOf { it.installedBytes ?: 0 }
+            DeleteConfirmation(chosen, bytes, onDelete = { all -> all.forEach(packs::remove) }) { deleting = null }
         }
         if (helping) HelpSheet(onClose = { helping = false }) { ManageLanguagesHelp() }
     }
@@ -132,7 +141,7 @@ private fun partActions(
     languages: LanguagesViewModel,
     packs: PacksViewModel,
     speech: SpeechPartsViewModel,
-    onDelete: (PackId) -> Unit,
+    onDelete: (List<PackId>) -> Unit,
 ): PartActions =
     PartActions(
         onToggle = languages::toggle,
@@ -145,7 +154,7 @@ private fun partActions(
                 onCancel = packs::cancel,
                 onDelete = onDelete,
             ),
-        speech = SpeechPartActions(speech::get, speech::update, speech::voice),
+        speech = SpeechPartActions(speech::get, speech::update, speech::voice, speech::choose),
     )
 
 /** Where each language goes, which are open, and where the page opens. */
@@ -274,23 +283,58 @@ private fun ScrollToStart(
     }
 }
 
-/** Delete asks first, with the space it frees (spec 012 FR-012). */
+/**
+ * The app's voice for a language, with espeak-ng's data when no other voice of the app stays (spec 082): nothing of the
+ * app's voices is left behind.
+ */
+private fun withVoiceData(
+    ids: List<PackId>,
+    packs: List<PackStatus>,
+): List<PackId> {
+    val voices =
+        SpeechCatalog.voices.values
+            .map { it.pack }
+            .toSet()
+    if (ids.none { it in voices }) return ids
+    val staying = packs.filter { it.id in voices && it.id !in ids && it.state == PackState.Installed }
+    val data = packs.firstOrNull { it.id == SpeechCatalog.voiceDataPack && it.state == PackState.Installed }
+    return if (staying.isEmpty() && data != null) ids + data.id else ids
+}
+
+/**
+ * Delete asks first, with the space it frees (spec 012 FR-012); the app's recognition is every language's (spec 082).
+ */
 @Composable
 private fun DeleteConfirmation(
-    pack: PackId,
-    bytes: Long?,
-    onDelete: (PackId) -> Unit,
+    packs: List<PackId>,
+    bytes: Long,
+    onDelete: (List<PackId>) -> Unit,
     onDone: () -> Unit,
 ) {
-    val name = packName(pack)
+    val first = packs.firstOrNull() ?: return
+    val megabytes = PackMessages.megabytes(bytes).toString()
+    val voice =
+        SpeechCatalog.voices.entries
+            .firstOrNull { it.value.pack == first }
+            ?.key
     ConfirmScreen(
-        title = stringResource(Res.string.translator_delete_title, name),
-        text = stringResource(Res.string.translator_delete_text, PackMessages.megabytes(bytes ?: 0).toString()),
+        title =
+            when {
+                first == SpeechCatalog.recognitionPack -> stringResource(Res.string.translator_delete_recognition_title)
+                voice != null -> stringResource(Res.string.translator_delete_voice_title, languageName(voice))
+                else -> stringResource(Res.string.translator_delete_title, packName(first))
+            },
+        text =
+            if (first == SpeechCatalog.recognitionPack) {
+                stringResource(Res.string.translator_delete_recognition_text, megabytes)
+            } else {
+                stringResource(Res.string.translator_delete_text, megabytes)
+            },
         confirmLabel = stringResource(Res.string.translator_delete),
         cancelLabel = stringResource(Res.string.translator_cancel),
         onConfirm = {
             onDone()
-            onDelete(pack)
+            onDelete(packs)
         },
         onCancel = onDone,
     )
@@ -311,6 +355,7 @@ private fun languageState(
         packOf(known, code),
         speechUi.parts[code],
         speechUi.serviceUpdatable,
+        uses = speechUi.uses[code],
         appRecognition = byId[SpeechCatalog.recognitionPack].takeIf { code in SpeechCatalog.recognition },
         appVoice =
             SpeechCatalog.voices[code]

@@ -38,6 +38,23 @@ internal class SpeechDownloads(
         requestCount.value += 1
     }
 
+    /**
+     * Whether the phone was asked for [tag] and its download ended without it (the owner's Japanese, 2026-11-20): the
+     * router then offers the app's recognition (spec 082, 2026-11-21). It only reads; the screens' [read] keeps the
+     * rest.
+     */
+    fun neverInstalls(tag: String): Boolean {
+        if (tag in refused) return true
+        if (tag !in asked) return false
+        val until = listOfNotNull(finishingUntil[tag], startingUntil[tag]).maxOrNull()
+        return until == null || now() >= until
+    }
+
+    /** One of the app's own speech packs changed (spec 082): the screens that show speech ask again. */
+    fun appSpeechChanged() {
+        requestCount.value += 1
+    }
+
     /** Back from elsewhere (the store, the settings): a language the phone didn't install can be asked for again. */
     fun forget() {
         asked -= refused
@@ -57,6 +74,14 @@ internal class SpeechDownloads(
 
             RecognitionSupport.CAN_DOWNLOAD -> {
                 canDownload(tag)
+            }
+
+            // The app's speech (spec 082, routed before the screens read it): what was learned about the phone stays,
+            // so a language the phone never installs keeps going to the app.
+            RecognitionSupport.APP_CAN_DOWNLOAD,
+            RecognitionSupport.APP_DOWNLOADING,
+            -> {
+                support
             }
 
             else -> {

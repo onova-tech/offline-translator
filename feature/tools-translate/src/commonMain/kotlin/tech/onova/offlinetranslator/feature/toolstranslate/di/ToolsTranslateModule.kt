@@ -15,6 +15,7 @@ import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineSession
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.RoutedSpeechInput
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.RoutedSpeechOutput
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoices
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorSettingsRepository
 import tech.onova.offlinetranslator.feature.toolstranslate.presentation.ConversationSpeech
@@ -36,8 +37,11 @@ public val toolsTranslateModule =
         single { DataStoreTranslatorSettings(get()) } bind TranslatorSettingsRepository::class
         // Spec 082: the phone's speech or the app's, per language; the app binds both engines by name.
         single { AppSpeechParts(get()) }
-        single<SpeechInput> { RoutedSpeechInput(get(named("phone")), get(named("app")), get(), get()) }
-        single<SpeechOutput> { RoutedSpeechOutput(get(named("phone")), get(named("app")), get(), get()) }
+        single { RoutedSpeechInput(get(named("phone")), get(named("app")), get(), get(), get()) }
+        single<SpeechInput> { get<RoutedSpeechInput>() }
+        single { RoutedSpeechOutput(get(named("phone")), get(named("app")), get(), get()) }
+        single<SpeechOutput> { get<RoutedSpeechOutput>() }
+        single { SpeechChoices(get(), get(), get()) }
         single<DataPart>(named("data-part:translator")) { get<DataStoreTranslatorSettings>().dataPart() }
         single<ToolEntry>(named(TranslatorEntry.ID)) { TranslatorEntry() }
         single { EngineSession(get(), get()) }

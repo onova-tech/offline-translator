@@ -16,10 +16,20 @@ import tech.onova.offlinetranslator.core.domain.ports.AppVisibility
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineUse
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.RoutedSpeechInput
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.RoutedSpeechOutput
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SetupNeeds
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoices
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechKind
+import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeContentPacks
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeSpeechInput
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeSpeechOutput
+import tech.onova.offlinetranslator.feature.toolstranslate.fakes.InMemoryTranslatorSettings
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -46,12 +56,23 @@ class SpeechPartsViewModelTest {
         Dispatchers.resetMain()
     }
 
+    private val settings = InMemoryTranslatorSettings()
+    private var packs = FakeContentPacks()
+
     private fun TestScope.model(): SpeechPartsViewModel {
         val visibility =
             object : AppVisibility {
                 override val isVisible = visible
             }
-        val model = SpeechPartsViewModel(speechIn, speechOut, SpeechDownloads { testScheduler.currentTime }, visibility)
+        val downloads = SpeechDownloads { testScheduler.currentTime }
+        val parts = AppSpeechParts(packs)
+        val choices =
+            SpeechChoices(
+                RoutedSpeechInput(speechIn, FakeSpeechInput(), parts, settings, downloads),
+                RoutedSpeechOutput(speechOut, FakeSpeechOutput(), parts, settings),
+                settings,
+            )
+        val model = SpeechPartsViewModel(speechIn, speechOut, downloads, visibility, packs, choices)
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.uiState.collect {} }
         model.show(listOf(ja, ar), phoneLocales = listOf("pt-BR"))
         runCurrent()
@@ -144,5 +165,42 @@ class SpeechPartsViewModelTest {
                 model.uiState.value.parts[ja]
                     ?.voice,
             )
+        }
+
+    /** Spec 082 US3: where both can, "Phone" at first; "App" is kept and shown while its model downloads. */
+    @Test
+    fun aLanguageBothCanDoOffersTheChoiceAndKeepsIt() =
+        runTest(dispatcher) {
+            packs =
+                FakeContentPacks(
+                    FakeContentPacks.notInstalled(SpeechCatalog.recognitionPack),
+                    FakeContentPacks.installed(SpeechCatalog.voiceDataPack),
+                )
+            speechIn.support["ja-JP"] = RecognitionSupport.READY
+            speechIn.support["ar-SA"] = RecognitionSupport.UNSUPPORTED
+            val model = model()
+            val japanese =
+                model.uiState.value.uses
+                    .getValue(ja)
+            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), japanese.recognition)
+            assertEquals(SpeechEngine.PHONE, japanese.recognition.shown)
+            // Arabic: only the app can, so it's used without asking (US3 scenario 3).
+            val arabic =
+                model.uiState.value.uses
+                    .getValue(ar)
+            assertEquals(EngineUse(SpeechEngine.APP, null, choosable = false), arabic.recognition)
+            model.choose(ja, SpeechKind.RECOGNITION, SpeechEngine.APP)
+            runCurrent()
+            assertEquals(
+                SpeechEngine.APP,
+                settings.settings.value.speech[ja]
+                    ?.recognition,
+            )
+            val chosen =
+                model.uiState.value.uses
+                    .getValue(ja)
+                    .recognition
+            assertEquals(SpeechEngine.PHONE, chosen.used, "the phone's until the app's is in (US3 scenario 2)")
+            assertEquals(SpeechEngine.APP, chosen.shown)
         }
 }

@@ -79,9 +79,16 @@ public object SpeechCatalog {
             LanguageCode("ca") to AppVoice(PackId("voice_ca"), "ca_ES-upc_ona-x_low", "x_low", "CC BY-SA 3.0 ES"),
             LanguageCode("cs") to AppVoice(PackId("voice_cs"), "cs_CZ-jirka-medium", "medium", "CC0"),
             LanguageCode("de") to AppVoice(PackId("voice_de"), "de_DE-thorsten-medium", "medium", "CC0"),
-            LanguageCode("en") to AppVoice(PackId("voice_en"), "en_GB-cori-medium", "medium", "CC BY 4.0 (Hi-Fi Multi-Speaker English TTS Dataset, NVIDIA Corporation)"),
+            LanguageCode("en") to
+                AppVoice(
+                    PackId("voice_en"),
+                    "en_GB-cori-medium",
+                    "medium",
+                    "CC BY 4.0 (Hi-Fi Multi-Speaker English TTS Dataset, NVIDIA Corporation)",
+                ),
             LanguageCode("es") to AppVoice(PackId("voice_es"), "es_ES-davefx-medium", "medium", "CC0"),
-            LanguageCode("eu") to AppVoice(PackId("voice_eu"), "eu_ES-antton-medium", "medium", "Creative Commons Attribution 4.0"),
+            LanguageCode("eu") to
+                AppVoice(PackId("voice_eu"), "eu_ES-antton-medium", "medium", "Creative Commons Attribution 4.0"),
             LanguageCode("fa") to AppVoice(PackId("voice_fa"), "fa_IR-amir-medium", "medium", "CC0"),
             LanguageCode("fi") to AppVoice(PackId("voice_fi"), "fi_FI-harri-medium", "medium", "CC0"),
             LanguageCode("fr") to AppVoice(PackId("voice_fr"), "fr_FR-siwis-medium", "medium", "CC-BY 4.0"),
@@ -95,11 +102,23 @@ public object SpeechCatalog {
             LanguageCode("ro") to AppVoice(PackId("voice_ro"), "ro_RO-mihai-medium", "medium", "CC0"),
             LanguageCode("ru") to AppVoice(PackId("voice_ru"), "ru_RU-denis-medium", "medium", "CC0"),
             LanguageCode("sk") to AppVoice(PackId("voice_sk"), "sk_SK-lili-medium", "medium", "CC0"),
-            LanguageCode("sl") to AppVoice(PackId("voice_sl"), "sl_SI-artur-medium", "medium", "https://creativecommons.org/licenses/by/4.0/"),
+            LanguageCode("sl") to
+                AppVoice(
+                    PackId("voice_sl"),
+                    "sl_SI-artur-medium",
+                    "medium",
+                    "https://creativecommons.org/licenses/by/4.0/",
+                ),
             LanguageCode("sv") to AppVoice(PackId("voice_sv"), "sv_SE-nst-medium", "medium", "CC0"),
             LanguageCode("uk") to AppVoice(PackId("voice_uk"), "uk_UA-ukrainian_tts-medium", "medium", "CC0"),
             LanguageCode("ur") to AppVoice(PackId("voice_ur"), "ur_PK-fasih-medium", "medium", "mit"),
-            LanguageCode("vi") to AppVoice(PackId("voice_vi"), "vi_VN-vais1000-medium", "medium", "https://creativecommons.org/licenses/by/4.0/"),
+            LanguageCode("vi") to
+                AppVoice(
+                    PackId("voice_vi"),
+                    "vi_VN-vais1000-medium",
+                    "medium",
+                    "https://creativecommons.org/licenses/by/4.0/",
+                ),
             LanguageCode("zh") to AppVoice(PackId("voice_zh"), "zh_CN-chaowen-medium", "medium", "CC0"),
         )
 }

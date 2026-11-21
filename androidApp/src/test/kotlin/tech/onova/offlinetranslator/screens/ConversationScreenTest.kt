@@ -111,7 +111,10 @@ class ConversationScreenTest : AppUiTest() {
         showConversation()
         compose.onNodeWithContentDescription(DISCARD).assertDoesNotExist()
         compose.onNodeWithContentDescription("Speak English").performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listenedTo.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.isNotEmpty()
+        }
         waitForText(DISCARD)
         // Screen readers hear the waiting word once, not each of its dots.
         compose.onNodeWithContentDescription("Listening").assertExists()
@@ -159,14 +162,20 @@ class ConversationScreenTest : AppUiTest() {
     fun aSpokenTurnIsTranslatedOnTheOtherHalfAndReadThere() {
         showConversation()
         compose.onNodeWithContentDescription("Speak English").performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listenedTo.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.isNotEmpty()
+        }
         assertEquals(listOf("en-US"), fakes.speechInput.listenedTo)
         // While one half listens, the other microphone waits.
         compose.onNodeWithContentDescription("Speak Spanish").assertIsNotEnabled()
         fakes.speechInput.hear(SpeechEvent.Final("Good morning"))
         waitForText("[es] Good morning")
         compose.onNodeWithText("Good morning").assertExists()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechOutput.said.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechOutput.said.isNotEmpty()
+        }
         assertEquals(listOf("[es] Good morning" to "es-ES"), fakes.speechOutput.said)
         compose.onNodeWithContentDescription("Speak English").assertIsNotEnabled()
         fakes.speechOutput.done()
@@ -216,10 +225,16 @@ class ConversationScreenTest : AppUiTest() {
     fun clearAsksFirst() {
         showConversation()
         compose.onNodeWithContentDescription("Speak English").performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listenedTo.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.isNotEmpty()
+        }
         fakes.speechInput.hear(SpeechEvent.Final("Good morning"))
         waitForText("[es] Good morning")
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechOutput.said.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechOutput.said.isNotEmpty()
+        }
         fakes.speechOutput.done()
         shadowOf(Looper.getMainLooper()).idle()
         compose.waitForIdle()

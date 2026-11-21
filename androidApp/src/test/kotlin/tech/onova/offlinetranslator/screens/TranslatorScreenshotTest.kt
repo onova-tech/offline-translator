@@ -75,10 +75,16 @@ class TranslatorScreenshotTest : AppUiTest() {
         translation: String,
     ) {
         compose.onNodeWithContentDescription(microphone).performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listening > 0 }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listening > 0
+        }
         fakes.speechInput.hear(SpeechEvent.Final(words))
         waitFor(translation)
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechOutput.speaking }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechOutput.speaking
+        }
         fakes.speechOutput.done()
         shadowOf(Looper.getMainLooper()).idle()
         compose.waitForIdle()

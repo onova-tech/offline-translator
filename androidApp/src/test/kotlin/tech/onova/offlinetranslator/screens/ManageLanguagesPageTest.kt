@@ -31,6 +31,7 @@ import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.support.AppUiTest
 import tech.onova.offlinetranslator.support.FakeContentPacks
 import tech.onova.offlinetranslator.tool.ToolScreen
@@ -242,6 +243,41 @@ class ManageLanguagesPageTest : AppUiTest() {
         search("zzzz")
         waitFor(hasText("No language matches"))
         assertTrue(compose.onAllNodesWithText("Japanese").fetchSemanticsNodes().isEmpty())
+    }
+
+    /** Spec 082 US3: where the phone and the app both recognize a language, its card offers "Phone" or "App". */
+    @Test
+    fun bothCanRecognizeSoTheCardOffersPhoneOrAppAndTheAppsDownload() {
+        fakes.contentPacks.put(FakeContentPacks.notInstalled(SpeechCatalog.recognitionPack))
+        showTool()
+        openPage()
+        search("portu")
+        open("Portuguese")
+        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: phone or app"))
+        waitFor(hasText("Phone") and choice and inDialog)
+        compose.onNode(hasText("App") and choice and inDialog).performClick()
+        waitFor(hasText("The app can recognize it · 48 MB to download") and inDialog)
+        menu("Portuguese", "Speech recognition")
+        compose.onAllNodesWithText("Download").onLast().performClick()
+        waitUntil { fakes.contentPacks.downloads.any { it.first == SpeechCatalog.recognitionPack } }
+    }
+
+    /** Spec 082 US4: the app's recognition is every language's, and the confirmation says so before it goes. */
+    @Test
+    fun theAppsRecognitionIsDeletedAfterAsking() {
+        fakes.contentPacks.put(FakeContentPacks.installed(SpeechCatalog.recognitionPack))
+        fakes.speechInput.support["es-ES"] = RecognitionSupport.UNSUPPORTED
+        showTool()
+        openPage()
+        search("spanish")
+        open("Spanish")
+        menu("Spanish", "Speech recognition")
+        compose.onAllNodesWithText("Delete").onLast().performClick()
+        waitFor(hasText("Delete the app's speech recognition?"))
+        assertTrue(fakes.contentPacks.removed.isEmpty(), "nothing deleted before the confirmation")
+        compose.onAllNodesWithText("Delete").onLast().performClick()
+        waitUntil { fakes.contentPacks.removed.isNotEmpty() }
+        assertEquals(listOf(SpeechCatalog.recognitionPack), fakes.contentPacks.removed)
     }
 
     private companion object {

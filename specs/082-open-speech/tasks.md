@@ -51,9 +51,10 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 
 ## Phase 5: User stories 3 and 4, the choice and the space (P2, P3)
 
-- [ ] T017 Manage languages: Speech recognition and Voice rows with "Phone" or "App" where both exist, the app's
-  download, delete and size (FR-006); rules in `docs/ui-rules.md`. Done so far: the rows show the app's download with
-  its size, Download and Cancel; to do: the Phone/App choice and Delete
+- [X] T017 Manage languages: Speech recognition and Voice rows with "Phone" or "App" where both exist, the app's
+  download, delete and size (FR-006); rules in `docs/ui-rules.md` (C4). `EngineUse` (who is used, the choice, whether
+  both can) from the routing; `SpeechChoices` writes the choice; a voice's Delete takes espeak-ng's data with the last
+  voice; the app tests now run through the real routing (phone and app fakes bound by name)
 - [X] T018 Settings → Offline languages counts the speech packs; Open-source licenses credits sherpa-onnx,
   onnxruntime, espeak-ng, Whisper and every voice (FR-009): the catalog script writes each voice's entry, with its
   dataset, licence and base
@@ -64,3 +65,11 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 - [ ] T020 [P] e2e on the emulator: the app's recognition and a voice through local testing, in airplane mode
 - [ ] T021 `scripts/ci.sh check`, then `device`
 - [ ] T022 [phone] The owner's pass: Arabic spoken, a Piper voice heard, the choice switched, in airplane mode
+
+## Owner's phone, 2026-11-21 (first install with the app's speech)
+
+- [X] T023 Arabic's Download did nothing: the phone's active network was Tailscale's VPN, so "Download only on Wi-Fi"
+  waited, and the row hid it. A VPN over an unmetered network counts as Wi-Fi (`WifiCheck.countsAsWifi`); the app's
+  rows show their packs' own state (waiting, downloading, failed)
+- [X] T024 Japanese, asked of the phone and never installed, stayed with the phone: the routing now reads the
+  Translator's download memory (`SpeechDownloads.neverInstalls`, read only) and offers the app's recognition

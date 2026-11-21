@@ -6,15 +6,25 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.onova.offlinetranslator.core.domain.ports.AppVisibility
+import tech.onova.offlinetranslator.core.domain.ports.ContentPacks
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
+import tech.onova.offlinetranslator.core.domain.speech.packs
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineUse
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoices
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechKind
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechRegions
 
 /** What the phone has for one language: its own speech recognition, and an offline voice. */
@@ -23,9 +33,17 @@ internal data class SpeechParts(
     val voice: VoiceSupport,
 )
 
+/** Who hears and who speaks one language, and whether the person can choose (spec 082 FR-006). */
+internal data class SpeechUses(
+    val recognition: EngineUse,
+    val voice: EngineUse,
+)
+
 internal data class SpeechPartsUi(
     /** Each language shown, once the phone answered for it. */
     val parts: Map<LanguageCode, SpeechParts> = emptyMap(),
+    /** The same languages: the phone's or the app's (spec 082). */
+    val uses: Map<LanguageCode, SpeechUses> = emptyMap(),
     /** The phone's speech service can be updated from its store page (a language it didn't install). */
     val serviceUpdatable: Boolean = false,
 )
@@ -35,11 +53,15 @@ internal data class SpeechPartsUi(
  * own recognizer and voices can do, asked of the phone, never guessed; again every few seconds while one is on its way,
  * and when the screen comes back (from the store, the voice app). The downloads are the phone's: the app only asks.
  */
+private val speechPacks = SpeechCatalog.packs.toSet()
+
 internal class SpeechPartsViewModel(
     private val speechIn: SpeechInput,
     private val speechOut: SpeechOutput,
     private val downloads: SpeechDownloads,
     visibility: AppVisibility,
+    packs: ContentPacks,
+    private val choices: SpeechChoices,
 ) : ViewModel() {
     private val state = MutableStateFlow(SpeechPartsUi())
     val uiState: StateFlow<SpeechPartsUi> = state.asStateFlow()
@@ -58,7 +80,12 @@ internal class SpeechPartsViewModel(
                         val tag = tagOf(language)
                         SpeechParts(downloads.read(tag, speechIn.support(tag)), speechOut.voice(tag))
                     }
-                state.update { it.copy(parts = asked) }
+                val uses =
+                    languages.associateWith { language ->
+                        val tag = tagOf(language)
+                        SpeechUses(choices.use(SpeechKind.RECOGNITION, tag), choices.use(SpeechKind.VOICE, tag))
+                    }
+                state.update { it.copy(parts = asked, uses = uses) }
             },
             downloading = {
                 state.value.parts.values
@@ -85,6 +112,18 @@ internal class SpeechPartsViewModel(
             }
         }
         state.update { it.copy(serviceUpdatable = speechIn.canUpdateService()) }
+        // Spec 082: when one of the app's speech packs moves (downloading, in, deleted), the languages' speech is asked
+        // again here, and the other screens are told to ask too.
+        viewModelScope.launch {
+            packs.packs
+                .map { all -> all.filter { it.id in speechPacks }.map { it.id to it.state } }
+                .distinctUntilChanged()
+                .drop(1)
+                .collect {
+                    downloads.appSpeechChanged()
+                    support.askNow()
+                }
+        }
     }
 
     /** The languages shown, with the phone's languages for their speech regions; asked again when they change. */
@@ -107,6 +146,19 @@ internal class SpeechPartsViewModel(
         viewModelScope.launch {
             support.askNow()
             support.watch()
+        }
+    }
+
+    /** "Phone" or "App" for [language]'s recognition or voice (spec 082 US3), kept across restarts (FR-007). */
+    fun choose(
+        language: LanguageCode,
+        kind: SpeechKind,
+        engine: SpeechEngine,
+    ) {
+        viewModelScope.launch {
+            choices.choose(language, kind, engine)
+            downloads.appSpeechChanged()
+            support.askNow()
         }
     }
 

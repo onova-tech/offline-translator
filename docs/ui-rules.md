@@ -309,6 +309,13 @@ added there.
   none; an app can't download a voice itself. A recognition language the phone downloads and never installs reads
   "The phone didn't install it", with "Update" for the phone's speech service in Google Play where the phone has one,
   instead of offering the same download again. *Owner's phone pass, 2026-11-20.*
+- **C4. The phone's speech or the app's, per language** (spec 082): on Manage languages, where both the phone and the
+  app can recognize a language (or speak it), a `SegmentedChoice` "Phone | App" sits under that part's row, "Phone" at
+  first; it shows the person's choice even while the app's model downloads, when the row offers that download with its
+  size and the phone's is used meanwhile. Where only the app can, its row reads the app's state with no choice. The
+  app's model is deleted from its row's ⋮ after a confirmation; the recognition model is every language's, and says so;
+  a voice takes espeak-ng's data with it when it was the last of the app's voices. *Owner, 2026-11-20: "Fallback, with
+  a choice".* Guarded by `RoutedSpeechTest`, `SpeechPartsViewModelTest` and `ManageLanguagesPageTest`.
 
 ## Exceptions
 
@@ -338,6 +345,7 @@ added there.
 | `FieldToggleColumn`, `FieldWithToggle`, `ToggleCaption`, `ToggleChoice` | T1–T6, T9 |
 | `MenuChoice`, `ChoiceWithOption` | T2, T9 |
 | `FacingHalves`, `MicrophoneButton` | C1 |
+| `SegmentedChoice` (on Manage languages, under a speech part) | C4 |
 | `Notice` (`onClose`) | C2 |
 | `ExpandableCard`, `StatusMark`, `HelpSheet` | S6 |
 | `CheckRow`, `MenuEntry` (`MenuChoice`'s `last`), `MenuSettingsRow` | S6 |
@@ -502,3 +510,5 @@ added there.
   languages", each language an `ExpandableCard` with a `StatusMark` and "Enable language" inside, the sections kept
   while the page is open, a help; the notice's × in its buttons' row, and the notice scrolls rather than squeeze. Then
   a gray "Ignore" text button instead of the ×.
+- **2026-11-21 (spec 082):** C4, "Phone | App" for a language's recognition and voice on Manage languages, where both
+  can; the app's models deleted from their row.

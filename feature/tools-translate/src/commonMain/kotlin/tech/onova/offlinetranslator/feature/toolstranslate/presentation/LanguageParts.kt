@@ -11,11 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import tech.onova.offlinetranslator.core.designsystem.components.CheckRow
+import tech.onova.offlinetranslator.core.designsystem.components.ChoiceOption
 import tech.onova.offlinetranslator.core.designsystem.components.ExpandableCard
 import tech.onova.offlinetranslator.core.designsystem.components.InfoRow
 import tech.onova.offlinetranslator.core.designsystem.components.MenuSettingsRow
 import tech.onova.offlinetranslator.core.designsystem.components.RowMenuItem
+import tech.onova.offlinetranslator.core.designsystem.components.SegmentedChoice
 import tech.onova.offlinetranslator.core.designsystem.components.StatusMark
+import tech.onova.offlinetranslator.core.designsystem.icons.PocketIcons
 import tech.onova.offlinetranslator.core.designsystem.tokens.PocketSpacing
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
@@ -23,18 +26,26 @@ import tech.onova.offlinetranslator.core.domain.ports.PackState
 import tech.onova.offlinetranslator.core.domain.ports.PackStatus
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 import tech.onova.offlinetranslator.core.toolapi.ToolHelp
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineUse
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.PackMessages
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechKind
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.Res
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_basic_quality
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_built_in
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_cancel
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_delete
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_enable_language
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_enable_language_supporting
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_engine_app
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_engine_group
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_engine_phone
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_get_language
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_manage_help
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_manage_marks
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_pack_installed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_checking
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_menu
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_ready
@@ -63,7 +74,8 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 internal class PackPartActions(
     val onDownload: (PackId) -> Unit,
     val onCancel: (PackId) -> Unit,
-    val onDelete: (PackId) -> Unit,
+    /** Asks first; the page adds espeak-ng's data to the last of the app's voices (spec 082). */
+    val onDelete: (List<PackId>) -> Unit,
 )
 
 /** Speech and voice: what the phone's own speech service and voice app are asked for. */
@@ -71,6 +83,8 @@ internal class SpeechPartActions(
     val onGet: (LanguageCode) -> Unit,
     val onUpdate: () -> Unit,
     val onVoice: () -> Unit,
+    /** "Phone" or "App" for a language's recognition or voice (spec 082 US3). */
+    val onChoose: (LanguageCode, SpeechKind, SpeechEngine) -> Unit = { _, _, _ -> },
 )
 
 /** What the Manage languages page's rows do. */
@@ -90,6 +104,7 @@ internal class LanguageState(
     val serviceUpdatable: Boolean,
     val appRecognition: PackStatus? = null,
     val appVoice: List<PackStatus> = emptyList(),
+    val uses: SpeechUses? = null,
 )
 
 /** A language that is downloaded: all there or only in part, and whether it's in the lists. */
@@ -194,7 +209,7 @@ private fun TranslationPart(
             status = pack,
             onDownload = { actions.pack.onDownload(pack.id) },
             onCancel = { actions.pack.onCancel(pack.id) },
-            onDelete = { actions.pack.onDelete(pack.id) },
+            onDelete = { actions.pack.onDelete(listOf(pack.id)) },
             title = title,
             menuLabel = stringResource(Res.string.translator_part_menu, row.name, title),
         )
@@ -207,63 +222,135 @@ private fun SpeechPart(
     state: LanguageState,
     actions: PartActions,
 ) {
+    val title = stringResource(Res.string.translator_part_speech)
     val recognition = state.speech?.recognition
-    val items =
-        when {
-            recognition == RecognitionSupport.CAN_DOWNLOAD -> {
-                listOf(
-                    RowMenuItem(
-                        stringResource(Res.string.translator_get_language),
-                        icon = null,
-                    ) { actions.speech.onGet(row.code) },
-                )
-            }
+    val use = state.uses?.recognition
+    val appSide =
+        use?.app
+            ?: (recognition == RecognitionSupport.APP_CAN_DOWNLOAD || recognition == RecognitionSupport.APP_DOWNLOADING)
+    if (appSide) {
+        val packs = listOfNotNull(state.appRecognition)
+        AppPart(row, title, packs, stringResource(Res.string.translator_speech_app_can_get, toDownload(packs)), actions)
+    } else {
+        val items =
+            when {
+                recognition == RecognitionSupport.CAN_DOWNLOAD -> {
+                    listOf(
+                        RowMenuItem(
+                            stringResource(Res.string.translator_get_language),
+                            icon = null,
+                        ) { actions.speech.onGet(row.code) },
+                    )
+                }
 
-            recognition == RecognitionSupport.NOT_INSTALLED && state.serviceUpdatable -> {
+                recognition == RecognitionSupport.NOT_INSTALLED && state.serviceUpdatable -> {
+                    listOf(
+                        RowMenuItem(
+                            stringResource(Res.string.translator_update_speech_service),
+                            icon = null,
+                            onClick = actions.speech.onUpdate,
+                        ),
+                    )
+                }
+
+                else -> {
+                    emptyList()
+                }
+            }
+        Part(row, title, speechText(recognition), items)
+    }
+    if (use?.choosable == true) EngineChoice(row, title, SpeechKind.RECOGNITION, use, actions)
+}
+
+@Composable
+private fun VoicePart(
+    row: LanguageRow,
+    state: LanguageState,
+    actions: PartActions,
+) {
+    val title = stringResource(Res.string.translator_part_voice)
+    val voice = state.speech?.voice
+    val use = state.uses?.voice
+    val appSide = use?.app ?: (voice == VoiceSupport.APP_CAN_DOWNLOAD || voice == VoiceSupport.APP_DOWNLOADING)
+    if (appSide) {
+        val text = stringResource(Res.string.translator_voice_app_can_get, toDownload(state.appVoice))
+        AppPart(row, title, state.appVoice, text, actions)
+    } else {
+        val items =
+            if (voice == VoiceSupport.NO_OFFLINE_VOICE) {
                 listOf(
                     RowMenuItem(
-                        stringResource(Res.string.translator_update_speech_service),
+                        stringResource(Res.string.translator_voice_settings),
                         icon = null,
-                        onClick = actions.speech.onUpdate,
+                        onClick = actions.speech.onVoice,
                     ),
                 )
+            } else {
+                emptyList()
             }
-
-            else -> {
-                appPackItems(
-                    recognition == RecognitionSupport.APP_CAN_DOWNLOAD,
-                    listOfNotNull(state.appRecognition),
-                    actions,
-                )
-            }
-        }
-    val text =
-        when (recognition) {
-            RecognitionSupport.APP_CAN_DOWNLOAD -> {
-                stringResource(
-                    Res.string.translator_speech_app_can_get,
-                    toDownload(listOfNotNull(state.appRecognition)),
-                )
-            }
-
-            RecognitionSupport.APP_DOWNLOADING -> {
-                state.appRecognition?.let { stateText(it) } ?: speechText(recognition)
-            }
-
-            else -> {
-                speechText(recognition)
-            }
-        }
-    Part(row, stringResource(Res.string.translator_part_speech), text, items)
+        Part(row, title, voiceText(voice), items)
+    }
+    if (use?.choosable == true) EngineChoice(row, title, SpeechKind.VOICE, use, actions)
 }
 
 /**
- * The app's own speech packs' actions (spec 082): Download every one not in yet, when it can be got; Cancel the ones on
- * their way.
+ * A part the app's own packs do (spec 082): installed with their size; on their way, waiting or failed, with the
+ * store's words; otherwise the [offer] to download them. Behind ⋮: Download, Cancel or Delete. The first pack is the
+ * language's own (Whisper, its voice); a voice's other one, espeak-ng's data, goes with the last voice (the page).
  */
 @Composable
+private fun AppPart(
+    row: LanguageRow,
+    title: String,
+    packs: List<PackStatus>,
+    offer: String,
+    actions: PartActions,
+) {
+    val installed = packs.isNotEmpty() && packs.all { it.state == PackState.Installed }
+    val text =
+        when {
+            installed -> {
+                val bytes = packs.sumOf { it.installedBytes ?: 0 }
+                stringResource(Res.string.translator_pack_installed, PackMessages.megabytes(bytes).toString())
+            }
+
+            else -> {
+                packs.firstOrNull { it.state !in QUIET_PACK_STATES }?.let { stateText(it) } ?: offer
+            }
+        }
+    val delete =
+        RowMenuItem(stringResource(Res.string.translator_delete), icon = PocketIcons.Delete) {
+            actions.pack.onDelete(listOfNotNull(packs.firstOrNull()?.id))
+        }
+    val items = if (installed) listOf(delete) else appPackItems(packs, actions)
+    Part(row, title, text, items)
+}
+
+/** "Phone" or "App" under its part, where both can do it (spec 082 US3); "Phone" at first. */
+@Composable
+private fun EngineChoice(
+    row: LanguageRow,
+    title: String,
+    kind: SpeechKind,
+    use: EngineUse,
+    actions: PartActions,
+) {
+    SegmentedChoice(
+        options =
+            listOf(
+                ChoiceOption(SpeechEngine.PHONE, stringResource(Res.string.translator_engine_phone)),
+                ChoiceOption(SpeechEngine.APP, stringResource(Res.string.translator_engine_app)),
+            ),
+        selected = use.shown,
+        onSelect = { engine -> actions.speech.onChoose(row.code, kind, engine) },
+        groupLabel = stringResource(Res.string.translator_engine_group, title, row.name),
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+/** The app's own packs' actions while not all in (spec 082): Cancel the ones on their way, else Download the rest. */
+@Composable
 private fun appPackItems(
-    canGet: Boolean,
     packs: List<PackStatus>,
     actions: PartActions,
 ): List<RowMenuItem> {
@@ -282,7 +369,7 @@ private fun appPackItems(
             )
         }
 
-        canGet && missing.isNotEmpty() -> {
+        missing.isNotEmpty() -> {
             listOf(
                 RowMenuItem(stringResource(Res.string.translator_download), icon = null) {
                     missing.forEach { actions.pack.onDownload(it.id) }
@@ -308,53 +395,23 @@ private fun toDownload(packs: List<PackStatus>): String {
 }
 
 @Composable
-private fun VoicePart(
-    row: LanguageRow,
-    state: LanguageState,
-    actions: PartActions,
-) {
-    val voice = state.speech?.voice
-    val items =
-        if (voice == VoiceSupport.NO_OFFLINE_VOICE) {
-            listOf(
-                RowMenuItem(
-                    stringResource(Res.string.translator_voice_settings),
-                    icon = null,
-                    onClick = actions.speech.onVoice,
-                ),
-            )
-        } else {
-            appPackItems(voice == VoiceSupport.APP_CAN_DOWNLOAD, state.appVoice, actions)
-        }
-    val text =
+private fun voiceText(voice: VoiceSupport?): String =
+    stringResource(
         when (voice) {
-            null -> {
-                stringResource(Res.string.translator_part_checking)
-            }
+            null -> Res.string.translator_part_checking
 
-            VoiceSupport.READY -> {
-                stringResource(Res.string.translator_part_ready)
-            }
+            VoiceSupport.READY -> Res.string.translator_part_ready
 
-            VoiceSupport.NO_OFFLINE_VOICE -> {
-                stringResource(Res.string.translator_voice_none)
-            }
+            VoiceSupport.NO_OFFLINE_VOICE -> Res.string.translator_voice_none
 
-            VoiceSupport.NO_ENGINE -> {
-                stringResource(Res.string.translator_voice_no_app)
-            }
+            VoiceSupport.NO_ENGINE -> Res.string.translator_voice_no_app
 
-            VoiceSupport.APP_CAN_DOWNLOAD -> {
-                stringResource(Res.string.translator_voice_app_can_get, toDownload(state.appVoice))
-            }
-
-            VoiceSupport.APP_DOWNLOADING -> {
-                state.appVoice.firstOrNull { it.state != PackState.Installed }?.let { stateText(it) }
-                    ?: stringResource(Res.string.translator_part_checking)
-            }
-        }
-    Part(row, stringResource(Res.string.translator_part_voice), text, items)
-}
+            // Spec 082: the caller shows the app's packs instead.
+            VoiceSupport.APP_CAN_DOWNLOAD,
+            VoiceSupport.APP_DOWNLOADING,
+            -> Res.string.translator_part_checking
+        },
+    )
 
 /** A part with its actions behind ⋮, or its state alone when nothing can be done here. */
 @Composable
@@ -405,6 +462,9 @@ private fun speechText(recognition: RecognitionSupport?): String =
     )
 
 private const val SEPARATOR = " · "
+
+/** A pack's states that say nothing beyond the offer to download it. */
+private val QUIET_PACK_STATES = setOf(PackState.Installed, PackState.NotInstalled, PackState.Unknown)
 
 /**
  * Manage languages' help (owner, 2026-11-20): its blocks, then the marks themselves beside what each means, rather

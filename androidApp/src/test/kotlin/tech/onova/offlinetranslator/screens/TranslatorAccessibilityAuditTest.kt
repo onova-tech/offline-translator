@@ -89,7 +89,10 @@ class TranslatorAccessibilityAuditTest : AppUiTest() {
                     .isNotEmpty()
         }
         compose.onNodeWithContentDescription("Speak English").performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listenedTo.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.isNotEmpty()
+        }
         fakes.speechInput.hear(SpeechEvent.Final("Good morning"))
         waitForText("[es] Good morning")
         fakes.speechOutput.done()

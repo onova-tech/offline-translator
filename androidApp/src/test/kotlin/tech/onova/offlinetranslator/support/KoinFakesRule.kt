@@ -4,6 +4,7 @@ import org.junit.rules.ExternalResource
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.robolectric.RuntimeEnvironment
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionController
@@ -59,6 +60,10 @@ class KoinFakesRule(
     val translationEngine = FakeTranslationEngine()
     val speechInput = FakeSpeechInput()
     val speechOutput = FakeSpeechOutput()
+
+    /** The app's own recognition and voices (spec 082), used where the routing sends a language to them. */
+    val appSpeechInput = FakeSpeechInput()
+    val appSpeechOutput = FakeSpeechOutput()
     val screenReader = FakeScreenReader()
 
     private var systemZone: TimeZone? = null
@@ -90,8 +95,11 @@ class KoinFakesRule(
             single<ScreenAwake> { screenAwake }
             single<ContentPacks> { contentPacks }
             single<TranslationEngine> { translationEngine }
-            single<SpeechInput> { speechInput }
-            single<SpeechOutput> { speechOutput }
+            // The phone's and the app's speech (spec 082): the Translator's routing between them runs as in the app.
+            single<SpeechInput>(named("phone")) { speechInput }
+            single<SpeechOutput>(named("phone")) { speechOutput }
+            single<SpeechInput>(named("app")) { appSpeechInput }
+            single<SpeechOutput>(named("app")) { appSpeechOutput }
             single<ScreenReader> { screenReader }
         }
 
