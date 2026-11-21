@@ -25,6 +25,7 @@ import tech.onova.offlinetranslator.core.domain.ports.LanguageNames
 import tech.onova.offlinetranslator.core.domain.ports.MonotonicClock
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.ProcessVisibility
+import tech.onova.offlinetranslator.core.domain.ports.ScreenAwake
 import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
@@ -43,6 +44,7 @@ import tech.onova.offlinetranslator.core.platform.CurrentActivityTracker
 import tech.onova.offlinetranslator.core.platform.ProcessAppVisibility
 import tech.onova.offlinetranslator.core.platform.TaskVisibility
 import tech.onova.offlinetranslator.core.platform.display.AndroidTextSharer
+import tech.onova.offlinetranslator.core.platform.sensors.AndroidScreenAwake
 import tech.onova.offlinetranslator.core.platform.speech.AndroidScreenReader
 import tech.onova.offlinetranslator.core.platform.speech.AndroidSpeechInput
 import tech.onova.offlinetranslator.core.platform.speech.AndroidSpeechOutput
@@ -74,6 +76,8 @@ val appModule =
         // Asked once, when a ViewModel is created: it follows that screen's task (spec 016 research R2).
         factory<AppVisibility> { get<TaskVisibility>().forCurrentTask() }
         single<PermissionController> { AndroidPermissionController(androidContext(), get()) }
+        // A conversation keeps the screen on while its page is open (spec 012).
+        single<ScreenAwake> { AndroidScreenAwake(get()) }
         // The phone's own recognizer and voices, on the device only (spec 012).
         single<SpeechInput> { AndroidSpeechInput(androidContext()) }
         single<SpeechOutput> { AndroidSpeechOutput(androidContext()) }

@@ -8,8 +8,8 @@ scripts/ci.sh check        # what GitHub Actions runs; no emulator
 scripts/ci.sh device       # the emulator stages: a11y, then e2e
 scripts/ci.sh a11y         # the accessibility suite and the real-font checks on the emulator
 scripts/ci.sh e2e          # the end-to-end tests on the emulator
-scripts/ci.sh e2e --test PurchaseJourney                       # one class
-scripts/ci.sh e2e --test PurchaseJourney#aRefundBringsTheOfferBack --keep-emulator
+scripts/ci.sh e2e --test TranslatorJourney                       # one class
+scripts/ci.sh e2e --test TranslatorJourney#aPackInstallsThenTheRealEngineTranslatesInAirplaneMode --keep-emulator
 scripts/ci.sh engine       # the Translator's engine with the real packs (after scripts/fetch-language-packs.sh)
 scripts/ci.sh engine --all # every language, five packs at a time (fetches all 53, about 2.2 GB, into build/language-packs)
 ```
@@ -30,11 +30,6 @@ the screen, so the app's real Koin graph, storage, navigation and process restar
 
 | Journey | Covers |
 |---|---|
-| `HomeJourney` | Search, favorites and recents across a restart, the app language across a restart |
-| `EveryToolJourney` | Every tool in the catalog opens and comes back without crashing. The names come from Home, so a new tool joins by being in the catalog |
-| `ToolJourneys` | Counter across rotation and restart, Calculator, Notepad in the real database, a converter value copied and pasted back, a withdrawal on screen and in the `.csv`, data export and import after a wipe, a timer's real alert, a permission through the system dialog |
-| `PurchaseJourney` | Every path of the simulated store, across restarts |
-| `AdsJourney` | Google's real SDK and sample ad after the 3rd tool, the Home card, and no ad or consent activity after buying |
 | `TranslatorJourney` | A language pack installed through local testing, then the real engine in airplane mode: a sentence, its translation, the swap, Copy; the pack deleted in Settings (spec 012) |
 
 - **Any crash fails the test**, even if the steps passed: the rule reads the crash log after each one.
@@ -68,24 +63,9 @@ only a real runtime proves; rules and screen states belong in the faster `check`
 
 ## GitHub Actions and its free limit
 
-This is a private repository on GitHub Free: **US$ 12 a month of included compute, about 2,000 minutes** on the 2-core
-Linux runner (US$ 0.006 a minute). Without a payment method on the account, GitHub blocks usage at the limit rather than
-charging. Artifacts share 500 MB of storage, and the cache has 10 GB per repository.
-
-`.github/workflows/ci.yml` keeps runs rare and short:
-
-- It runs only on pull requests into `main`, on pushes to `main` (which fill the shared cache) and by hand. Not on other
-  branches, stacked pull requests or drafts.
-- Commits that only touch documents or specs don't run it.
-- A new push cancels the run it replaces.
-- Fast checks go first, so a formatting mistake costs minutes, not a whole run.
-- Each run stops at its time limit, on the cheapest Linux runner, as one job.
-- Failure details are kept for 3 days, and only the small files.
-- **`scripts/ci-budget.sh` is the hard stop.** It adds up this repository's runs over the last 31 days, and past 1,500
-  minutes the run fails at once with a message saying nothing was tested. It warns from 1,200.
-
-Measured on 2026-11-05, a run with no cache takes 17 minutes, so the 1,500 minutes pay for about 85 runs in 31 days.
-Spec 015's windows add about 4 minutes, which makes it about 21 minutes and about 70 runs. That's an estimate from the local test times (`specs/015-window-sizes/measurements/README.md`). The first run on GitHub with these windows took 13 minutes, with its cache.
+This is a public repository, so GitHub's standard runners cost nothing. `.github/workflows/ci.yml` still keeps runs
+rare and short: pull requests into `main`, pushes to `main` and by hand; not drafts, nor commits that only touch
+documents or specs; a new push cancels the run it replaces.
 
 The emulator stages stay local on purpose: a hosted emulator would spend a large share of the month on every run.
 

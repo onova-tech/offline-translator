@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="host_back">Atrás</string>
-    <!-- El aviso de la primera apertura (spec 078): la privacidad dicha una vez, aquí, y no en cada herramienta. -->
-    <string name="host_privacy_notice_title">Antes de empezar</string>
-    <string name="host_privacy_notice_tools">Todas las herramientas funcionan en tu teléfono, y ninguna envía tus datos a ningún sitio.</string>
-    <string name="host_privacy_notice_saved">Algunas herramientas guardan lo que creas, como notas, listas e historiales, solo en este teléfono. Puedes exportarlo a un archivo o borrarlo.</string>
-    <string name="host_privacy_notice_ads">La versión gratuita muestra anuncios de Google, que recibe cierta información de tu dispositivo para mostrarlos. Ajustes → Privacidad tiene los detalles.</string>
-    <string name="host_privacy_notice_ok">Entendido</string>
-    <string name="host_privacy_notice_policy">Política de privacidad</string>
-    <string name="host_add_favorite">Añadir a favoritos</string>
-    <string name="host_remove_favorite">Quitar de favoritos</string>
     <!-- Offline Translator (spec 081): the gear on the Translator's top bar. -->
     <string name="host_settings">Ajustes</string>
     <string name="host_help">Cómo usar</string>
     <string name="host_help_close">Cerrar</string>
-    <string name="host_add_shortcut">Añadir a la pantalla de inicio</string>
-    <string name="shortcut_locked_title">Este acceso directo necesita la compra</string>
-    <string name="shortcut_locked_message">Los accesos directos vienen con el único pago que también elimina los anuncios. Abre PolyTools para comprarlo o restaurarlo.</string>
-    <string name="shortcut_open_app">Abrir PolyTools</string>
-    <string name="shortcut_disabled">Necesita la compra de PolyTools</string>
-    <string name="tool_unavailable_short">No disponible en este dispositivo</string>
     <string name="tool_unavailable_title">No disponible en este teléfono</string>
     <string name="tool_unavailable_message">Esta herramienta necesita hardware que tu teléfono no tiene: %1$s.</string>
     <string name="hardware_accelerometer">sensor de movimiento</string>
@@ -37,8 +21,6 @@
     <!-- Number symbols of this language (spec 004 research.md R12). -->
     <string name="decimal_separator">,</string>
     <string name="grouping_separator">.</string>
-    <!-- The language's numeric date order (DMY, MDY or YMD), not shown as text (spec 004 FR-045). -->
-    <string name="date_order">DMY</string>
     <!-- Permission flow (constitution Principle IX; spec 004 research.md R7). -->
     <string name="permission_allow">Permitir</string>
     <string name="permission_not_now">Ahora no</string>
@@ -46,14 +28,6 @@
     <string name="permission_open_settings">Abrir ajustes</string>
     <string name="permission_denied">%1$s Sin este permiso, esta opción queda desactivada.</string>
     <string name="permission_needs_settings">%1$s Android ya no lo pregunta, así que permítelo en los ajustes de la app.</string>
-    <string name="camera_view">Vista de la cámara</string>
-    <string name="camera_unavailable">La cámara no está disponible</string>
-    <string name="camera_permission_explain">Las herramientas de cámara muestran lo que ve la cámara.</string>
     <string name="host_more_options">Más opciones</string>
     <string name="host_fewer_options">Menos opciones</string>
-    <string name="host_date_time">%1$s %2$s</string>
-    <string name="host_time_24">%1$s:%2$s</string>
-    <string name="host_time_12">%1$s:%2$s %3$s</string>
-    <string name="host_am">a. m.</string>
-    <string name="host_pm">p. m.</string>
 </resources>

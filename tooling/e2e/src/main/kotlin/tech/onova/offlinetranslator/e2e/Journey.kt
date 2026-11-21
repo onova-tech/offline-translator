@@ -20,7 +20,6 @@ internal class JourneyRule : TestWatcher() {
         requireEmulator()
         app.device.setOrientationNatural()
         app.shell("logcat -b crash -c")
-        StandInFiles.clear(context)
         app.wipe()
         app.launch(fresh = true)
     }

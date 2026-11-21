@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="host_back">Back</string>
-    <!-- The first-launch notice (spec 078): privacy said once, here, instead of in every tool. -->
-    <string name="host_privacy_notice_title">Before you start</string>
-    <string name="host_privacy_notice_tools">Every tool works on your phone, and none sends your data anywhere.</string>
-    <string name="host_privacy_notice_saved">Some tools save what you create, such as notes, lists and histories, on this phone only. You can export it to a file or delete it.</string>
-    <string name="host_privacy_notice_ads">The free version shows ads from Google, which receives some information about your device to show them. Settings → Privacy has the details.</string>
-    <string name="host_privacy_notice_ok">Got it</string>
-    <string name="host_privacy_notice_policy">Privacy policy</string>
-    <string name="host_add_favorite">Add to favorites</string>
-    <string name="host_remove_favorite">Remove from favorites</string>
     <!-- Offline Translator (spec 081): the gear on the Translator's top bar. -->
     <string name="host_settings">Settings</string>
     <string name="host_help">How to use</string>
     <string name="host_help_close">Close</string>
-    <string name="host_add_shortcut">Add to home screen</string>
-    <string name="shortcut_locked_title">This shortcut needs the purchase</string>
-    <string name="shortcut_locked_message">Shortcuts come with the one payment that also removes ads. Open PolyTools to buy it or restore it.</string>
-    <string name="shortcut_open_app">Open PolyTools</string>
-    <string name="shortcut_disabled">Needs the PolyTools purchase</string>
-    <string name="tool_unavailable_short">Not available on this device</string>
     <string name="tool_unavailable_title">Not available on this phone</string>
     <string name="tool_unavailable_message">This tool needs hardware your phone doesn't have: %1$s.</string>
     <string name="hardware_accelerometer">motion sensor</string>
@@ -37,8 +21,6 @@
     <!-- Number symbols of this language (spec 004 research.md R12). -->
     <string name="decimal_separator">.</string>
     <string name="grouping_separator">,</string>
-    <!-- The language's numeric date order (DMY, MDY or YMD), not shown as text (spec 004 FR-045). -->
-    <string name="date_order">MDY</string>
     <!-- Permission flow (constitution Principle IX; spec 004 research.md R7). -->
     <string name="permission_allow">Allow</string>
     <string name="permission_not_now">Not now</string>
@@ -46,14 +28,6 @@
     <string name="permission_open_settings">Open settings</string>
     <string name="permission_denied">%1$s Without this permission, this option stays off.</string>
     <string name="permission_needs_settings">%1$s Android no longer asks, so allow it in the app settings.</string>
-    <string name="camera_view">Camera view</string>
-    <string name="camera_unavailable">The camera isn't available</string>
-    <string name="camera_permission_explain">Camera tools show what the camera sees.</string>
     <string name="host_more_options">More options</string>
     <string name="host_fewer_options">Fewer options</string>
-    <string name="host_date_time">%1$s %2$s</string>
-    <string name="host_time_24">%1$s:%2$s</string>
-    <string name="host_time_12">%1$s:%2$s %3$s</string>
-    <string name="host_am">AM</string>
-    <string name="host_pm">PM</string>
 </resources>

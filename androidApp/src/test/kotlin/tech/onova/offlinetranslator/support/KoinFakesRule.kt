@@ -17,6 +17,7 @@ import tech.onova.offlinetranslator.core.domain.ports.DeviceCapabilities
 import tech.onova.offlinetranslator.core.domain.ports.MonotonicClock
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.ProcessVisibility
+import tech.onova.offlinetranslator.core.domain.ports.ScreenAwake
 import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
@@ -45,6 +46,7 @@ class KoinFakesRule(
     val textSharer = FakeTextSharer()
     val settingsPages = FakeSettingsPages()
     val permissions = FakePermissionController()
+    val screenAwake = FakeScreenAwake()
     val wallClock = FakeWallClock(TEST_NOW)
 
     // The Translator's ports (spec 012): packs, engine, speech in and out, and the screen reader.
@@ -85,6 +87,7 @@ class KoinFakesRule(
             single<AppVisibility> { visibility }
             single<ProcessVisibility> { visibility }
             single<PermissionController> { permissions }
+            single<ScreenAwake> { screenAwake }
             single<ContentPacks> { contentPacks }
             single<TranslationEngine> { translationEngine }
             single<SpeechInput> { speechInput }

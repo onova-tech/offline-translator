@@ -1,46 +1,15 @@
 # Every permission the merged manifest may request, with the reason. The build fails on any other
-# (constitution Principles I and IX; spec 002 research R9). None of these is a runtime permission.
+# (constitution Principles I and IX). Only the microphone is a runtime permission.
 
-# Ads module (spec 002): ad and consent requests.
-android.permission.INTERNET
-android.permission.ACCESS_NETWORK_STATE
-# Advertising ID for ads, where the user's consent allows it (docs/decisions-pending.md #6).
-com.google.android.gms.permission.AD_ID
-# WorkManager, which the ads SDK uses for its background work.
-android.permission.WAKE_LOCK
-android.permission.FOREGROUND_SERVICE
-
-# Stopwatch & Timer (spec 004): background alerts and the running notifications with their buttons,
-# only after the user turns notifications on (research.md R6, FR-046).
-android.permission.POST_NOTIFICATIONS
-android.permission.SCHEDULE_EXACT_ALARM
-# Timer (spec 004): vibration while an alert rings in the app.
-android.permission.VIBRATE
-
-# Reminders (spec 013): scheduled again after a restart, an update and a time or time zone change.
-android.permission.RECEIVE_BOOT_COMPLETED
-
-# Pedometer (spec 005): step counter, asked when the tool opens.
-android.permission.ACTIVITY_RECOGNITION
-
-# Camera tools (spec 006): asked when a camera tool opens.
-android.permission.CAMERA
-
-# Sound tools (spec 007): asked when Sound meter or Tuner opens; the sound is analyzed in memory, never recorded.
+# Speaking a sentence or a turn (spec 012): asked when the person first taps a microphone; the phone's on-device
+# recognizer hears it, and nothing is recorded or sent.
 android.permission.RECORD_AUDIO
 
-# GPS tools (spec 008): foreground only; stored only as a place the person saves (spec 029); precise and approximate are requested together.
-# The Compass (spec 024) asks for them when true north from the position is turned on, and takes one fix each opening.
-android.permission.ACCESS_FINE_LOCATION
-android.permission.ACCESS_COARSE_LOCATION
-
-# NFC tags (specs 009, 030): reads tags, and writes one only when the person asks
-android.permission.NFC
+# Play's asset-delivery library (core/content, spec 012 research R5) unpacks a language pack the person chose to
+# download in a foreground service of type dataSync, which it turns on only while unpacking. Google Play asks for a
+# declaration of this type at release.
+android.permission.FOREGROUND_SERVICE
+android.permission.FOREGROUND_SERVICE_DATA_SYNC
 
 # AndroidX core: protects the app's own non-exported dynamic broadcast receivers.
 tech.onova.offlinetranslator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-
-# Translator (spec 012 research R5): Play's asset-delivery library (core/content) unpacks a language pack the person
-# chose to download in a foreground service of type dataSync, which it turns on only while unpacking. Google Play asks
-# for a declaration of this type at release (spec 011).
-android.permission.FOREGROUND_SERVICE_DATA_SYNC

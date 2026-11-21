@@ -1,8 +1,7 @@
 # Offline Translator Constitution
 
-> Adapted from PolyTools' constitution on 2026-11-20 (spec 081). Offline Translator is free, without ads or purchases,
-> and open source under the GNU GPL 3.0. Where a principle below still names ads, purchases or other tools, spec 081
-> overrides it: the app has no ads, no purchases, and its only network is `core/content` (the language packs).
+> Adapted from PolyTools' constitution on 2026-11-20 (spec 081): Offline Translator is free, without ads or purchases,
+> and open source under the GNU GPL 3.0. "Tool" below means the Translator, the app's one tool.
 
 ## Core Principles
 
@@ -11,16 +10,12 @@
 Every tool MUST perform its function entirely on the device with no network connection
 (airplane mode). Tools MUST NOT open network connections, directly or through a dependency.
 
-- Tool modules (`feature/*`) and core modules (`core/*`, except the three below) MUST NOT depend
+- Feature modules (`feature/*`) and core modules (`core/*`, except `core/content`) MUST NOT depend
   on networking libraries (e.g. OkHttp, Ktor client, Retrofit), `java.net`/`javax.net` APIs,
-  analytics/telemetry/crash SDKs, Firebase, ML Kit, or Google Play services location (Fused
-  Location Provider).
-- Network access is permitted ONLY in:
-  - `core/monetization/ads`: Google Mobile Ads SDK + User Messaging Platform consent;
-  - `core/monetization/billing`: Google Play Billing;
-  - `core/content`: on-demand content packs (rules below).
-  No other module may depend on these modules except the app composition root; tools reach them
-  only through interfaces declared in common code.
+  analytics/telemetry/crash SDKs, Firebase, ML Kit, or Google Play services location.
+- Network access is permitted ONLY in `core/content`: on-demand language packs (rules below).
+  No other module may depend on it except the app composition root; features reach it only
+  through interfaces declared in common code.
 - **On-demand content packs.** A tool whose offline data is too large to bundle (e.g.
   translation language models) MAY have that data downloaded once, under these rules:
   - a download starts only from an explicit user action that shows the pack's size, and it can
@@ -35,8 +30,8 @@ Every tool MUST perform its function entirely on the device with no network conn
   imports. Every tool's acceptance criteria MUST include an airplane-mode check (with its
   content packs installed, when it uses any).
 
-Rationale: users trust a toolbox that never phones home. The only network use is monetization
-the user can opt out of, and content downloads the user explicitly asks for.
+Rationale: people trust a translator that never phones home. The only network use is the
+language downloads the person explicitly asks for.
 
 ### II. Device-Side Only
 
@@ -50,7 +45,6 @@ cloud sync.
   file saved where the user chooses; importing that file restores the data on another device.
   Export and import open no network connection of their own. Direct phone-to-phone transfer may
   be added later by amendment.
-- Purchase entitlements MUST be resolved on-device through the platform store APIs.
 - Quality monitoring MUST rely on platform-provided channels (Google Play Console Android vitals),
   not on embedded reporting SDKs.
 
@@ -101,28 +95,16 @@ Domain logic MUST be developed test-first.
 
 Rationale: sensor readings and money-related rules are hard to verify by eye; tests are the spec.
 
-### VI. Respectful Monetization
+### VI. Free, Without Monetization
 
-Ads MUST be rare, predictable, and never interrupt a task.
+The app MUST be free of charge and MUST NOT contain ads, purchases, subscriptions, donation
+prompts inside the app, or any SDK that serves them. Its code is published under the GNU GPL 3.0.
 
-- A tool usage is counted each time the user opens a tool. When the user returns to Home after
-  the day's count reaches 3, one interstitial MAY be shown and the count resets to 0. The count
-  also resets at local midnight. No other ad placements are allowed (no banners, no rewarded
-  prompts, no ads inside tools, no ads at app launch).
-- A one-time "Remove ads" purchase (non-consumable, ~USD 1.00) MUST permanently disable all ads.
-  For entitled users the ads SDK MUST NOT be initialized and no consent form is shown.
-- The same purchase also unlocks launcher shortcuts that open one tool directly, in a task of its
-  own. There MUST be no second product. No tool, and nothing inside a tool, may be behind the
-  payment: every tool opened inside the app stays free. A shortcut session MUST NOT load or show
-  an ad, ask for consent, or count as a tool usage.
-- Purchases MUST be acknowledged, pending purchases handled, and entitlement restored
-  automatically on reinstall; the cached entitlement MUST be honored while offline. Only a clear
-  answer from the store may remove an entitlement.
-- Consent (UMP; GDPR/LGPD) MUST be obtained before requesting any ad, and users MUST be able to
-  revisit privacy choices from Settings.
-- An ad that fails to load or show MUST never block, delay, or degrade tool usage.
+- No feature may be held back, limited, or delayed to encourage payment.
+- No account, sign-in, or contact detail may be asked for.
 
-Rationale: the core differentiator versus competitors is fewer, fairer ads.
+Rationale: a good translator that anyone can use and study, as the owner's contribution to an app
+ecosystem with fewer of them (owner, 2026-11-20).
 
 ### VII. Modern & Localized UI
 
@@ -151,7 +133,7 @@ Code MUST be written so iOS can be added without rewriting shared logic.
 - Platform-specific code lives only in platform source sets (`androidMain`, later `iosMain`) as
   implementations of interfaces declared in `commonMain`. `expect/actual` is reserved for thin
   platform primitives.
-- Platform services (ads, billing, content packs, sensors, camera, audio, location) MUST be
+- Platform services (content packs, speech, voices, the microphone) MUST be
   consumed only through common interfaces so an iOS implementation is a drop-in addition.
 
 Rationale: Android ships first; iOS is a planned evolution, not a rewrite.
@@ -184,7 +166,7 @@ The app MUST request the minimum permissions, and only from the tool that needs 
 - No permission may be declared that no shipped tool uses.
 - Health-adjacent tools (e.g. heart rate) MUST display a "not a medical device" disclaimer.
 
-Rationale: a toolbox touches many sensors; trust depends on visible, minimal access.
+Rationale: a translator hears what people say; trust depends on visible, minimal access.
 
 ### X. Accessible from Day One (NON-NEGOTIABLE)
 
@@ -209,7 +191,7 @@ deferred to a later spec or a final audit.
   tests at maximum font scale in light and dark themes, and a manual TalkBack pass of each new
   screen.
 
-Rationale: a toolbox matters most to people who rely on assistive technology, and building
+Rationale: a translator matters most to people who rely on assistive technology, and building
 accessibility in costs far less than retrofitting it.
 
 ## Technology & Platform Constraints
@@ -220,12 +202,10 @@ accessibility in costs far less than retrofitting it.
 - **Android**: application ID `tech.onova.offlinetranslator`; minSdk 26; targetSdk/compileSdk = the
   latest level required by Google Play at release time.
 - **Approved network-capable dependencies** (only in the modules allowed by Principle I):
-  Google Mobile Ads SDK and User Messaging Platform SDK (`ads`), Google Play Billing Library
-  (`billing`), Google Play on-demand delivery libraries (`content`). Adding any other
+  Google Play on-demand delivery libraries (`content`). Adding any other
   network-capable dependency requires a constitution amendment.
-- **Offline alternatives are mandatory**: barcode scanning uses ZXing (not ML Kit); location uses
-  `LocationManager` GPS provider (not Fused/network providers); translation uses on-device
-  models from content packs (not ML Kit or online APIs); no map tiles or currency rates.
+- **Offline alternatives are mandatory**: translation uses on-device models from content packs
+  (not ML Kit or online APIs); speech uses the phone's on-device recognizer and voices only.
 - **Versions** are centralized in `gradle/libs.versions.toml` and pinned to stable releases;
   each `/speckit-plan` verifies they are current.
 - **Builds** for iOS require macOS + Xcode and are out of scope until the iOS-enablement spec.
@@ -268,4 +248,4 @@ This constitution supersedes all other practices, guides, and conventions in thi
 - **Runtime guidance**: `docs/roadmap.md` (feature order and scope) and `CLAUDE.md` (agent
   context, once created) complement but never override this document.
 
-**Version**: 2.0.1 | **Ratified**: 2026-10-20 | **Last Amended**: 2026-11-13
+**Version**: 3.0.0 | **Ratified**: 2026-10-20 | **Last Amended**: 2026-11-20 (Offline Translator, spec 081)
