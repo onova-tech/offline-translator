@@ -45,8 +45,7 @@ for pack in translate_pt translate_es; do
 done
 ```
 
-On the owner's phone, add `-s <serial>` and, in the Secure Folder, `--user 0` where adb asks for it (memory "Owner
-phone over adb"). Delete the copies afterwards with
+On the owner's phone, add `-s <serial>` and, in the Secure Folder, `--user 0` where adb asks for it. Delete the copies afterwards with
 `adb shell rm -rf /data/local/tmp/translate_pt /data/local/tmp/translate_es`.
 
 ## 3. The stories on the phone, in airplane mode

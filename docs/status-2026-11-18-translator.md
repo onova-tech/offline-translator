@@ -56,8 +56,7 @@ machine's JVM crashed four times on the way (SIGSEGV, the known RAM problem; `do
 
 1. The owner's pass (T066): both modes in airplane mode with TalkBack, quickstart §3 and §4, on the phone.
 2. R5 (T042's phone part), with the owner's consent: bundletool's `install-apks` on the phone, for user 0 only
-   (Secure Folder). The phone is reached as in the memory note "Owner phone over adb"; its storage is 99% full, so
-   free space before the 70 MB packs.
+   (Secure Folder); its storage is nearly full, so free space before the 70 MB packs.
 3. Merge order for the owner: #89, #90, then #91 (the Translator); #15 (the spec alone) can then be closed.
 4. Spec 079 (Test Lab): after the owner approves the design and creates the Firebase project, `/speckit-plan`.
 

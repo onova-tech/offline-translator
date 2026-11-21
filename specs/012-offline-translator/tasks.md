@@ -30,8 +30,7 @@ page must "feel consistent and look good": app components only, `docs/ui-rules.m
 ## Format: `- [ ] [ID] [P?] [Story?] Description`
 
 **[P]**: can run in parallel (different files, no dependency on an unfinished task). **[Story]**: US1–US5 from
-spec.md. **[phone]** in a description: needs the owner's phone and the owner's consent at that moment (memory
-"Owner phone over adb"); never run the end-to-end tests on it.
+spec.md. **[phone]** in a description: needs the owner's phone and the owner's consent at that moment; never run the end-to-end tests on it.
 
 ---
 
@@ -96,14 +95,14 @@ spec.md. **[phone]** in a description: needs the owner's phone and the owner's c
 **Purpose**: the real engine and the real packs exist, and the four [phone] items of research.md are closed early, since their answers can change US4 and US5.
 
 - [X] T025 [P] Implement `PLAT/speech/AndroidSpeechInput.kt` (on-device recognizer only: `isOnDeviceRecognitionAvailable`, `createOnDeviceSpeechRecognizer` in try/catch, `checkRecognitionSupport` on API 33+, `triggerModelDownload` for `requestLanguage`, partial results, the error mapping of research R1; never `createSpeechRecognizer`), `PLAT/speech/AndroidSpeechOutput.kt` (offline voices only: `!isNetworkConnectionRequired` and no `KEY_FEATURE_NETWORK_SYNTHESIS`; audio focus; `UtteranceProgressListener`; `TTS_SETTINGS` intent), `PLAT/speech/AndroidScreenReader.kt` (touch exploration state with its listener); bind all three in `APP/di/AppModule.kt`
-- [X] T026 Install the latest stable NDK and CMake with `sdkmanager` (record versions in `core/translation/NATIVE.md`); stop Gradle first (memory "Flaky JVM")
+- [X] T026 Install the latest stable NDK and CMake with `sdkmanager` (record versions in `core/translation/NATIVE.md`); stop Gradle first
 - [X] T027 Write `core/translation/native/bergamot_jni.cpp` (C entry points `open(modelDirs[])`, `translate(handle, text, route)`, `close(handle)` over Bergamot's service; the configuration of contracts/pack-format.md "Rules"; the same C functions serve iOS's cinterop later) and `scripts/build-bergamot-android.sh` (clones `mozilla/translations` at a pinned commit, builds `inference/` with the NDK for `arm64-v8a` (Ruy) and `x86_64`, links the JNI layer into `libbergamot.so`, copies to `core/translation/src/androidMain/jniLibs/<abi>/`, prints the SHA-256 and the third-party libraries it built with their licenses)
 - [X] T028 Run `scripts/build-bergamot-android.sh` in the background; commit both `.so` files and fill `core/translation/NATIVE.md` (commit, NDK, flags, SHA-256, third-party list)
 - [X] T029 Implement `core/translation/src/androidMain/kotlin/tech/onova/offlinetranslator/core/translation/BergamotEngine.kt` (loads the library, one engine thread, newest-wins handled by the caller, `UNSUPPORTED_DEVICE` when the ABI has no library); bind it in `APP/di/AppModule.kt`
 - [X] T030 Write `scripts/fetch-language-packs.sh`: reads the pinned paths and SHA-256 from Mozilla's model registry (research R4), downloads en↔pt and en↔es base-memory models, checks every hash, unpacks them into `packs/translate_<code>/src/main/assets/translate_<code>/<from>-<to>/` and writes `pack.json` (contracts/pack-format.md)
 - [X] T031 Write the instrumented test `core/translation/src/androidInstrumentedTest/kotlin/tech/onova/offlinetranslator/core/translation/BergamotEngineTest.kt` (as built: `androidApp/src/androidTest/.../BergamotEngineTest.kt`, since no KMP module runs device tests yet; `scripts/ci.sh engine` pushes the packs) (emulator `x86_64`, a pack pushed by the test's setup): pt→en and pt→es (through English) return non-empty text in under 5 s on the emulator
 - [X] T032 Implement the debug-only probe page `androidApp/src/debug/kotlin/tech/onova/offlinetranslator/debug/PhoneProbePage.kt`, reached from Settings → About in debug builds only (a slot like `removeAds`): for en, pt and es the recognition support and the offline voice; the engine's ABI, the time for the 30-word test sentence direct and through English, and memory after loading (quickstart §2); app components only
-- [X] T033 [phone] With the owner's consent: install the debug build on the owner's phone (memory "Owner phone over adb"; over Tailscale send the APK as a file), open the probe page, and record R1, R2 and R3's results in `research.md` with the date, model and Android version; install a pack with bundletool's local testing and record R5. If SC-001 fails, switch to the "tiny" models in T030 and record why (as done 2026-11-18 on the owner's SM-G780G, Android 13: R1, R2 and R3 recorded; SC-001 passes, so the base-memory models stay; the probe found Samsung's three-letter voice locales, fixed in `SpeechMapping.offlineVoice`. R5 needs `PlayContentPacks` (T040), so it moves to T042)
+- [X] T033 [phone] With the owner's consent: install the debug build on the owner's phone, open the probe page, and record R1, R2 and R3's results in `research.md` with the date, model and Android version; install a pack with bundletool's local testing and record R5. If SC-001 fails, switch to the "tiny" models in T030 and record why (as done 2026-11-18 on the owner's SM-G780G, Android 13: R1, R2 and R3 recorded; SC-001 passes, so the base-memory models stay; the probe found Samsung's three-letter voice locales, fixed in `SpeechMapping.offlineVoice`. R5 needs `PlayContentPacks` (T040), so it moves to T042)
 
 **Checkpoint**: the four [phone] rows of research.md are closed; the plan's defaults are confirmed or changed.
 
@@ -200,7 +199,7 @@ spec.md. **[phone]** in a description: needs the owner's phone and the owner's c
 - [X] T058 [P] Help: `FT/presentation/TranslatorHelp.kt`, `ToolHelp` blocks of at most 180 characters in three languages (both modes, offline once a pack is in, voice depends on the phone, travel and everyday use, not medical or legal; never that nothing is kept or sent, rule X5); `HelpTextsTest` and `PrivacySaidOnceTest` pass
 - [X] T059 [P] Accessibility: add the Translator (both modes, the pack offer), Offline languages and the licenses page to `APPT/screens/AccessibilityAuditTest.kt`, light and dark, 200%
 - [X] T060 [P] Fit and rules: add `"translator"` to `LayoutFitTest.TOOL_IDS` and a Conversation surface; `UiRulesTest` and `ModeStabilityTest` pass (the languages don't move between modes)
-- [X] T061 [P] Screenshots in `APPT/screens/TranslatorScreenshotTest.kt` (Type or speak empty and translated, the pack offer downloading, Conversation with turns, Offline languages, the licenses page and its sheet) in light, dark and 200%; record them and look at each one before committing (memory "Compare recorded baselines")
+- [X] T061 [P] Screenshots in `APPT/screens/TranslatorScreenshotTest.kt` (Type or speak empty and translated, the pack offer downloading, Conversation with turns, Offline languages, the licenses page and its sheet) in light, dark and 200%; record them and look at each one before committing
 - [X] T062 [P] Architecture: a Konsist test in `tooling/architecture-tests` that `feature/tools-translate` imports neither `core.content` nor `core.translation`, and that only `androidApp` depends on those modules
 - [X] T063 [P] Data transfer: add `translator` to `core/data`'s `AppPartsTest` expectations; an exported file holds the settings and no pack
 - [X] T064 End to end: `tooling/e2e/src/main/kotlin/tech/onova/offlinetranslator/e2e/TranslatorJourney.kt`: install a pack through local testing, airplane mode on (emulator), translate the test sentence, swap, Copy; delete the pack in Settings (green 2026-11-19 in the full e2e run, 36 of 36)
@@ -237,7 +236,7 @@ All stories ──────────────────────�
 - Phase 3: T025 (speech) beside T026–T028 (native build, long, in the background) and T030 (packs).
 - US1: T034 and T035 together. US5: T049, T050 and T053 together.
 - Phase 10: T058–T063 together.
-- On this 2-core machine "together" means written together; Gradle runs one build at a time (memory "Flaky JVM").
+- On this 2-core machine "together" means written together; Gradle runs one build at a time.
 
 ## Implementation strategy
 

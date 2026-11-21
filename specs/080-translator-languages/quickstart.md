@@ -12,7 +12,7 @@ scripts/ci.sh engine --all                            # every language, five pac
 
 Expected: all green; `engine --all` translates a sentence both ways with English for each of the 53 languages.
 
-## 2. On the owner's phone (with consent; memory "Owner phone over adb")
+## 2. On the owner's phone (with consent)
 
 1. Install through local testing with the packs for **pt, es and two new languages** (for example ja and fr), not all.
 2. Translator → From → **Other languages…**: the page lists 54 languages; search "jap" finds Japanese; check Japanese

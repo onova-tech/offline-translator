@@ -29,9 +29,9 @@ checks (Principle X). Within each phase, the test tasks come first and must fail
 ## Format: `- [ ] [ID] [P?] [Story?] Description`
 
 **[P]**: can run in parallel (different files, no dependency on an unfinished task). **[Story]**: US1–US3 from
-spec.md. **[phone]**: needs the owner's phone and their consent at that moment (memory "Owner phone over adb"; its
+spec.md. **[phone]**: needs the owner's phone and their consent at that moment (its
 storage is nearly full: push only the packs named). On this 2-core machine "parallel" means written together; Gradle
-runs one build at a time (memory "Flaky JVM").
+runs one build at a time.
 
 ---
 
@@ -183,7 +183,7 @@ stay checked; the lists show exactly the checked ones.
 - [X] T031 [P] Add the language page to `APPT/screens/LayoutFitTest.kt` (a surface) and to
   `APPT/screens/TranslatorAccessibilityAuditTest.kt` (light, dark, 200%) (the page's case waits for the From chip and runs before the Conversation's, whose mode it would inherit; the audit also runs in landscape for SC-005)
 - [X] T032 [P] Screenshots in `APPT/screens/TranslatorScreenshotTest.kt`: a list with "Other languages…", the page with a
-  search and with two locked; record and look at each one before committing (memory "Compare recorded baselines") (the list with its last entry, the page with a search, and English locked under the note at 200% dark; each search starts at the top, found while looking at them; `translator_conversation_font200` matches spec 012's re-recorded baseline, 8e9d1de6)
+  search and with two locked; record and look at each one before committing (the list with its last entry, the page with a search, and English locked under the note at 200% dark; each search starts at the top, found while looking at them; `translator_conversation_font200` matches spec 012's re-recorded baseline, 8e9d1de6)
 - [X] T033 [P] Licenses: `config/libraries/` entry for the models names all languages (MPL 2.0, Mozilla's registry);
   `LicensesScreenTest` passes (`translation-models.json` names the 53 languages)
 - [X] T034 Docs: `CLAUDE.md` (the catalog and its scripts), `docs/how-to-build-a-tool.md` §2.8 (pack modules from the
