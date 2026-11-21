@@ -27,6 +27,9 @@ When the phone has none for a language, or downloads one and never installs it, 
 - Q: When does the app use its own speech? → A: **As a fallback, with a choice** (owner): automatically for a language
   the phone can't hear or speak offline, and Manage languages lets the person choose the phone's or the app's, for each
   language's speech recognition and voice.
+- Q: Kokoro or Piper, after the phone's numbers (research R2, R3)? → A: **Piper only** (owner): Kokoro needed 5–7 s
+  before each sentence could play and garbled Japanese kanji; Piper starts almost at once. Japanese and Korean, which
+  have no Piper voice, keep only the phone's voice. This replaces "both" above.
 - Q: Where do the models come from? → A: Like the translation models (constitution Principle I): Google Play's
   on-demand packs, downloaded only when the person confirms, with the size first; then everything works in airplane
   mode.
@@ -62,8 +65,8 @@ translated.
 ### User Story 2 - Hear a translation in a language the phone can't speak (Priority: P1)
 
 A person translating into Japanese taps "Read aloud" on a phone with no offline Japanese voice. The Translator offers
-the app's voice (Kokoro, which speaks Japanese), with its size; after the download, the translation is read aloud
-offline. For a language Kokoro lacks but Piper has, a Piper voice for that language is offered instead.
+the app's voice for that language (a Piper voice), with its size; after the download, the translation is read aloud
+offline.
 
 **Why this priority**: "Read aloud" and the Conversation's spoken turns are half of the tool; a missing voice silences
 them today.
@@ -73,9 +76,8 @@ languages, translate a sentence into Japanese in airplane mode, tap Read aloud: 
 
 **Acceptance Scenarios**:
 
-1. **Given** a language with no offline voice on the phone, **When** Kokoro covers it, **Then** the Kokoro voice pack
-   is offered; **When** only Piper covers it, **Then** that language's Piper voice is offered; **When** neither does,
-   **Then** the existing "no voice" state stays.
+1. **Given** a language with no offline voice on the phone, **When** Piper has a voice for it whose licence allows this
+   app, **Then** that voice is offered with its size; **When** it hasn't, **Then** the existing "no voice" state stays.
 2. **Given** the app's voice is on the phone, **When** a translation is read aloud or a Conversation turn is spoken,
    **Then** it plays offline, and a screen reader's announcement rule of spec 012 still applies.
 
@@ -105,8 +107,7 @@ restart.
 ### User Story 4 - Know and remove what the speech takes (Priority: P3)
 
 Manage languages and Settings → Offline languages show the speech models with their sizes, and each can be deleted
-like a translation pack; Settings → About → Open-source licenses credits Whisper, Kokoro, each Piper voice and the
-speech engine.
+like a translation pack; Settings → About → Open-source licenses credits Whisper, each Piper voice and the speech engine.
 
 **Independent Test**: Delete the app's recognition from Manage languages: the space used drops by its size, and a
 language the phone can't recognize offers the download again.
@@ -118,7 +119,6 @@ language the phone can't recognize offers the download again.
   Conversation turn stays one turn.
 - Storage too full for a model: the download fails with the store's message, nothing half-installed stays.
 - The phone's recognizer starts working later (an update): with the choice at "Phone", the phone's is used again.
-- Two languages on the same Kokoro model: one download serves both.
 - A Piper voice whose licence forbids this use is never offered, even if it exists.
 
 ## Requirements *(mandatory)*
@@ -127,8 +127,8 @@ language the phone can't recognize offers the download again.
 
 - **FR-001**: The app MUST offer its own speech recognition (one multilingual model) for every language of the
   catalog the model covers, when the phone can't recognize that language offline.
-- **FR-002**: The app MUST offer its own voice for a language the phone can't speak offline: Kokoro where Kokoro has
-  the language, otherwise that language's Piper voice, when one with an acceptable licence exists.
+- **FR-002**: The app MUST offer its own voice for a language the phone can't speak offline: that language's Piper
+  voice, when one with an acceptable licence exists.
 - **FR-003**: Models MUST come through the platform store's on-demand packs, only after the person confirms a download
   that shows its size, following "Download only on Wi-Fi"; nothing is fetched otherwise (constitution Principle I).
 - **FR-004**: Once downloaded, recognition and voices MUST work in airplane mode.
@@ -144,14 +144,13 @@ language the phone can't recognize offers the download again.
 
 ### Key Entities
 
-- **Speech model**: the recognition model or a voice (Kokoro, or one Piper voice), with its languages, size, licence
-  and pack.
+- **Speech model**: the recognition model or a voice (one Piper voice), with its languages, size, licence and pack.
 - **Speech choice**: for a language, which recognition and which voice are used (phone or app).
 
 ## Success Criteria *(mandatory)*
 
-- **SC-001**: On the owner's phone, Arabic and Japanese can be spoken and heard in airplane mode once the app's models
-  are downloaded.
+- **SC-001**: On the owner's phone, Arabic can be spoken and heard, and Japanese spoken, in airplane mode once the app's
+  models are downloaded.
 - **SC-002**: A 5-second sentence is written within the time measured and agreed in research R2 on the owner's phone.
 - **SC-003**: Nothing new reaches the network: the network guard passes, and the only downloads are the store's packs.
 - **SC-004**: Every offered voice's licence is recorded and allows this free, published app.

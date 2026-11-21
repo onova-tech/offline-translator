@@ -57,17 +57,34 @@ The same probe, no sound played, the phone in front:
 - **Piper: fast.** About 0.3 seconds of work per second of speech, so it can start almost at once.
 - Memory: PSS 356 MB with Whisper loaded, 760–790 MB with Kokoro as well, 558 MB with a Piper voice.
 
-## R4. Piper voices and their licences (open)
+## R4. Piper voices and their licences (2026-11-21)
 
-sherpa-onnx's release has 536 Piper files for 42 languages; an int8 "medium" voice is about 20 MB (Kazakh 12 MB,
-Chinese 13 MB). Japanese and Korean have none (Kokoro covers Japanese). For each language: one voice, chosen for its
-licence first (the voice's MODEL_CARD and its dataset), then its quality. Voices trained on non-commercial data are
-left out (SC-004). espeak-ng's data, which every Piper voice and Kokoro use, can be one shared pack instead of one copy
-per voice.
+Source: Piper's own catalogue (`rhasspy/piper-voices`, `voices.json`, 183 voices in 53 languages) and each voice's
+MODEL_CARD, read for the 44 languages of the app's catalog that Piper has. A voice is kept only when its dataset's
+licence is free (CC0, public domain, CC BY, CC BY-SA, MIT) **and**, if it was fine-tuned, its base voice's is too.
 
-## R5. Google Play's limits with speech (open)
+- **The lessac base is out.** Many voices were fine-tuned from U.S. English "lessac", whose data (Blizzard 2013, Lessac
+  Technologies) is licensed "for Research Purposes only", to the named person only. Voices from it can't ship in a
+  published app (spec SC-004).
+- **Free bases**: "rdh" (Flemish, CC0) and "hifi_tts_92" (English, Hi-Fi TTS, CC BY 4.0) carry many voices.
+
+| Result | Languages |
+|---|---|
+| A free voice, trained from scratch (16) | ca, cs, de, el, en, es, fr, it, lv, nl, nb, sl, sv, te, uk, ur |
+| A free voice, fine-tuned from rdh or hifi_tts_92 (15) | bg, bn, et, eu, fa, fi, hu, mr, pl, pt, ro, ru, sk, vi, zh |
+| To check: lt (tuned from ru_RU-irina) | lt |
+| No free voice (12): only the phone's voice, as today | ar, da, he, hi, id, is, ja, ko, ml, sq, th, tr |
+| Not in Piper (10) | af, be, gl, gu, kn, ms, ta, tl, ug, zh-Hant |
+
+So **31 languages** get an app voice. Arabic gets the app's recognition (Whisper) but no voice: its only Piper voice
+was tuned from lessac and its own dataset has no licence. For ca and es the free voices are "x_low" quality; a better
+free voice per language is picked when the packs are made. Voices missing from sherpa-onnx's converted set (bg, bn, et,
+lt, mr, te…) are converted with sherpa-onnx's metadata script.
+
+## R5. Google Play's limits with speech (estimate)
 
 Today: 53 translation packs, about 2.2 GB to download and 3.2 GB unpacked; Play allows 100 packs and 4 GB of on-demand
 packs in total. Speech adds Whisper (one pack), Kokoro (one), espeak-ng data (one) and up to 42 Piper voices: about 1 GB
-to download. To find out whether the 4 GB counts the download or the unpacked size; if the unpacked size, Piper voices
-only for languages Kokoro lacks, or "low" voices, or asking Play for more.
+to download. With Piper only (31 voices, about 15 MB each without espeak-ng's data, which becomes one shared pack of
+19 MB) and Whisper (160 MB), speech adds about 0.65 GB unpacked: about 3.9 GB with the translation packs, under 4 GB
+whether Play counts the download or the unpacked size. Packs: 53 + 1 + 1 + 31 = 86, under 100.
