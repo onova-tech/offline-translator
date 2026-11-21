@@ -9,9 +9,10 @@ import androidx.compose.ui.unit.TextUnit
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import tech.onova.offlinetranslator.R
+import tech.onova.offlinetranslator.core.designsystem.components.IconAction
+import tech.onova.offlinetranslator.core.designsystem.components.ToolFrame
+import tech.onova.offlinetranslator.core.designsystem.icons.PocketIcons
 import tech.onova.offlinetranslator.core.designsystem.tokens.PocketTypography
-import tech.onova.offlinetranslator.feature.settings.licenses.LicensesScreen
 import tech.onova.offlinetranslator.support.AppUiTest
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -87,17 +88,20 @@ class TextSettingPhoneTest : TextSettingTest()
 /** Spec 015 FR-020: at 200 % in a tiny window a title that can't fit beside the actions takes its own row, whole. */
 @Config(qualifiers = "w240dp-h360dp-port-xhdpi")
 class TitleRowTest : AppUiTest() {
-    /** The licenses page has the longest title beside Back. */
+    /** The frame as a tool with two actions draws it, with the app's longest title. */
     private fun titleAgainstBack(fontScale: Float): Pair<Float, Float> {
         RuntimeEnvironment.setFontScale(fontScale)
-        val list =
-            RuntimeEnvironment
-                .getApplication()
-                .resources
-                .openRawResource(R.raw.aboutlibraries)
-                .bufferedReader()
-                .use { it.readText() }
-        show { LicensesScreen(onBack = {}, readList = { list }) }
+        show {
+            ToolFrame(
+                title = "Open-source licenses",
+                backLabel = "Back",
+                onBack = {},
+                actions = {
+                    IconAction(icon = PocketIcons.Info, label = "How to use", onClick = {})
+                    IconAction(icon = PocketIcons.Settings, label = "Settings", onClick = {})
+                },
+            ) {}
+        }
         val title = compose.onNode(hasText("Open-source licenses")).getUnclippedBoundsInRoot()
         val back = compose.onNodeWithContentDescription("Back").getUnclippedBoundsInRoot()
         return title.top.value to back.bottom.value

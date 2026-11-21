@@ -46,7 +46,7 @@ abstract class VerifyNetworkGuardTask : DefaultTask() {
                     "$DOMAIN_MODULE must not depend on other modules (found $dependency)"
                 }
 
-                dependency.startsWith(MONETIZATION_PREFIX) && path != APP_MODULE -> {
+                dependency in APP_ONLY_MODULES && path != APP_MODULE -> {
                     "only $APP_MODULE may depend on $dependency"
                 }
 
@@ -65,6 +65,8 @@ abstract class VerifyNetworkGuardTask : DefaultTask() {
         const val APP_MODULE = ":androidApp"
         const val DOMAIN_MODULE = ":core:domain"
         const val FEATURE_PREFIX = ":feature:"
-        const val MONETIZATION_PREFIX = ":core:monetization"
+
+        /** The language packs and the engine, bound to their ports in the app only (spec 012, spec 081). */
+        val APP_ONLY_MODULES = setOf(":core:content", ":core:translation")
     }
 }
