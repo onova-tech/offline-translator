@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.phf",
+  "developers": [
+    {
+      "name": "William Ahern",
+      "organisationUrl": "https://github.com/wahern"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Perfect hashing inside Marian.",
+  "name": "phf",
+  "website": "https://github.com/wahern/phf",
+  "licenses": [
+    "offlinetranslator-phf"
+  ]
+}

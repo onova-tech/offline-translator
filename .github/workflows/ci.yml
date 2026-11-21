@@ -1,0 +1,97 @@
+name: CI
+
+# A public repository: GitHub's standard runners cost nothing, but runs stay rare and short anyway.
+# The emulator stages don't run here: they need an emulator with Google Play's local testing, through scripts/ci.sh.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'specs/**'
+      - '.specify/**'
+      - '.claude/**'
+  # Fills the cache that pull requests read; GitHub only shares caches from the default branch.
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'specs/**'
+      - '.specify/**'
+      - '.claude/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+# A new push cancels the run it replaces, so only the latest commit of a branch spends minutes.
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # A draft isn't ready to spend minutes on.
+    if: github.event.pull_request.draft != true
+    runs-on: ubuntu-24.04
+    # One stuck run must never eat a large part of the month. A run with no cache took 17 minutes (2026-11-05).
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Restore the Gradle and Robolectric caches
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.m2/repository/org/robolectric
+          key: gradle-${{ hashFiles('gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}-${{ github.run_id }}
+          restore-keys: |
+            gradle-${{ hashFiles('gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}-
+            gradle-
+
+      - name: Accept the Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      - name: Run the checks
+        run: scripts/ci.sh check
+
+      - name: Stop Gradle, so the cache is saved cleanly
+        if: success() && github.ref == 'refs/heads/main'
+        run: ./gradlew --stop
+
+      - name: Save the caches
+        if: success() && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.m2/repository/org/robolectric
+          key: gradle-${{ hashFiles('gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}-${{ github.run_id }}
+
+      # Small and short-lived: artifact storage has its own limit of 500 MB.
+      - name: Keep the failure details
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: failure-details
+          retention-days: 3
+          if-no-files-found: ignore
+          path: |
+            build/ci/
+            build/reports/detekt/
+            **/build/test-results/**/*.xml
+            androidApp/build/outputs/roborazzi/*_compare.png

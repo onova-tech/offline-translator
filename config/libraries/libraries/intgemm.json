@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.intgemm",
+  "developers": [
+    {
+      "name": "Kenneth Heafield and contributors",
+      "organisationUrl": "https://github.com/kpu"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Matrix products on x86 processors.",
+  "name": "intgemm",
+  "website": "https://github.com/kpu/intgemm",
+  "licenses": [
+    "offlinetranslator-intgemm"
+  ]
+}

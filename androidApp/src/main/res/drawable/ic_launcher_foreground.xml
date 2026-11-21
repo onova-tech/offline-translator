@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Offline Translator's icon, foreground (spec 081): two speech bubbles, one answering the other. Inside the
+     adaptive icon's safe zone (66 of 108). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- The first speaker's bubble, behind, its tail on the left. -->
+    <path
+        android:fillColor="#9CF1F0"
+        android:pathData="M36,30 H60 A6,6 0 0 1 66,36 V50 A6,6 0 0 1 60,56 H42 L34,63 L35.5,56 A6,6 0 0 1 30,50 V36 A6,6 0 0 1 36,30 Z" />
+    <path
+        android:fillColor="#006A6A"
+        android:pathData="M36,36 H60 V39 H36 Z M36,42 H50 V45 H36 Z" />
+    <!-- The answer, in front, its tail on the right. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#006A6A"
+        android:strokeWidth="2"
+        android:pathData="M48,46 H72 A6,6 0 0 1 78,52 V66 A6,6 0 0 1 72,72 H70.5 L72,79 L64,72 H48 A6,6 0 0 1 42,66 V52 A6,6 0 0 1 48,46 Z" />
+    <path
+        android:fillColor="#006A6A"
+        android:pathData="M48,53 H72 V56 H48 Z M48,59 H72 V62 H48 Z M48,65 H62 V68 H48 Z" />
+</vector>

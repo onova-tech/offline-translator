@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "id": "translate_mr",
+  "language": "mr",
+  "version": 1,
+  "directions": [
+    {
+      "from": "en", "to": "mr", "folder": "en-mr",
+      "model": "model.enmr.intgemm.alphas.bin", "shortlist": "lex.50.50.enmr.s2t.bin", "vocab": "vocab.enmr.spm",
+      "sha256": {
+        "model.enmr.intgemm.alphas.bin": "1520f77c2f1c703b6148e4452b376ac28aec1e63c467eedec8a986864827ce8c",
+        "lex.50.50.enmr.s2t.bin": "5f343589941c5445e9c27ee2d5329b6da65867590a4df79c09532aeef379bca9",
+        "vocab.enmr.spm": "f71f279069e19a9a9317fd4fcbdffa6b2c621ee6fcaa369a92046fb7fb572735"
+      }
+    },
+    {
+      "from": "mr", "to": "en", "folder": "mr-en",
+      "model": "model.mren.intgemm.alphas.bin", "shortlist": "lex.50.50.mren.s2t.bin", "vocab": "vocab.mren.spm",
+      "sha256": {
+        "model.mren.intgemm.alphas.bin": "7e4ce4102d159b1d0154193859ee36e26232ad6b1bc656fd9de23ebf530d67b0",
+        "lex.50.50.mren.s2t.bin": "27e8cb59d07bc1043a4b61ad7e15c2ce7b4c6aedc54cfe02514b4ad606f7c649",
+        "vocab.mren.spm": "1dbe32811a6f1324bfdd9a0e0fd919730044ee79b59f24b3f36f3e07c69a06ed"
+      }
+    }
+  ],
+  "source": "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/models/",
+  "license": "MPL-2.0"
+}

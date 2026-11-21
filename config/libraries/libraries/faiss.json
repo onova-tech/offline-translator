@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.faiss",
+  "developers": [
+    {
+      "name": "Meta Platforms",
+      "organisationUrl": "https://github.com/facebookresearch"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Part of it is inside Marian.",
+  "name": "Faiss (in part)",
+  "website": "https://github.com/facebookresearch/faiss",
+  "licenses": [
+    "offlinetranslator-faiss"
+  ]
+}

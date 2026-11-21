@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "id": "translate_zh_hant",
+  "language": "zh_hant",
+  "version": 1,
+  "directions": [
+    {
+      "from": "en", "to": "zh_hant", "folder": "en-zh_hant",
+      "model": "model.enzh_hant.intgemm.alphas.bin", "shortlist": "lex.50.50.enzh_hant.s2t.bin", "sourceVocab": "srcvocab.enzh_hant.spm", "targetVocab": "trgvocab.enzh_hant.spm",
+      "sha256": {
+        "model.enzh_hant.intgemm.alphas.bin": "559ab90d723a58c1f1e2ab7cc12137bc667af5ba3e325e3eb30b5cdc930db520",
+        "lex.50.50.enzh_hant.s2t.bin": "d891404d1436a7334df12539fe30a26f9e9f2b80bd42fdb8b5f8849e8a1e942b",
+        "srcvocab.enzh_hant.spm": "2266df70492162a249ab1c0154f929bd6098b246544c666c1a0d5a24dde7d2ea",
+        "trgvocab.enzh_hant.spm": "22b91a4436d70b91ab8777c677252ab5fae2bc284d71f977df5206c110e3444c"
+      }
+    },
+    {
+      "from": "zh_hant", "to": "en", "folder": "zh_hant-en",
+      "model": "model.zh_hanten.intgemm.alphas.bin", "shortlist": "lex.50.50.zh_hanten.s2t.bin", "sourceVocab": "srcvocab.zh_hanten.spm", "targetVocab": "trgvocab.zh_hanten.spm",
+      "sha256": {
+        "model.zh_hanten.intgemm.alphas.bin": "0aee91790894458f5d367551f6edcd4c9cb97852c34f221bcbf9f4701ebcf0cd",
+        "lex.50.50.zh_hanten.s2t.bin": "aa7daf6cfc85c0cd2c10e2944d66f6da55497c9c6408789f3adfded4074c2fb1",
+        "srcvocab.zh_hanten.spm": "5cc6a76611dbf86219f109141533606b15ecb34eee83673bb86b2c16b14734db",
+        "trgvocab.zh_hanten.spm": "7bf002db37c10d3b114cc5588d7fdcb16c57d0fd1e2c34354c22cc9f0b6c3c29"
+      }
+    }
+  ],
+  "source": "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/models/",
+  "license": "MPL-2.0"
+}

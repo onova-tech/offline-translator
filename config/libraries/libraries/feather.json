@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.feather",
+  "developers": [
+    {
+      "name": "Cole Bemis",
+      "organisationUrl": "https://feathericons.com"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The icons Lucide grew from.",
+  "name": "Feather",
+  "website": "https://github.com/feathericons/feather",
+  "licenses": [
+    "offlinetranslator-feather"
+  ]
+}

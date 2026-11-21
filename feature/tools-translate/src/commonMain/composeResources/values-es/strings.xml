@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="translator_name">Traductor</string>
+    <string-array name="translator_keywords">
+        <item>traducir</item>
+        <item>traducción</item>
+        <item>idioma</item>
+        <item>intérprete</item>
+        <item>conversación</item>
+        <item>viaje</item>
+        <item>hablar</item>
+        <item>voz</item>
+        <item>sin conexión</item>
+        <item>portugués</item>
+        <item>español</item>
+        <item>inglés</item>
+    </string-array>
+    <string name="translator_help">Escribir o hablar: escribe, pega o di una frase y léela en otro idioma. Copia, comparte o escucha la traducción en voz alta.\nEn De, elige el idioma en que está el texto: con otro, la traducción puede no tener sentido.\nGestionar idiomas… al final de cada lista: marca los idiomas que quieras y descarga o borra paquetes, voz y voces. Los de Calidad básica traducen peor.\nConversación: dos personas hablan por turnos, cada una en su idioma, en dos mitades de la pantalla. Deja el teléfono entre ustedes.\nLa primera vez, cada idioma necesita su paquete (unos 70 MB). Una vez descargado, la traducción funciona sin internet.\nHablar y escuchar usan el reconocimiento de voz y las voces del propio teléfono, así que dependen de él. Escribir siempre funciona.\nPara viajes y conversaciones cotidianas, no para textos médicos o legales.</string>
+    <string name="translator_modes">Modo</string>
+    <string name="translator_mode_type_or_speak">Escribir o hablar</string>
+    <string name="translator_mode_conversation">Conversación</string>
+    <string name="translator_language_en">Inglés</string>
+    <string name="translator_language_pt">Portugués</string>
+    <string name="translator_language_es">Español</string>
+    <string name="translator_from">De</string>
+    <string name="translator_to">A</string>
+    <string name="translator_swap">Intercambiar los idiomas</string>
+    <string name="translator_to_download">%1$s MB para descargar</string>
+    <string name="translator_text">Texto</string>
+    <string name="translator_counter">%1$s / %2$s</string>
+    <string name="translator_over_limit">Solo se traducen los primeros %1$s caracteres</string>
+    <string name="translator_empty">Escribe o pega un texto</string>
+    <string name="translator_working">Traduciendo…</string>
+    <string name="translator_translation">Traducción</string>
+    <string name="translator_note_through_english">Traducido a través del inglés</string>
+    <string name="translator_note_same_language">Mismo idioma: se muestra como se escribió</string>
+    <string name="translator_note_over_limit">Solo se tradujeron los primeros %1$s caracteres</string>
+    <string name="translator_failed">No se pudo traducir este texto. Cámbialo para intentarlo de nuevo.</string>
+    <string name="translator_unsupported">El procesador de este teléfono no puede ejecutar el traductor.</string>
+    <string name="translator_damaged">Un paquete de idioma está dañado. Bórralo en Ajustes y descárgalo de nuevo.</string>
+    <string name="translator_pack_needed">Para traducir %1$s, descarga su paquete de idioma (%2$s MB).</string>
+    <string name="translator_pack_needed_no_size">Para traducir %1$s, descarga su paquete de idioma.</string>
+    <string name="translator_copy">Copiar</string>
+    <string name="translator_share">Compartir</string>
+    <string name="translator_read_aloud">Leer en voz alta</string>
+    <string name="translator_copied">Traducción copiada</string>
+    <string name="translator_pack_checking">Buscando el paquete de idioma…</string>
+    <string name="translator_not_now">Ahora no</string>
+    <string name="translator_download">Descargar</string>
+    <string name="translator_downloading">Descargando %1$s: %2$s de %3$s MB</string>
+    <string name="translator_installing">Instalando %1$s…</string>
+    <string name="translator_cancel">Cancelar</string>
+    <string name="translator_waiting_wifi">Conéctate a una red Wi-Fi para descargar %1$s, o desactiva “Descargar solo con Wi-Fi” en Ajustes.</string>
+    <string name="translator_waiting_confirmation">Google Play pide tu confirmación antes de descargar %1$s.</string>
+    <string name="translator_network_settings">Ajustes de red</string>
+    <string name="translator_no_space">Para descargar %1$s se necesitan %2$s MB libres.</string>
+    <string name="translator_storage_settings">Ajustes de almacenamiento</string>
+    <string name="translator_download_failed">No se pudo descargar %1$s.</string>
+    <string name="translator_try_again">Intentar de nuevo</string>
+    <string name="translator_confirm">Confirmar</string>
+    <string name="translator_no_store">Los paquetes de idioma no se pueden descargar en este teléfono.</string>
+    <string name="translator_not_now_caption">%1$s no está en este teléfono. Elige otro idioma o descárgalo en Ajustes.</string>
+    <string name="translator_offline_languages">Idiomas sin conexión</string>
+    <string name="translator_wifi_only">Descargar solo con Wi-Fi</string>
+    <string name="translator_wifi_only_supporting">Para que los paquetes de idioma no usen datos móviles</string>
+    <string name="translator_pack_installed">Instalado · %1$s MB</string>
+    <string name="translator_pack_not_downloaded">No descargado</string>
+    <string name="translator_pack_downloading_row">Descargando %1$s de %2$s MB</string>
+    <string name="translator_pack_installing_row">Instalando…</string>
+    <string name="translator_pack_waiting_wifi_row">Esperando una red Wi-Fi</string>
+    <string name="translator_pack_waiting_confirmation_row">Esperando a Google Play</string>
+    <string name="translator_pack_failed_row">La descarga falló</string>
+    <string name="translator_pack_no_space_row">Necesita %1$s MB libres</string>
+    <string name="translator_pack_no_store_row">No se puede descargar en este teléfono</string>
+    <string name="translator_pack_unsupported_row">No funciona con el procesador de este teléfono</string>
+    <string name="translator_pack_checking_row">Comprobando…</string>
+    <string name="translator_pack_menu">Más acciones de %1$s</string>
+    <string name="translator_delete">Eliminar</string>
+    <string name="translator_delete_title">¿Eliminar %1$s?</string>
+    <string name="translator_delete_text">Así se liberan %1$s MB. Puedes descargarlo de nuevo cuando lo necesites.</string>
+    <string name="translator_space_used">Espacio usado</string>
+    <string name="translator_megabytes">%1$s MB</string>
+    <string name="translator_empty_speak">Escribe, pega o dicta un texto</string>
+    <string name="translator_speak">Hablar</string>
+    <string name="translator_stop_listening">Dejar de escuchar</string>
+    <string name="translator_listening">Escuchando</string>
+    <string name="translator_discard_turn">Detener y descartar</string>
+    <string name="translator_stop">Detener</string>
+    <string name="translator_microphone_rationale">Para escribir lo que dices, el Traductor usa el micrófono mientras escucha.</string>
+    <string name="translator_nothing_heard">No se oyó nada. Toca el micrófono y habla.</string>
+    <string name="translator_speech_can_download">El reconocimiento de %1$s aún no está en este teléfono. El teléfono puede descargarlo.</string>
+    <string name="translator_speech_downloading">El teléfono está descargando el reconocimiento de %1$s. Funciona cuando termine.</string>
+    <string name="translator_speech_not_installed">El teléfono no instaló el reconocimiento de %1$s. Actualizar su servicio de voz en Google Play puede solucionarlo.</string>
+    <string name="translator_update_speech_service">Actualizar</string>
+    <string name="translator_dismiss_notice">Ignorar</string>
+    <string name="translator_get_language">Obtener este idioma</string>
+    <string name="translator_speech_unsupported">Este teléfono no reconoce %1$s sin conexión. Puedes seguir escribiendo.</string>
+    <string name="translator_no_recognizer">Este teléfono no tiene reconocimiento de voz sin conexión. Puedes seguir escribiendo.</string>
+    <string name="translator_microphone_busy">El micrófono lo está usando otra app o una llamada.</string>
+    <string name="translator_microphone_denied">El Traductor no puede usar el micrófono. Permítelo en los ajustes de la app.</string>
+    <string name="translator_listening_failed">La escucha se detuvo. Inténtalo de nuevo.</string>
+    <string name="translator_no_voice">No hay una voz sin conexión para %1$s. La app de voz del teléfono puede descargar una.</string>
+    <string name="translator_voice_settings">Descargar voz</string>
+    <string name="translator_no_speech_engine">Este teléfono no puede leer textos en voz alta.</string>
+    <string name="translator_ok">Aceptar</string>
+    <string name="translator_near_language">Tu idioma</string>
+    <string name="translator_far_language">El idioma de la otra persona</string>
+    <string name="translator_speak_language">Hablar en %1$s</string>
+    <string name="translator_conversation_start">Toca el micrófono y habla</string>
+    <string name="translator_conversation_unsupported">Este teléfono no reconoce %1$s sin conexión.</string>
+    <string name="translator_turn_failed">No se pudo traducir este turno.</string>
+    <string name="translator_paused">En pausa. Toca un micrófono para seguir.</string>
+    <string name="translator_far_turned">Girar la mitad de arriba hacia la otra persona</string>
+    <string name="translator_far_turned_supporting">Desactívalo si están uno al lado del otro</string>
+    <string name="translator_read_translations">Leer las traducciones en voz alta</string>
+    <string name="translator_clear">Borrar</string>
+    <string name="translator_clear_title">¿Borrar la conversación?</string>
+    <string name="translator_clear_text">Todos sus turnos se quitan de la pantalla.</string>
+    <string name="translator_correct">Corregir lo que se oyó</string>
+    <string name="translator_what_was_said">Lo que se dijo</string>
+    <string name="translator_translate_again">Traducir de nuevo</string>
+    <string name="translator_other_languages">Gestionar idiomas…</string>
+    <string name="translator_languages_title">Gestionar idiomas</string>
+    <string name="translator_manage_languages">Gestionar idiomas</string>
+    <string name="translator_downloaded_languages">Idiomas descargados</string>
+    <string name="translator_enable_language">Habilitar idioma</string>
+    <string name="translator_enable_language_supporting">Aparece en las listas del Traductor</string>
+    <string name="translator_status_ready_on">Instalado y habilitado</string>
+    <string name="translator_status_ready_off">Instalado, no habilitado</string>
+    <string name="translator_status_partial_on">Instalado en parte, habilitado</string>
+    <string name="translator_status_partial_off">Instalado en parte, no habilitado</string>
+    <string name="translator_manage_help">Los idiomas descargados tienen su paquete de traducción en el teléfono; toca uno para ver sus partes.\nHabilitar idioma lo pone en las listas del Traductor. Descargar un paquete lo habilita.\nTraducción, reconocimiento de voz y voz se obtienen o borran con ⋮. El habla y las voces vienen de las apps del teléfono.</string>
+    <string name="translator_manage_marks">La marca junto a cada idioma descargado:</string>
+    <string name="translator_more_languages">Otros idiomas</string>
+    <string name="translator_part_translation">Traducción</string>
+    <string name="translator_part_speech">Reconocimiento de voz</string>
+    <string name="translator_part_voice">Voz</string>
+    <string name="translator_part_menu">Más acciones de %1$s, %2$s</string>
+    <string name="translator_built_in">Incluido en la app</string>
+    <string name="translator_part_ready">Listo</string>
+    <string name="translator_part_checking">Preguntando al teléfono…</string>
+    <string name="translator_speech_can_get">El teléfono puede descargarlo</string>
+    <string name="translator_speech_getting">El teléfono lo está descargando</string>
+    <string name="translator_speech_not_got">El teléfono no lo instaló</string>
+    <string name="translator_speech_none">No disponible en este teléfono</string>
+    <string name="translator_speech_tried">Se prueba al hablar</string>
+    <string name="translator_speech_old_phone">Requiere Android 12 o posterior</string>
+    <string name="translator_voice_none">Sin voz sin conexión</string>
+    <string name="translator_voice_no_app">Sin app de voz en este teléfono</string>
+    <string name="translator_space_used_value">%1$s MB usados</string>
+    <string name="translator_languages_back">Atrás</string>
+    <string name="translator_languages_search">Buscar idiomas</string>
+    <string name="translator_languages_clear">Borrar búsqueda</string>
+    <string name="translator_languages_two">Al menos dos idiomas quedan en las listas.</string>
+    <string name="translator_languages_none">Ningún idioma coincide</string>
+    <string name="translator_basic_quality">Calidad básica</string>
+</resources>

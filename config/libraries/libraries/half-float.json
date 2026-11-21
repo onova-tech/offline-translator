@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.half-float",
+  "developers": [
+    {
+      "name": "The Open Asset Import Library team",
+      "organisationUrl": "https://github.com/assimp"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Half-precision numbers inside Marian.",
+  "name": "Half-precision float",
+  "website": "https://github.com/assimp/assimp",
+  "licenses": [
+    "offlinetranslator-half-float"
+  ]
+}

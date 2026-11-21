@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.cpuinfo",
+  "developers": [
+    {
+      "name": "Meta Platforms",
+      "organisationUrl": "https://github.com/pytorch"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Reads the processor's features for Ruy.",
+  "name": "cpuinfo",
+  "website": "https://github.com/pytorch/cpuinfo",
+  "licenses": [
+    "offlinetranslator-cpuinfo"
+  ]
+}

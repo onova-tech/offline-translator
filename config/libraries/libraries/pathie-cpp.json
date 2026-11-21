@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.pathie-cpp",
+  "developers": [
+    {
+      "name": "Marvin Gülker",
+      "organisationUrl": "https://github.com/Quintus"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "File paths for Marian.",
+  "name": "pathie-cpp",
+  "website": "https://github.com/Quintus/pathie-cpp",
+  "licenses": [
+    "offlinetranslator-pathie-cpp"
+  ]
+}

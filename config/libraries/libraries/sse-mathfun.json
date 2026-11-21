@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.sse-mathfun",
+  "developers": [
+    {
+      "name": "Julien Pommier",
+      "organisationUrl": "http://gruntthepeon.free.fr/ssemath/"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Vector math on x86 processors.",
+  "name": "sse_mathfun",
+  "website": "http://gruntthepeon.free.fr/ssemath/",
+  "licenses": [
+    "offlinetranslator-sse-mathfun"
+  ]
+}

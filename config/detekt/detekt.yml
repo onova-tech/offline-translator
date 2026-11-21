@@ -1,0 +1,32 @@
+# Overrides on top of detekt's default configuration (constitution Principle IV: zero warnings).
+config:
+  validation: true
+  warningsAsErrors: true
+
+build:
+  maxIssues: 0
+
+complexity:
+  LongParameterList:
+    # Composables expose many optional, defaulted parameters by convention.
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    excludes: ['**/test/**', '**/commonTest/**', '**/androidHostTest/**', '**/androidTest/**', '**/tooling/e2e/**']
+    ignoreAnnotatedFunctions: ['Composable', 'Test']
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    # Named constants and design tokens are the place for numbers; tests use literal fixtures.
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreNamedArgument: true
+    excludes: ['**/test/**', '**/commonTest/**', '**/androidHostTest/**', '**/androidTest/**', '**/tooling/e2e/**', '**/*.gradle.kts']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  ReturnCount:
+    max: 3

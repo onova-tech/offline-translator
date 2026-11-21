@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed icon (Android 13+): the two bubbles in one tint, their lines cut out. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M36,30 H60 A6,6 0 0 1 66,36 V44 H48 A8,8 0 0 0 40,52 V56 L34,63 L35.5,56 A6,6 0 0 1 30,50 V36 A6,6 0 0 1 36,30 Z M36,36 H60 V39 H36 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M48,46 H72 A6,6 0 0 1 78,52 V66 A6,6 0 0 1 72,72 H70.5 L72,79 L64,72 H48 A6,6 0 0 1 42,66 V52 A6,6 0 0 1 48,46 Z M48,53 H72 V56 H48 Z M48,59 H72 V62 H48 Z M48,65 H62 V68 H48 Z" />
+</vector>

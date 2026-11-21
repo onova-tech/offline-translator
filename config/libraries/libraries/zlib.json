@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.zlib",
+  "developers": [
+    {
+      "name": "Jean-loup Gailly and Mark Adler",
+      "organisationUrl": "https://zlib.net"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Compression.",
+  "name": "zlib",
+  "website": "https://github.com/madler/zlib",
+  "licenses": [
+    "offlinetranslator-zlib"
+  ]
+}

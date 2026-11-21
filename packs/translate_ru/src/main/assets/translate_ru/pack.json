@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "id": "translate_ru",
+  "language": "ru",
+  "version": 1,
+  "directions": [
+    {
+      "from": "en", "to": "ru", "folder": "en-ru",
+      "model": "model.enru.intgemm.alphas.bin", "shortlist": "lex.50.50.enru.s2t.bin", "vocab": "vocab.enru.spm",
+      "sha256": {
+        "model.enru.intgemm.alphas.bin": "184cb5cda528eeefc0f75f5d0035d787b71d74af135e3c5608d01ae02ecfb920",
+        "lex.50.50.enru.s2t.bin": "4d91839726b960e70b6d05c53d0cffd16262832b1c0e1ea99d66f412dcc6a239",
+        "vocab.enru.spm": "56ee63e14e8cb926c394242adc3ed7cc602644c3d33058cff2ce2959d52a6258"
+      }
+    },
+    {
+      "from": "ru", "to": "en", "folder": "ru-en",
+      "model": "model.ruen.intgemm.alphas.bin", "shortlist": "lex.50.50.ruen.s2t.bin", "vocab": "vocab.ruen.spm",
+      "sha256": {
+        "model.ruen.intgemm.alphas.bin": "aa0efa194b3dbd2da129ba0b8db8ef139126cb0914e57072f62061294746f1e2",
+        "lex.50.50.ruen.s2t.bin": "c944e753f298bbdf6506388de7257fb48cbd12c83e2807e2c284fc323771895b",
+        "vocab.ruen.spm": "de8af5f87e231ee4016cec4bb482e6b584cb1ca34dcb624fc7b8398f25bb35df"
+      }
+    }
+  ],
+  "source": "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/models/",
+  "license": "MPL-2.0"
+}

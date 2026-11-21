@@ -1,0 +1,55 @@
+# Gradle / Kotlin
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.kotlin/
+*.hprof
+
+# Local configuration (SDK paths, signing secrets)
+local.properties
+*.keystore
+*.jks
+keystore.properties
+google-services.json
+
+# Android
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+output-metadata.json
+
+# Kotlin Multiplatform / iOS (future)
+iosApp/Pods/
+iosApp/build/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.fleet/
+
+# Claude Code: keep project skills, ignore machine-local settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# JVM crash dumps
+hs_err_pid*.log
+replay_pid*.log
+
+# The builder's progress notes (docs/build-all-specs-prompt.md): never committed
+/BUILD-PROGRESS.md
+build/
+.gradle/
+local.properties
+*.iml
+.idea/
+hs_err*.log

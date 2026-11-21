@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.pcre2",
+  "developers": [
+    {
+      "name": "University of Cambridge",
+      "organisationUrl": "https://www.pcre.org"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Regular expressions for the sentence splitter.",
+  "name": "PCRE2",
+  "website": "https://github.com/PCRE2Project/pcre2",
+  "licenses": [
+    "offlinetranslator-pcre2"
+  ]
+}

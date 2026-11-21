@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.sentencepiece",
+  "developers": [
+    {
+      "name": "Google",
+      "organisationUrl": "https://github.com/google"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Splits text into the models’ word pieces.",
+  "name": "SentencePiece",
+  "website": "https://github.com/google/sentencepiece",
+  "licenses": [
+    "offlinetranslator-sentencepiece"
+  ]
+}

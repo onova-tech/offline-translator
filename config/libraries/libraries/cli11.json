@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.cli11",
+  "developers": [
+    {
+      "name": "Henry Schreiner and contributors",
+      "organisationUrl": "https://github.com/CLIUtils"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Option parsing inside Marian.",
+  "name": "CLI11",
+  "website": "https://github.com/CLIUtils/CLI11",
+  "licenses": [
+    "offlinetranslator-cli11"
+  ]
+}

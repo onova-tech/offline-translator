@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_back">Atrás</string>
+    <string name="section_appearance">Apariencia</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="dynamic_color">Color dinámico</string>
+    <string name="dynamic_color_supporting">Usar los colores de tu fondo de pantalla</string>
+    <string name="section_language">Idioma</string>
+    <string name="app_language">Idioma de la app</string>
+    <string name="language_system">Predeterminado del sistema</string>
+    <string name="language_en">English</string>
+    <string name="language_pt_br">Português (Brasil)</string>
+    <string name="language_es">Español</string>
+    <string name="section_about">Acerca de</string>
+    <string name="version_label">Versión</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="licenses_title">Licencias de código abierto</string>
+    <string name="licenses_supporting">Los proyectos con los que está hecho Offline Translator</string>
+    <string name="licenses_intro">Offline Translator está hecho con estos proyectos de código abierto. Gracias.</string>
+    <string name="licenses_other">Otros</string>
+    <string name="licenses_none">Sin licencia indicada</string>
+    <string name="licenses_source">Código fuente</string>
+    <string name="licenses_read">Leer la licencia</string>
+    <string name="source_code">Código fuente</string>
+    <string name="source_code_supporting">Libre y de código abierto, bajo la GNU GPL 3.0</string>
+    <string name="source_code_unavailable">Ninguna app de este teléfono abre enlaces web. El código está en github.com/onova-tech/offline-translator</string>
+</resources>

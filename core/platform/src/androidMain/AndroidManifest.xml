@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The microphone, for speaking a sentence or a conversation turn (spec 012): asked when the person first taps a
+  microphone, heard by the phone's own on-device recognizer, never recorded. Optional, so Play still offers the app on
+  devices without one; the app then translates typed text only. Listed with its reason in androidApp's allowlist.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+</manifest>

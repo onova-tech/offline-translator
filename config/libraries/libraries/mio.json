@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.mio",
+  "developers": [
+    {
+      "name": "mandreyel",
+      "organisationUrl": "https://github.com/mandreyel"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Memory-mapped files inside Marian.",
+  "name": "mio",
+  "website": "https://github.com/mandreyel/mio",
+  "licenses": [
+    "offlinetranslator-mio"
+  ]
+}

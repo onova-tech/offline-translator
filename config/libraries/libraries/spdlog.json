@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.spdlog",
+  "developers": [
+    {
+      "name": "Gabi Melman and contributors",
+      "organisationUrl": "https://github.com/gabime"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Logging inside Marian.",
+  "name": "spdlog, with fmt",
+  "website": "https://github.com/gabime/spdlog",
+  "licenses": [
+    "offlinetranslator-spdlog"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "id": "translate_uk",
+  "language": "uk",
+  "version": 1,
+  "directions": [
+    {
+      "from": "en", "to": "uk", "folder": "en-uk",
+      "model": "model.enuk.intgemm.alphas.bin", "shortlist": "lex.50.50.enuk.s2t.bin", "vocab": "vocab.enuk.spm",
+      "sha256": {
+        "model.enuk.intgemm.alphas.bin": "ed8bb4a811e1c45a259e91052080d25e5c8b4e2df0e59cb1521c04a57855ef97",
+        "lex.50.50.enuk.s2t.bin": "dbfd4f8dc95da9c575164f7fc95ef00a2fb5f7d9f51b656559f99eeebdb57c87",
+        "vocab.enuk.spm": "4dd6a91feff71e745395dcc0d52f885848ca0d843d5f70628ca51b3be1b70b45"
+      }
+    },
+    {
+      "from": "uk", "to": "en", "folder": "uk-en",
+      "model": "model.uken.intgemm.alphas.bin", "shortlist": "lex.50.50.uken.s2t.bin", "vocab": "vocab.uken.spm",
+      "sha256": {
+        "model.uken.intgemm.alphas.bin": "2e7b8bc9d2569d8b4ae244e964cdc343a0aa3735cc83ecb664be84a37cb45f48",
+        "lex.50.50.uken.s2t.bin": "32b5e0df493671a223cb5cb32430181cbb7fe6b5562c91dbc3d35410d37e5ff6",
+        "vocab.uken.spm": "8b51480dfc4ca2d7a08d2bfdaa9e57353ca97e6cf3d5f9aba4c0179d3665bfc0"
+      }
+    }
+  ],
+  "source": "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/models/",
+  "license": "MPL-2.0"
+}

@@ -1,0 +1,16 @@
+{
+  "uniqueId": "offlinetranslator.bergamot",
+  "developers": [
+    {
+      "name": "Mozilla",
+      "organisationUrl": "https://www.mozilla.org"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The Translator's on-device engine.",
+  "name": "Bergamot translator",
+  "website": "https://github.com/mozilla/translations/tree/main/inference",
+  "licenses": [
+    "offlinetranslator-bergamot"
+  ]
+}

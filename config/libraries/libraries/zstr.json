@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.zstr",
+  "developers": [
+    {
+      "name": "Matei David, Ontario Institute for Cancer Research",
+      "organisationUrl": "https://github.com/mateidavid"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Compressed file streams inside Marian.",
+  "name": "zstr",
+  "website": "https://github.com/mateidavid/zstr",
+  "licenses": [
+    "offlinetranslator-zstr"
+  ]
+}

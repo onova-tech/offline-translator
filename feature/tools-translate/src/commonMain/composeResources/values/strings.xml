@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="translator_name">Translator</string>
+    <string-array name="translator_keywords">
+        <item>translate</item>
+        <item>translation</item>
+        <item>language</item>
+        <item>interpreter</item>
+        <item>conversation</item>
+        <item>travel</item>
+        <item>speak</item>
+        <item>voice</item>
+        <item>offline</item>
+        <item>Portuguese</item>
+        <item>Spanish</item>
+        <item>English</item>
+    </string-array>
+    <string name="translator_help">Type or speak: write, paste or say a sentence and read it in another language. Copy, Share or Read aloud the translation.\nUnder From, pick the language the text is in: with another one, the translation can make no sense.\nManage languages… at the end of each list: check the languages you want, and get or delete their packs, speech and voices. Basic quality ones translate less well.\nConversation: two people take turns, each in their own language, on two halves of the screen. Lay the phone between you.\nThe first time, a language needs its pack (about 70 MB). Once it's on the phone, translating works without the internet.\nSpeaking and reading aloud use the phone's own speech and voices, so they depend on the phone. Typing always works.\nFor travel and everyday talk, not for medical or legal texts.</string>
+    <string name="translator_modes">Mode</string>
+    <string name="translator_mode_type_or_speak">Type or speak</string>
+    <string name="translator_mode_conversation">Conversation</string>
+    <string name="translator_language_en">English</string>
+    <string name="translator_language_pt">Portuguese</string>
+    <string name="translator_language_es">Spanish</string>
+    <string name="translator_from">From</string>
+    <string name="translator_to">To</string>
+    <string name="translator_swap">Swap languages</string>
+    <string name="translator_to_download">%1$s MB to download</string>
+    <string name="translator_text">Text</string>
+    <string name="translator_counter">%1$s / %2$s</string>
+    <string name="translator_over_limit">Only the first %1$s characters are translated</string>
+    <string name="translator_empty">Type or paste a text</string>
+    <string name="translator_working">Translating…</string>
+    <string name="translator_translation">Translation</string>
+    <string name="translator_note_through_english">Translated through English</string>
+    <string name="translator_note_same_language">Same language: shown as typed</string>
+    <string name="translator_note_over_limit">Only the first %1$s characters were translated</string>
+    <string name="translator_failed">This text couldn't be translated. Change it to try again.</string>
+    <string name="translator_unsupported">This phone's processor can't run the translator.</string>
+    <string name="translator_damaged">A language pack is damaged. Delete it in Settings, then download it again.</string>
+    <string name="translator_pack_needed">To translate %1$s, download its language pack (%2$s MB).</string>
+    <string name="translator_pack_needed_no_size">To translate %1$s, download its language pack.</string>
+    <string name="translator_copy">Copy</string>
+    <string name="translator_share">Share</string>
+    <string name="translator_read_aloud">Read aloud</string>
+    <string name="translator_copied">Translation copied</string>
+    <string name="translator_pack_checking">Looking for the language pack…</string>
+    <string name="translator_not_now">Not now</string>
+    <string name="translator_download">Download</string>
+    <string name="translator_downloading">Downloading %1$s: %2$s of %3$s MB</string>
+    <string name="translator_installing">Installing %1$s…</string>
+    <string name="translator_cancel">Cancel</string>
+    <string name="translator_waiting_wifi">Connect to Wi-Fi to download %1$s, or turn off “Download only on Wi-Fi” in Settings.</string>
+    <string name="translator_waiting_confirmation">Google Play asks you to confirm before it downloads %1$s.</string>
+    <string name="translator_network_settings">Network settings</string>
+    <string name="translator_no_space">Downloading %1$s needs %2$s MB free.</string>
+    <string name="translator_storage_settings">Storage settings</string>
+    <string name="translator_download_failed">%1$s couldn't be downloaded.</string>
+    <string name="translator_try_again">Try again</string>
+    <string name="translator_confirm">Confirm</string>
+    <string name="translator_no_store">Language packs can't be downloaded on this phone.</string>
+    <string name="translator_not_now_caption">%1$s isn't on this phone. Choose another language, or download it in Settings.</string>
+    <string name="translator_offline_languages">Offline languages</string>
+    <string name="translator_wifi_only">Download only on Wi-Fi</string>
+    <string name="translator_wifi_only_supporting">So language packs don't use mobile data</string>
+    <string name="translator_pack_installed">Installed · %1$s MB</string>
+    <string name="translator_pack_not_downloaded">Not downloaded</string>
+    <string name="translator_pack_downloading_row">Downloading %1$s of %2$s MB</string>
+    <string name="translator_pack_installing_row">Installing…</string>
+    <string name="translator_pack_waiting_wifi_row">Waiting for Wi-Fi</string>
+    <string name="translator_pack_waiting_confirmation_row">Waiting for Google Play</string>
+    <string name="translator_pack_failed_row">The download failed</string>
+    <string name="translator_pack_no_space_row">Needs %1$s MB free</string>
+    <string name="translator_pack_no_store_row">Can't be downloaded on this phone</string>
+    <string name="translator_pack_unsupported_row">Not for this phone's processor</string>
+    <string name="translator_pack_checking_row">Checking…</string>
+    <string name="translator_pack_menu">More actions for %1$s</string>
+    <string name="translator_delete">Delete</string>
+    <string name="translator_delete_title">Delete %1$s?</string>
+    <string name="translator_delete_text">This frees %1$s MB. You can download it again when you need it.</string>
+    <string name="translator_space_used">Space used</string>
+    <string name="translator_megabytes">%1$s MB</string>
+    <string name="translator_empty_speak">Type, paste or speak a text</string>
+    <string name="translator_speak">Speak</string>
+    <string name="translator_stop_listening">Stop listening</string>
+    <string name="translator_listening">Listening</string>
+    <string name="translator_discard_turn">Stop and discard</string>
+    <string name="translator_stop">Stop</string>
+    <string name="translator_microphone_rationale">To write what you say, the Translator uses the microphone while it listens.</string>
+    <string name="translator_nothing_heard">Nothing was heard. Tap the microphone and speak.</string>
+    <string name="translator_speech_can_download">Recognizing %1$s isn't on this phone yet. The phone can download it.</string>
+    <string name="translator_speech_downloading">The phone is downloading %1$s for speech recognition. It works once that ends.</string>
+    <string name="translator_speech_not_installed">The phone didn't install %1$s for speech recognition. Updating its speech service in Google Play may help.</string>
+    <string name="translator_update_speech_service">Update</string>
+    <string name="translator_dismiss_notice">Ignore</string>
+    <string name="translator_get_language">Get this language</string>
+    <string name="translator_speech_unsupported">This phone can't recognize %1$s offline. You can still type.</string>
+    <string name="translator_no_recognizer">This phone has no offline speech recognition. You can still type.</string>
+    <string name="translator_microphone_busy">The microphone is in use by another app or a call.</string>
+    <string name="translator_microphone_denied">The Translator can't use the microphone. Allow it in the app's settings.</string>
+    <string name="translator_listening_failed">Listening stopped. Try again.</string>
+    <string name="translator_no_voice">There's no offline voice for %1$s. The phone's voice app can download one.</string>
+    <string name="translator_voice_settings">Get a voice</string>
+    <string name="translator_no_speech_engine">This phone can't read text aloud.</string>
+    <string name="translator_ok">OK</string>
+    <string name="translator_near_language">Your language</string>
+    <string name="translator_far_language">The other person's language</string>
+    <string name="translator_speak_language">Speak %1$s</string>
+    <string name="translator_conversation_start">Tap the microphone and speak</string>
+    <string name="translator_conversation_unsupported">This phone can't recognize %1$s offline.</string>
+    <string name="translator_turn_failed">This turn couldn't be translated.</string>
+    <string name="translator_paused">Paused. Tap a microphone to go on.</string>
+    <string name="translator_far_turned">Turn the top half to the other person</string>
+    <string name="translator_far_turned_supporting">Off when you sit side by side</string>
+    <string name="translator_read_translations">Read translations aloud</string>
+    <string name="translator_clear">Clear</string>
+    <string name="translator_clear_title">Clear the conversation?</string>
+    <string name="translator_clear_text">All its turns leave the screen.</string>
+    <string name="translator_correct">Correct what was heard</string>
+    <string name="translator_what_was_said">What was said</string>
+    <string name="translator_translate_again">Translate again</string>
+    <string name="translator_other_languages">Manage languages…</string>
+    <string name="translator_languages_title">Manage languages</string>
+    <string name="translator_manage_languages">Manage languages</string>
+    <string name="translator_downloaded_languages">Downloaded languages</string>
+    <string name="translator_enable_language">Enable language</string>
+    <string name="translator_enable_language_supporting">Shown in the Translator's lists</string>
+    <string name="translator_status_ready_on">Installed and enabled</string>
+    <string name="translator_status_ready_off">Installed, not enabled</string>
+    <string name="translator_status_partial_on">Partly installed, enabled</string>
+    <string name="translator_status_partial_off">Partly installed, not enabled</string>
+    <string name="translator_manage_help">Downloaded languages have their translation pack on the phone; tap one to see its parts.\nEnable language puts it in the Translator's lists. Downloading a pack enables it.\nTranslation, speech recognition and voice are each got or deleted with ⋮. Speech and voices come from the phone's own apps.</string>
+    <string name="translator_manage_marks">The mark beside each downloaded language:</string>
+    <string name="translator_more_languages">Other languages</string>
+    <string name="translator_part_translation">Translation</string>
+    <string name="translator_part_speech">Speech recognition</string>
+    <string name="translator_part_voice">Voice</string>
+    <string name="translator_part_menu">More actions for %1$s, %2$s</string>
+    <string name="translator_built_in">Built into the app</string>
+    <string name="translator_part_ready">Ready</string>
+    <string name="translator_part_checking">Asking the phone…</string>
+    <string name="translator_speech_can_get">The phone can download it</string>
+    <string name="translator_speech_getting">The phone is downloading it</string>
+    <string name="translator_speech_not_got">The phone didn't install it</string>
+    <string name="translator_speech_none">Not on this phone</string>
+    <string name="translator_speech_tried">Tried when you speak</string>
+    <string name="translator_speech_old_phone">Needs Android 12 or later</string>
+    <string name="translator_voice_none">No offline voice</string>
+    <string name="translator_voice_no_app">No voice app on this phone</string>
+    <string name="translator_space_used_value">%1$s MB used</string>
+    <string name="translator_languages_back">Back</string>
+    <string name="translator_languages_search">Search languages</string>
+    <string name="translator_languages_clear">Clear search</string>
+    <string name="translator_languages_two">At least two languages stay in the lists.</string>
+    <string name="translator_languages_none">No language matches</string>
+    <string name="translator_basic_quality">Basic quality</string>
+</resources>

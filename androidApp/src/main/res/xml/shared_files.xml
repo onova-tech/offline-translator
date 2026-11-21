@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only what the app shares on purpose, such as a QR code's image (spec 019). -->
+<paths>
+    <cache-path name="shared" path="shared/" />
+</paths>

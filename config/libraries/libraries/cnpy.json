@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.cnpy",
+  "developers": [
+    {
+      "name": "Carl Rogers",
+      "organisationUrl": "https://github.com/rogersce"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Reads NumPy files inside Marian.",
+  "name": "cnpy",
+  "website": "https://github.com/rogersce/cnpy",
+  "licenses": [
+    "offlinetranslator-cnpy"
+  ]
+}

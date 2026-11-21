@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.simd-utils",
+  "developers": [
+    {
+      "name": "JishinMaster",
+      "organisationUrl": "https://github.com/JishinMaster"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Vector math on ARM processors.",
+  "name": "simd_utils",
+  "website": "https://github.com/JishinMaster/simd_utils",
+  "licenses": [
+    "offlinetranslator-simd-utils"
+  ]
+}

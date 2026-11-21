@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.threadpool",
+  "developers": [
+    {
+      "name": "Jakob Progsch, Václav Zeman",
+      "organisationUrl": "https://github.com/progschj"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The thread pool inside Marian.",
+  "name": "ThreadPool",
+  "website": "https://github.com/progschj/ThreadPool",
+  "licenses": [
+    "offlinetranslator-threadpool"
+  ]
+}

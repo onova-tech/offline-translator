@@ -1,0 +1,4 @@
+# The models are downloaded and checked by scripts/fetch-language-packs.sh (spec 012 research R6): about 75 MB a
+# pack, too big for git. pack.json, which names them with their SHA-256, is committed.
+*/src/main/assets/**/*.bin
+*/src/main/assets/**/*.spm

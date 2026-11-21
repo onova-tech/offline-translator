@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.lucide",
+  "developers": [
+    {
+      "name": "Lucide Icons and Contributors",
+      "organisationUrl": "https://lucide.dev"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The line icons of the app, drawn from Lucide.",
+  "name": "Lucide",
+  "website": "https://github.com/lucide-icons/lucide",
+  "licenses": [
+    "offlinetranslator-lucide"
+  ]
+}

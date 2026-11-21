@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.ruy",
+  "developers": [
+    {
+      "name": "Google",
+      "organisationUrl": "https://github.com/google"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Matrix products on the phone's processor.",
+  "name": "Ruy",
+  "website": "https://github.com/google/ruy",
+  "licenses": [
+    "offlinetranslator-ruy"
+  ]
+}

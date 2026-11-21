@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.marian",
+  "developers": [
+    {
+      "name": "Marian developers",
+      "organisationUrl": "https://marian-nmt.github.io"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The neural translation toolkit inside the engine.",
+  "name": "Marian",
+  "website": "https://github.com/browsermt/marian-dev",
+  "licenses": [
+    "offlinetranslator-marian"
+  ]
+}

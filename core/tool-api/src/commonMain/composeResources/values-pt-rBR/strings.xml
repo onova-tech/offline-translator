@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_back">Voltar</string>
+    <!-- O aviso da primeira abertura (spec 078): a privacidade dita uma vez, aqui, e não em cada ferramenta. -->
+    <string name="host_privacy_notice_title">Antes de começar</string>
+    <string name="host_privacy_notice_tools">Todas as ferramentas funcionam no seu celular, e nenhuma envia seus dados para lugar nenhum.</string>
+    <string name="host_privacy_notice_saved">Algumas ferramentas guardam o que você cria, como notas, listas e históricos, só neste celular. Você pode exportar para um arquivo ou apagar.</string>
+    <string name="host_privacy_notice_ads">A versão gratuita mostra anúncios do Google, que recebe algumas informações do seu aparelho para exibi-los. Configurações → Privacidade tem os detalhes.</string>
+    <string name="host_privacy_notice_ok">Entendi</string>
+    <string name="host_privacy_notice_policy">Política de privacidade</string>
+    <string name="host_add_favorite">Adicionar aos favoritos</string>
+    <string name="host_remove_favorite">Remover dos favoritos</string>
+    <!-- Offline Translator (spec 081): the gear on the Translator's top bar. -->
+    <string name="host_settings">Configurações</string>
+    <string name="host_help">Como usar</string>
+    <string name="host_help_close">Fechar</string>
+    <string name="host_add_shortcut">Adicionar à tela inicial</string>
+    <string name="shortcut_locked_title">Este atalho precisa da compra</string>
+    <string name="shortcut_locked_message">Os atalhos vêm com o único pagamento que também remove os anúncios. Abra o PolyTools para comprar ou restaurar.</string>
+    <string name="shortcut_open_app">Abrir o PolyTools</string>
+    <string name="shortcut_disabled">Precisa da compra do PolyTools</string>
+    <string name="tool_unavailable_short">Indisponível neste aparelho</string>
+    <string name="tool_unavailable_title">Não disponível neste celular</string>
+    <string name="tool_unavailable_message">Esta ferramenta precisa de um recurso que seu celular não tem: %1$s.</string>
+    <string name="hardware_accelerometer">sensor de movimento</string>
+    <string name="hardware_gyroscope">giroscópio</string>
+    <string name="hardware_magnetometer">sensor magnético</string>
+    <string name="hardware_light_sensor">sensor de luz</string>
+    <string name="hardware_step_counter">contador de passos</string>
+    <string name="hardware_camera">câmera</string>
+    <string name="hardware_front_camera">câmera frontal</string>
+    <string name="hardware_flash">flash da câmera</string>
+    <string name="hardware_microphone">microfone</string>
+    <string name="hardware_gps">GPS</string>
+    <string name="hardware_nfc">NFC</string>
+    <string name="hardware_vibrator">motor de vibração</string>
+    <!-- Number symbols of this language (spec 004 research.md R12). -->
+    <string name="decimal_separator">,</string>
+    <string name="grouping_separator">.</string>
+    <!-- The language's numeric date order (DMY, MDY or YMD), not shown as text (spec 004 FR-045). -->
+    <string name="date_order">DMY</string>
+    <!-- Permission flow (constitution Principle IX; spec 004 research.md R7). -->
+    <string name="permission_allow">Permitir</string>
+    <string name="permission_not_now">Agora não</string>
+    <string name="permission_ask_again">Pedir de novo</string>
+    <string name="permission_open_settings">Abrir configurações</string>
+    <string name="permission_denied">%1$s Sem essa permissão, esta opção fica desligada.</string>
+    <string name="permission_needs_settings">%1$s O Android não pergunta mais, então permita nas configurações do app.</string>
+    <string name="camera_view">Visão da câmera</string>
+    <string name="camera_unavailable">A câmera não está disponível</string>
+    <string name="camera_permission_explain">As ferramentas de câmera mostram o que a câmera vê.</string>
+    <string name="host_more_options">Mais opções</string>
+    <string name="host_fewer_options">Menos opções</string>
+    <string name="host_date_time">%1$s %2$s</string>
+    <string name="host_time_24">%1$s:%2$s</string>
+    <string name="host_time_12">%1$s:%2$s %3$s</string>
+    <string name="host_am">AM</string>
+    <string name="host_pm">PM</string>
+</resources>

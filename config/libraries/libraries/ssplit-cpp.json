@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.ssplit-cpp",
+  "developers": [
+    {
+      "name": "Bergamot project",
+      "organisationUrl": "https://browser.mt"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Splits a text into sentences.",
+  "name": "ssplit-cpp",
+  "website": "https://github.com/browsermt/ssplit-cpp",
+  "licenses": [
+    "offlinetranslator-ssplit-cpp"
+  ]
+}

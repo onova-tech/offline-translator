@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.yaml-cpp",
+  "developers": [
+    {
+      "name": "Jesse Beder and contributors",
+      "organisationUrl": "https://github.com/jbeder"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "Reads the engine's settings.",
+  "name": "yaml-cpp",
+  "website": "https://github.com/jbeder/yaml-cpp",
+  "licenses": [
+    "offlinetranslator-yaml-cpp"
+  ]
+}

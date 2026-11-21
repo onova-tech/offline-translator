@@ -1,0 +1,16 @@
+{
+  "uniqueId": "polytools.translation-models",
+  "developers": [
+    {
+      "name": "Mozilla",
+      "organisationUrl": "https://www.mozilla.org"
+    }
+  ],
+  "artifactVersion": "",
+  "description": "The language packs' models, from Mozilla's model registry, each to and from English: Afrikaans, Albanian, Arabic, Basque, Belarusian, Bengali, Bulgarian, Catalan, Chinese (Simplified), Chinese (Traditional), Czech, Danish, Dutch, Estonian, Filipino, Finnish, French, Galician, German, Greek, Gujarati, Hebrew, Hindi, Hungarian, Icelandic, Indonesian, Italian, Japanese, Kannada, Korean, Latvian, Lithuanian, Malay, Malayalam, Marathi, Norwegian Bokmål, Persian, Polish, Portuguese, Romanian, Russian, Slovak, Slovenian, Spanish, Swedish, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Uyghur, Vietnamese.",
+  "name": "Translation models (53 languages with English)",
+  "website": "https://github.com/mozilla/translations",
+  "licenses": [
+    "offlinetranslator-bergamot"
+  ]
+}

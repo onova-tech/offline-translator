@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="translator_name">Tradutor</string>
+    <string-array name="translator_keywords">
+        <item>traduzir</item>
+        <item>tradução</item>
+        <item>idioma</item>
+        <item>intérprete</item>
+        <item>conversa</item>
+        <item>viagem</item>
+        <item>falar</item>
+        <item>voz</item>
+        <item>offline</item>
+        <item>português</item>
+        <item>espanhol</item>
+        <item>inglês</item>
+    </string-array>
+    <string name="translator_help">Digitar ou falar: escreva, cole ou fale uma frase e leia em outro idioma. Copie, compartilhe ou ouça a tradução em voz alta.\nEm De, escolha o idioma em que o texto está: com outro, a tradução pode não fazer sentido.\nGerenciar idiomas… no fim de cada lista: marque os idiomas que quer e baixe ou apague pacotes, fala e vozes. Os de Qualidade básica traduzem pior.\nConversa: duas pessoas falam na sua vez, cada uma no seu idioma, em duas metades da tela. Deixe o celular entre vocês.\nNa primeira vez, cada idioma precisa do seu pacote (uns 70 MB). Depois de baixado, a tradução funciona sem internet.\nFalar e ouvir usam o reconhecimento de voz e as vozes do próprio celular, então dependem do aparelho. Digitar sempre funciona.\nPara viagens e conversas do dia a dia, não para textos médicos ou jurídicos.</string>
+    <string name="translator_modes">Modo</string>
+    <string name="translator_mode_type_or_speak">Digitar ou falar</string>
+    <string name="translator_mode_conversation">Conversa</string>
+    <string name="translator_language_en">Inglês</string>
+    <string name="translator_language_pt">Português</string>
+    <string name="translator_language_es">Espanhol</string>
+    <string name="translator_from">De</string>
+    <string name="translator_to">Para</string>
+    <string name="translator_swap">Trocar os idiomas</string>
+    <string name="translator_to_download">%1$s MB para baixar</string>
+    <string name="translator_text">Texto</string>
+    <string name="translator_counter">%1$s / %2$s</string>
+    <string name="translator_over_limit">Só os primeiros %1$s caracteres são traduzidos</string>
+    <string name="translator_empty">Digite ou cole um texto</string>
+    <string name="translator_working">Traduzindo…</string>
+    <string name="translator_translation">Tradução</string>
+    <string name="translator_note_through_english">Traduzido passando pelo inglês</string>
+    <string name="translator_note_same_language">Mesmo idioma: mostrado como foi digitado</string>
+    <string name="translator_note_over_limit">Só os primeiros %1$s caracteres foram traduzidos</string>
+    <string name="translator_failed">Não deu para traduzir este texto. Mude o texto para tentar de novo.</string>
+    <string name="translator_unsupported">O processador deste celular não roda o tradutor.</string>
+    <string name="translator_damaged">Um pacote de idioma está danificado. Apague-o nas Configurações e baixe de novo.</string>
+    <string name="translator_pack_needed">Para traduzir %1$s, baixe o pacote do idioma (%2$s MB).</string>
+    <string name="translator_pack_needed_no_size">Para traduzir %1$s, baixe o pacote do idioma.</string>
+    <string name="translator_copy">Copiar</string>
+    <string name="translator_share">Compartilhar</string>
+    <string name="translator_read_aloud">Ler em voz alta</string>
+    <string name="translator_copied">Tradução copiada</string>
+    <string name="translator_pack_checking">Procurando o pacote do idioma…</string>
+    <string name="translator_not_now">Agora não</string>
+    <string name="translator_download">Baixar</string>
+    <string name="translator_downloading">Baixando %1$s: %2$s de %3$s MB</string>
+    <string name="translator_installing">Instalando %1$s…</string>
+    <string name="translator_cancel">Cancelar</string>
+    <string name="translator_waiting_wifi">Conecte-se ao Wi-Fi para baixar %1$s, ou desligue “Baixar só no Wi-Fi” nas Configurações.</string>
+    <string name="translator_waiting_confirmation">O Google Play pede sua confirmação antes de baixar %1$s.</string>
+    <string name="translator_network_settings">Configurações de rede</string>
+    <string name="translator_no_space">Para baixar %1$s, são necessários %2$s MB livres.</string>
+    <string name="translator_storage_settings">Configurações de armazenamento</string>
+    <string name="translator_download_failed">Não deu para baixar %1$s.</string>
+    <string name="translator_try_again">Tentar de novo</string>
+    <string name="translator_confirm">Confirmar</string>
+    <string name="translator_no_store">Os pacotes de idioma não podem ser baixados neste celular.</string>
+    <string name="translator_not_now_caption">%1$s não está neste celular. Escolha outro idioma ou baixe nas Configurações.</string>
+    <string name="translator_offline_languages">Idiomas offline</string>
+    <string name="translator_wifi_only">Baixar só no Wi-Fi</string>
+    <string name="translator_wifi_only_supporting">Para os pacotes de idioma não usarem os dados móveis</string>
+    <string name="translator_pack_installed">Instalado · %1$s MB</string>
+    <string name="translator_pack_not_downloaded">Não baixado</string>
+    <string name="translator_pack_downloading_row">Baixando %1$s de %2$s MB</string>
+    <string name="translator_pack_installing_row">Instalando…</string>
+    <string name="translator_pack_waiting_wifi_row">Esperando o Wi-Fi</string>
+    <string name="translator_pack_waiting_confirmation_row">Esperando o Google Play</string>
+    <string name="translator_pack_failed_row">O download falhou</string>
+    <string name="translator_pack_no_space_row">Precisa de %1$s MB livres</string>
+    <string name="translator_pack_no_store_row">Não pode ser baixado neste celular</string>
+    <string name="translator_pack_unsupported_row">Não roda no processador deste celular</string>
+    <string name="translator_pack_checking_row">Verificando…</string>
+    <string name="translator_pack_menu">Mais ações de %1$s</string>
+    <string name="translator_delete">Apagar</string>
+    <string name="translator_delete_title">Apagar %1$s?</string>
+    <string name="translator_delete_text">Isso libera %1$s MB. Você pode baixar de novo quando precisar.</string>
+    <string name="translator_space_used">Espaço usado</string>
+    <string name="translator_megabytes">%1$s MB</string>
+    <string name="translator_empty_speak">Digite, cole ou fale um texto</string>
+    <string name="translator_speak">Falar</string>
+    <string name="translator_stop_listening">Parar de ouvir</string>
+    <string name="translator_listening">Ouvindo</string>
+    <string name="translator_discard_turn">Parar e descartar</string>
+    <string name="translator_stop">Parar</string>
+    <string name="translator_microphone_rationale">Para escrever o que você fala, o Tradutor usa o microfone enquanto ouve.</string>
+    <string name="translator_nothing_heard">Nada foi ouvido. Toque no microfone e fale.</string>
+    <string name="translator_speech_can_download">O reconhecimento de %1$s ainda não está neste celular. O celular pode baixá-lo.</string>
+    <string name="translator_speech_downloading">O celular está baixando o reconhecimento de %1$s. Ele funciona quando terminar.</string>
+    <string name="translator_speech_not_installed">O celular não instalou o reconhecimento de %1$s. Atualizar o serviço de voz dele na Google Play pode resolver.</string>
+    <string name="translator_update_speech_service">Atualizar</string>
+    <string name="translator_dismiss_notice">Ignorar</string>
+    <string name="translator_get_language">Obter este idioma</string>
+    <string name="translator_speech_unsupported">Este celular não reconhece %1$s offline. Você ainda pode digitar.</string>
+    <string name="translator_no_recognizer">Este celular não tem reconhecimento de voz offline. Você ainda pode digitar.</string>
+    <string name="translator_microphone_busy">O microfone está em uso por outro app ou numa ligação.</string>
+    <string name="translator_microphone_denied">O Tradutor não pode usar o microfone. Permita nas configurações do app.</string>
+    <string name="translator_listening_failed">A escuta parou. Tente de novo.</string>
+    <string name="translator_no_voice">Não há uma voz offline para %1$s. O app de voz do celular pode baixar uma.</string>
+    <string name="translator_voice_settings">Baixar voz</string>
+    <string name="translator_no_speech_engine">Este celular não consegue ler textos em voz alta.</string>
+    <string name="translator_ok">OK</string>
+    <string name="translator_near_language">Seu idioma</string>
+    <string name="translator_far_language">Idioma da outra pessoa</string>
+    <string name="translator_speak_language">Falar em %1$s</string>
+    <string name="translator_conversation_start">Toque no microfone e fale</string>
+    <string name="translator_conversation_unsupported">Este celular não reconhece %1$s offline.</string>
+    <string name="translator_turn_failed">Não deu para traduzir esta fala.</string>
+    <string name="translator_paused">Pausado. Toque num microfone para continuar.</string>
+    <string name="translator_far_turned">Virar a metade de cima para a outra pessoa</string>
+    <string name="translator_far_turned_supporting">Desligue quando estiverem lado a lado</string>
+    <string name="translator_read_translations">Ler as traduções em voz alta</string>
+    <string name="translator_clear">Limpar</string>
+    <string name="translator_clear_title">Limpar a conversa?</string>
+    <string name="translator_clear_text">Todas as falas saem da tela.</string>
+    <string name="translator_correct">Corrigir o que foi ouvido</string>
+    <string name="translator_what_was_said">O que foi dito</string>
+    <string name="translator_translate_again">Traduzir de novo</string>
+    <string name="translator_other_languages">Gerenciar idiomas…</string>
+    <string name="translator_languages_title">Gerenciar idiomas</string>
+    <string name="translator_manage_languages">Gerenciar idiomas</string>
+    <string name="translator_downloaded_languages">Idiomas baixados</string>
+    <string name="translator_enable_language">Habilitar idioma</string>
+    <string name="translator_enable_language_supporting">Aparece nas listas do Tradutor</string>
+    <string name="translator_status_ready_on">Instalado e habilitado</string>
+    <string name="translator_status_ready_off">Instalado, não habilitado</string>
+    <string name="translator_status_partial_on">Instalado em parte, habilitado</string>
+    <string name="translator_status_partial_off">Instalado em parte, não habilitado</string>
+    <string name="translator_manage_help">Idiomas baixados têm o pacote de tradução no celular; toque em um para ver suas partes.\nHabilitar idioma o coloca nas listas do Tradutor. Baixar um pacote o habilita.\nTradução, reconhecimento de fala e voz são obtidos ou apagados no ⋮. Fala e vozes vêm dos apps do próprio celular.</string>
+    <string name="translator_manage_marks">A marca ao lado de cada idioma baixado:</string>
+    <string name="translator_more_languages">Outros idiomas</string>
+    <string name="translator_part_translation">Tradução</string>
+    <string name="translator_part_speech">Reconhecimento de fala</string>
+    <string name="translator_part_voice">Voz</string>
+    <string name="translator_part_menu">Mais ações de %1$s, %2$s</string>
+    <string name="translator_built_in">Já vem no app</string>
+    <string name="translator_part_ready">Pronto</string>
+    <string name="translator_part_checking">Perguntando ao celular…</string>
+    <string name="translator_speech_can_get">O celular pode baixá-lo</string>
+    <string name="translator_speech_getting">O celular está baixando</string>
+    <string name="translator_speech_not_got">O celular não o instalou</string>
+    <string name="translator_speech_none">Indisponível neste celular</string>
+    <string name="translator_speech_tried">Testado quando você fala</string>
+    <string name="translator_speech_old_phone">Requer Android 12 ou mais novo</string>
+    <string name="translator_voice_none">Sem voz offline</string>
+    <string name="translator_voice_no_app">Sem app de voz neste celular</string>
+    <string name="translator_space_used_value">%1$s MB usados</string>
+    <string name="translator_languages_back">Voltar</string>
+    <string name="translator_languages_search">Buscar idiomas</string>
+    <string name="translator_languages_clear">Limpar busca</string>
+    <string name="translator_languages_two">Pelo menos dois idiomas ficam nas listas.</string>
+    <string name="translator_languages_none">Nenhum idioma encontrado</string>
+    <string name="translator_basic_quality">Qualidade básica</string>
+</resources>
