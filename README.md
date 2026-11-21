@@ -7,7 +7,8 @@ No ads, no purchases, no account. Type or speak a sentence, or hold a conversati
 - **Speech** through the phone's own on-device recognizer and voices; nothing is recorded or sent.
 - **The only network use** is Google Play downloading the language packs you choose.
 
-Free software under the [GNU General Public License 3.0](LICENSE). Built with Kotlin Multiplatform and Compose
+Copyright © 2026 Onova Tech. Free software under the [GNU General Public License 3.0](LICENSE): you may use, study,
+share and change it under that licence's terms. Built with Kotlin Multiplatform and Compose
 Multiplatform; it began as the Translator tool of PolyTools (specs 012 and 080 in `specs/`).
 
 ## Building
