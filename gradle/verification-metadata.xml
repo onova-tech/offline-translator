@@ -14,9 +14,9 @@
       </trusted-artifacts>
    </configuration>
    <components>
-      <component group="com.k2fsa.sherpa.onnx" name="sherpa-onnx-static-link-onnxruntime" version="2.0.2">
-         <artifact name="sherpa-onnx-static-link-onnxruntime-2.0.2.aar">
-            <sha256 value="cb73564809268c8b96bf98f1a32b0b3b611e01d028d22f10beb57ef55418c0cb" origin="GitHub release v2.0.2, 2026-11-21"/>
+      <component group="com.k2fsa.sherpa.onnx" name="sherpa-onnx-static-link-onnxruntime" version="1.13.8">
+         <artifact name="sherpa-onnx-static-link-onnxruntime-1.13.8.aar">
+            <sha256 value="b22c3fc1b6a45666d28892bb2f7694beeb77a8362d7ebd77c1a5431ec9435471" origin="GitHub release v1.13.8, its published digest"/>
          </artifact>
       </component>
    </components>

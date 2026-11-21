@@ -172,6 +172,10 @@ private fun speechProbe(
             report("Voice made" to "%.1f s of speech in %d ms".format(audio.seconds, made))
             report("Memory with the voice" to speechMemory())
             voice.release()
+            if (audio.samples.isEmpty()) {
+                report("Whisper" to "skipped: the voice made no sound")
+                continue
+            }
             start = SystemClock.elapsedRealtime()
             val heard = whisper.transcribe(audio.samples, audio.sampleRate, case.whisper)
             report("Whisper wrote (${SystemClock.elapsedRealtime() - start} ms)" to heard.ifEmpty { "(nothing)" })

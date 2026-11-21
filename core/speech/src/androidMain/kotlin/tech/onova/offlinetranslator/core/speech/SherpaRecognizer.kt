@@ -49,6 +49,8 @@ public class SherpaRecognizer(
         sampleRate: Int,
         language: String,
     ): String {
+        // The native side aborts the process on an empty recording or a rate of 0, which no catch can stop.
+        if (samples.isEmpty() || sampleRate <= 0) return ""
         if (language != this.language) {
             val whisper = config.modelConfig.whisper
             config =

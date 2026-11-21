@@ -14,6 +14,28 @@
   this one artifact, with its SHA-256 pinned by Gradle's dependency verification; no binary in git.
 - **Alternatives**: the AAR with a separate `libonnxruntime.so` (52 MB, two libraries); building from source (an hour
   per ABI on this machine, as Bergamot); whisper.cpp (recognition only, no voices).
+- **Version: 1.13.8, not 2.0.2** (found on the emulator, 2026-11-21): sherpa-onnx 2.0 removed espeak-ng ("espeak-ng is
+  no longer used. Language is determined by the lexicon files"), so Kokoro read only English and Chinese and every Piper
+  voice made no sound, and an empty result aborted the process in Whisper's resampler. 1.13.8 (2026-09-10, the last 1.x,
+  digest `b22c3fc1…5471`, 24.2 MB on arm64) still bundles espeak-ng, whose GPL suits this GPL app. The cost: 1.x gets no
+  more releases; moving to 2.x later means giving the voices phonemes from our own espeak-ng build. The recognizer now
+  refuses an empty recording before the native side sees it.
+
+## Emulator run (2026-11-21, Android 36 ATD x86_64 on the 2-core development machine; timings not representative)
+
+Each voice made a sentence, then Whisper Base wrote it back (`SpeechProbe`, no sound played):
+
+| Language | Voice | Voice: load, making | Whisper wrote back | Whisper time |
+|---|---|---|---|---|
+| English | Kokoro, speaker 3 | 8.6 s, 54.6 s for 2.6 s of speech | exactly the sentence | 11.1 s |
+| Portuguese | Kokoro, speaker 42, `pt-br` | 9.0 s, 57.1 s for 3.7 s | exactly the sentence (comma for "!") | 13.0 s |
+| Japanese | Kokoro, speaker 37, `ja` | 9.1 s, 76.7 s for 3.9 s | first clause right, "一番近い駅" lost | 15.9 s |
+| Arabic | Piper `ar_JO-kareem` | 9.3 s, 9.9 s for 3.0 s | understandable, several words wrong | 14.0 s |
+
+Whisper Base loaded in 6.1 s. Memory: PSS 293 MB with Whisper, about 700 MB with Whisper and Kokoro, 504 MB with
+Whisper and a Piper voice, back to 166 MB once both are released. Kokoro makes speech about 5 times slower than a Piper
+voice. Japanese through Kokoro and Arabic through Piper or Whisper Base lose accuracy; the phone run decides whether
+they're good enough.
 
 ## R2. Whisper Base on the owner's phone (open)
 
