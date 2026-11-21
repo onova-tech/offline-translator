@@ -149,8 +149,8 @@ dependencies {
     // ports; no feature module depends on them.
     implementation(project(":core:content"))
     implementation(project(":core:translation"))
-    // Spec 082 (the app's own speech): debug builds only, for the speech probe, until the feature is built.
-    debugImplementation(project(":core:speech"))
+    // Spec 082: the app's own speech (Whisper and Piper through sherpa-onnx), bound here to the speech ports.
+    implementation(project(":core:speech"))
 
     implementation(libs.compose.runtime)
     implementation(libs.compose.foundation)

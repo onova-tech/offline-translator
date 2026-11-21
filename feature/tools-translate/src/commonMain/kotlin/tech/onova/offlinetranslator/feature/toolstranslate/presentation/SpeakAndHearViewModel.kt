@@ -56,6 +56,18 @@ internal enum class SpeechProblem {
 
     /** No text-to-speech at all. */
     NO_ENGINE,
+
+    /** The phone can't, and the app's own recognition can, once downloaded (spec 082; on Manage languages). */
+    APP_CAN_DOWNLOAD,
+
+    /** The app's own recognition is downloading (spec 082). */
+    APP_DOWNLOADING,
+
+    /** No voice on the phone, and the app's own has one, once downloaded (spec 082; on Manage languages). */
+    APP_VOICE_CAN_DOWNLOAD,
+
+    /** The app's own voice is downloading (spec 082). */
+    APP_VOICE_DOWNLOADING,
 }
 
 internal data class SpeechUi(
@@ -196,6 +208,14 @@ internal class SpeakAndHearViewModel(
             RecognitionSupport.NO_RECOGNIZER, RecognitionSupport.SYSTEM_TOO_OLD -> {
                 state.report(SpeechProblem.NO_RECOGNIZER)
             }
+
+            RecognitionSupport.APP_CAN_DOWNLOAD -> {
+                state.report(SpeechProblem.APP_CAN_DOWNLOAD)
+            }
+
+            RecognitionSupport.APP_DOWNLOADING -> {
+                state.report(SpeechProblem.APP_DOWNLOADING)
+            }
         }
     }
 
@@ -213,6 +233,14 @@ internal class SpeakAndHearViewModel(
 
             VoiceSupport.NO_ENGINE -> {
                 state.report(SpeechProblem.NO_ENGINE)
+            }
+
+            VoiceSupport.APP_CAN_DOWNLOAD -> {
+                state.report(SpeechProblem.APP_VOICE_CAN_DOWNLOAD)
+            }
+
+            VoiceSupport.APP_DOWNLOADING -> {
+                state.report(SpeechProblem.APP_VOICE_DOWNLOADING)
             }
 
             VoiceSupport.READY -> {

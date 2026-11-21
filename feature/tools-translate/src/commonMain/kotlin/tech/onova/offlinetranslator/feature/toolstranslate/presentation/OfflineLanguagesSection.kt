@@ -39,7 +39,8 @@ public fun OfflineLanguagesSection(modifier: Modifier = Modifier) {
     val ui by viewModel.uiState.collectAsStateWithLifecycle()
     var managing by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) { viewModel.refresh() }
-    val used = ui.packs.filter { Routes.languageOf(it.id) != null }.sumOf { it.installedBytes ?: 0 }
+    // The translation packs and the app's speech packs (spec 082): every pack the app knows.
+    val used = ui.packs.sumOf { it.installedBytes ?: 0 }
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(PocketSpacing.xs)) {
         SectionHeader(
             text = stringResource(Res.string.translator_offline_languages),

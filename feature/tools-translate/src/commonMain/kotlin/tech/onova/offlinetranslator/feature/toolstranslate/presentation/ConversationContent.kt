@@ -105,12 +105,16 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_read_translations
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_share
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speak_language
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_can_download
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_can_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_not_installed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_translate_again
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_turn_failed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_unsupported
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_can_download
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_what_was_said
 
 /** A half's language list: choosing a language, and "Other languages…" at its end (spec 080), turned with its half. */
@@ -402,6 +406,24 @@ private fun SetupNotice(
 
             is SetupNeed.Voice -> {
                 stringResource(Res.string.translator_no_voice, name)
+            }
+
+            is SetupNeed.AppRecognition -> {
+                if (need.downloading) {
+                    stringResource(Res.string.translator_speech_app_downloading)
+                } else {
+                    stringResource(Res.string.translator_speech_app_can_download, name)
+                }
+            }
+
+            is SetupNeed.AppVoice -> {
+                val words =
+                    if (need.downloading) {
+                        Res.string.translator_voice_app_downloading
+                    } else {
+                        Res.string.translator_voice_app_can_download
+                    }
+                stringResource(words, name)
             }
 
             is SetupNeed.NoRecognition, is SetupNeed.Pack -> {

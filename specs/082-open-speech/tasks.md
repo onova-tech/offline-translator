@@ -33,28 +33,29 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 
 ## Phase 3: User story 1, speak a language the phone can't recognize (P1)
 
-- [ ] T010 [P] Domain tests first: `SpeechRoutesTest` (phone, app or none for recognition and voice, from the phone's
+- [X] T010 [P] Domain tests first: `SpeechRoutesTest` (phone, app or none for recognition and voice, from the phone's
   support, the app's packs and the person's choice; FR-001, FR-006, US3)
-- [ ] T011 `SpeechRoutes` and the choice per language in `TranslatorSettings` (FR-007)
-- [ ] T012 `AppSpeechInput` (core/speech): `AudioRecord` at 16 kHz mono in memory, ends on the stop button or 1.5 s of
+- [X] T011 `SpeechRoutes` and the choice per language in `TranslatorSettings` (FR-007)
+- [X] T012 `AppSpeechInput` (core/speech): `AudioRecord` at 16 kHz mono in memory, ends on the stop button or 1.5 s of
   silence, then Whisper with the language; Partial "…" while listening, Final with the text; never written (FR-005)
-- [ ] T013 Bind the phone's and the app's engines (`named("phone")`, `named("app")`) and route the Translator's speech
+- [X] T013 Bind the phone's and the app's engines (`named("phone")`, `named("app")`) and route the Translator's speech
   through `SpeechRoutes` in Type or speak and Conversation (FR-008)
-- [ ] T014 The Conversation's and Type or speak's notices offer the app's recognition with its size when the phone
+- [X] T014 The Conversation's and Type or speak's notices offer the app's recognition with its size when the phone
   can't (US1 scenario 1), in three languages
 
 ## Phase 4: User story 2, hear a translation in a language the phone can't speak (P1)
 
-- [ ] T015 `AppSpeechOutput` (core/speech): Piper through sherpa-onnx, sentence by sentence into an `AudioTrack`, stop
+- [X] T015 `AppSpeechOutput` (core/speech): Piper through sherpa-onnx, sentence by sentence into an `AudioTrack`, stop
   at once; `SpeechEnd` as the phone's
-- [ ] T016 Read aloud and the Conversation's turns use it where routed; the "no voice" notice offers the app's voice
+- [X] T016 Read aloud and the Conversation's turns use it where routed; the "no voice" notice offers the app's voice
 
 ## Phase 5: User stories 3 and 4, the choice and the space (P2, P3)
 
 - [ ] T017 Manage languages: Speech recognition and Voice rows with "Phone" or "App" where both exist, the app's
-  download, delete and size (FR-006); rules in `docs/ui-rules.md`
-- [ ] T018 Settings → Offline languages counts the speech packs; Open-source licenses credits sherpa-onnx, onnxruntime,
-  espeak-ng, Whisper and every voice (FR-009)
+  download, delete and size (FR-006); rules in `docs/ui-rules.md`. Done so far: the rows show the app's download with
+  its size, Download and Cancel; to do: the Phone/App choice and Delete
+- [ ] T018 Settings → Offline languages counts the speech packs (done); Open-source licenses credits sherpa-onnx,
+  onnxruntime, espeak-ng, Whisper and every voice (FR-009)
 
 ## Phase 6: Polish
 

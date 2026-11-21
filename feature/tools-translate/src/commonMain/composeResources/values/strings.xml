@@ -154,4 +154,11 @@
     <string name="translator_languages_two">At least two languages stay in the lists.</string>
     <string name="translator_languages_none">No language matches</string>
     <string name="translator_basic_quality">Basic quality</string>
+    <!-- Spec 082: the app's own speech and voices. -->
+    <string name="translator_speech_app_can_download">%1$s can be recognized by the app itself, after a download. You'll find it in Manage languages.</string>
+    <string name="translator_speech_app_downloading">The app's speech recognition is downloading. It works once that ends.</string>
+    <string name="translator_voice_app_can_download">The app has its own voice for %1$s, after a download. You'll find it in Manage languages.</string>
+    <string name="translator_voice_app_downloading">The app's voice for %1$s is downloading. It works once that ends.</string>
+    <string name="translator_speech_app_can_get">The app can recognize it · %1$s</string>
+    <string name="translator_voice_app_can_get">The app has a voice for it · %1$s</string>
 </resources>

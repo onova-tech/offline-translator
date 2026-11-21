@@ -9,6 +9,8 @@ import okio.fakefilesystem.FakeFileSystem
 import tech.onova.offlinetranslator.core.data.backup.PartKind
 import tech.onova.offlinetranslator.core.data.datastore.JsonDataStoreFactory
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoice
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorDefaults
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorMode
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorSettings
@@ -49,6 +51,23 @@ class TranslatorSettingsTest {
         assertEquals(pt, resolved.target)
         assertEquals(pt, resolved.near)
         assertEquals(en, resolved.far)
+    }
+
+    /** Spec 082: a language's choice of the phone's or the app's speech is kept; automatic ones aren't written. */
+    @Test
+    fun theSpeechChoicesAreKept() {
+        val chosen =
+            TranslatorSettings(
+                speech =
+                    mapOf(
+                        pt to SpeechChoice(recognition = SpeechEngine.APP),
+                        LanguageCode("ja") to SpeechChoice(),
+                    ),
+            )
+        val document = TranslatorDocument.from(chosen)
+        assertEquals(setOf("pt"), document.speech.keys)
+        assertEquals(mapOf(pt to SpeechChoice(recognition = SpeechEngine.APP)), document.toDomain().speech)
+        assertEquals(emptyMap(), TranslatorDocument().toDomain().speech)
     }
 
     /** Spec 080: the checked languages are kept; a file from before them reads as no choice yet. */
@@ -102,6 +121,8 @@ class TranslatorSettingsTest {
                     "farHalfTurned",
                     // Spec 080 FR-007: the checked languages travel with the settings.
                     "languages",
+                    // Spec 082 FR-007: the phone's or the app's speech, per language, where the person chose.
+                    "speech",
                 ),
                 document.keys,
             )

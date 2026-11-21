@@ -2,6 +2,7 @@ package tech.onova.offlinetranslator.feature.toolstranslate.domain
 
 import kotlinx.coroutines.flow.Flow
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 
 /** The Translator's two modes, its top choice (spec 012 FR-008). */
 internal enum class TranslatorMode {
@@ -26,6 +27,14 @@ internal data class TranslatorSettings(
     val farHalfTurned: Boolean = true,
     /** The languages the lists show (spec 080); null until the person chooses: see `CheckedLanguages`. */
     val languages: List<LanguageCode>? = null,
+    /** Spec 082: who hears and speaks each language, where the person chose; a language not here is automatic. */
+    val speech: Map<LanguageCode, SpeechChoice> = emptyMap(),
+)
+
+/** The person's choice of the phone's or the app's speech for one language (spec 082 US3); null is automatic. */
+internal data class SpeechChoice(
+    val recognition: SpeechEngine? = null,
+    val voice: SpeechEngine? = null,
 )
 
 /** [TranslatorSettings] with every language decided. */

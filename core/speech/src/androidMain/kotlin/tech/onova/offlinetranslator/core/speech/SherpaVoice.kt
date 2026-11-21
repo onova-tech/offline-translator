@@ -68,9 +68,13 @@ public class SherpaVoice private constructor(
             )
         }
 
-        /** One Piper voice, as unpacked from `vits-piper-<voice>-medium-int8.tar.bz2`. */
+        /**
+         * One Piper voice, as unpacked from `vits-piper-<voice>-medium-int8.tar.bz2`, reading espeak-ng's data from
+         * [espeakData] (its own pack in the app, spec 082; inside the voice's folder in the spike).
+         */
         public fun piper(
             folder: File,
+            espeakData: File = File(folder, "espeak-ng-data"),
             threads: Int = DEFAULT_THREADS,
         ): SherpaVoice {
             val model =
@@ -79,7 +83,7 @@ public class SherpaVoice private constructor(
                 OfflineTtsVitsModelConfig(
                     model = model.path,
                     tokens = File(folder, "tokens.txt").path,
-                    dataDir = File(folder, "espeak-ng-data").path,
+                    dataDir = espeakData.path,
                 )
             return SherpaVoice(
                 OfflineTts(null, OfflineTtsConfig(model = OfflineTtsModelConfig(vits = vits, numThreads = threads))),

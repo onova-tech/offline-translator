@@ -90,7 +90,7 @@ internal fun packName(pack: PackId): String = Routes.languageOf(pack)?.let { lan
 
 /** "Installed · 75 MB", "48 MB to download", "Downloading 23 of 48 MB"… */
 @Composable
-private fun stateText(status: PackStatus): String {
+internal fun stateText(status: PackStatus): String {
     val megabytes = { bytes: Long -> PackMessages.megabytes(bytes).toString() }
     return when (val state = status.state) {
         PackState.Installed -> {

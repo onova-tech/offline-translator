@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okio.FileSystem
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import tech.onova.offlinetranslator.BuildConfig
@@ -50,6 +51,8 @@ import tech.onova.offlinetranslator.core.platform.sensors.AndroidScreenAwake
 import tech.onova.offlinetranslator.core.platform.speech.AndroidScreenReader
 import tech.onova.offlinetranslator.core.platform.speech.AndroidSpeechInput
 import tech.onova.offlinetranslator.core.platform.speech.AndroidSpeechOutput
+import tech.onova.offlinetranslator.core.speech.AppSpeechInput
+import tech.onova.offlinetranslator.core.speech.AppSpeechOutput
 import tech.onova.offlinetranslator.core.toolapi.DefaultToolRegistry
 import tech.onova.offlinetranslator.core.toolapi.ToolRegistry
 import tech.onova.offlinetranslator.core.translation.BergamotEngine
@@ -80,9 +83,21 @@ val appModule =
         single<PermissionController> { AndroidPermissionController(androidContext(), get()) }
         // A conversation keeps the screen on while its page is open (spec 012).
         single<ScreenAwake> { AndroidScreenAwake(get()) }
-        // The phone's own recognizer and voices, on the device only (spec 012).
-        single<SpeechInput> { AndroidSpeechInput(androidContext()) }
-        single<SpeechOutput> { AndroidSpeechOutput(androidContext()) }
+        // The phone's own recognizer and voices, on the device only (spec 012), and the app's own (spec 082); the
+        // Translator routes between them per language (its module binds the plain SpeechInput and SpeechOutput).
+        single<SpeechInput>(named("phone")) { AndroidSpeechInput(androidContext()) }
+        single<SpeechOutput>(named("phone")) { AndroidSpeechOutput(androidContext()) }
+        single<SpeechInput>(named("app")) {
+            val packs = get<ContentPacks>()
+            AppSpeechInput(androidContext()) { packs.location(SpeechCatalog.recognitionPack) }
+        }
+        single<SpeechOutput>(named("app")) {
+            val packs = get<ContentPacks>()
+            AppSpeechOutput(
+                voiceFolder = { language -> SpeechCatalog.voices[language]?.let { packs.location(it.pack) } },
+                espeakFolder = { packs.location(SpeechCatalog.voiceDataPack) },
+            )
+        }
         single<ScreenReader> { AndroidScreenReader(androidContext()) }
         // Bergamot, on its own thread; it reads the packs ContentPacks installs (spec 012 research R3).
         single<TranslationEngine> { BergamotEngine() }

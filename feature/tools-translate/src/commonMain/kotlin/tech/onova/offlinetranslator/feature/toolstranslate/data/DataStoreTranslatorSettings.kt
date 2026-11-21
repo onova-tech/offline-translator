@@ -10,8 +10,11 @@ import tech.onova.offlinetranslator.core.data.backup.PartKind
 import tech.onova.offlinetranslator.core.data.datastore.JsonDataStoreFactory
 import tech.onova.offlinetranslator.core.data.datastore.JsonDocumentSerializer
 import tech.onova.offlinetranslator.core.data.datastore.enumOrDefault
+import tech.onova.offlinetranslator.core.data.datastore.enumOrNull
 import tech.onova.offlinetranslator.core.domain.catalog.ToolId
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
+import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoice
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorMode
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorSettings
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorSettingsRepository
@@ -32,6 +35,8 @@ internal data class TranslatorDocument(
     val farHalfTurned: Boolean = true,
     /** Spec 080: the checked languages; optional, so the schema stays 1 and older files read as the default. */
     val languages: List<String>? = null,
+    /** Spec 082: language code to its choice, "phone" or "app" for each part; optional, as [languages]. */
+    val speech: Map<String, SpeechChoiceDocument> = emptyMap(),
 ) {
     fun toDomain() =
         TranslatorSettings(
@@ -43,6 +48,10 @@ internal data class TranslatorDocument(
             wifiOnly = wifiOnly,
             farHalfTurned = farHalfTurned,
             languages = languages?.mapNotNull { it.toLanguage() },
+            speech =
+                speech
+                    .mapNotNull { (code, choice) -> code.toLanguage()?.let { it to choice.toDomain() } }
+                    .toMap(),
         )
 
     companion object {
@@ -58,9 +67,28 @@ internal data class TranslatorDocument(
                 wifiOnly = settings.wifiOnly,
                 farHalfTurned = settings.farHalfTurned,
                 languages = settings.languages?.map { it.value },
+                speech =
+                    settings.speech
+                        .filterValues { it.recognition != null || it.voice != null }
+                        .map { (language, choice) -> language.value to SpeechChoiceDocument.from(choice) }
+                        .toMap(),
             )
 
         private fun String?.toLanguage(): LanguageCode? = this?.trim()?.takeIf { it.isNotEmpty() }?.let(::LanguageCode)
+    }
+}
+
+/** One language's speech choice in `translator.json` (spec 082): "PHONE", "APP" or absent for automatic. */
+@Serializable
+internal data class SpeechChoiceDocument(
+    val recognition: String? = null,
+    val voice: String? = null,
+) {
+    fun toDomain() =
+        SpeechChoice(recognition = enumOrNull<SpeechEngine>(recognition), voice = enumOrNull<SpeechEngine>(voice))
+
+    companion object {
+        fun from(choice: SpeechChoice) = SpeechChoiceDocument(choice.recognition?.name, choice.voice?.name)
     }
 }
 

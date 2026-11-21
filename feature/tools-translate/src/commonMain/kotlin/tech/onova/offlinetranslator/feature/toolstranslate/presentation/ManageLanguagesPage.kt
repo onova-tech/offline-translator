@@ -43,6 +43,7 @@ import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.PackState
 import tech.onova.offlinetranslator.core.domain.ports.PackStatus
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.core.domain.translation.LanguageCatalog
 import tech.onova.offlinetranslator.core.toolapi.HelpSheet
 import tech.onova.offlinetranslator.core.toolapi.resources.host_help
@@ -113,8 +114,22 @@ internal fun ManageLanguagesPage(
                 if (ui.loaded && ui.rows.isEmpty()) {
                     MainReading(value = NO_READING, caption = stringResource(Res.string.translator_languages_none))
                 } else {
+                    val byId = packUi.packs.associateBy { it.id }
                     val state = { row: LanguageRow ->
-                        LanguageState(packOf(known, row.code), speechUi.parts[row.code], speechUi.serviceUpdatable)
+                        LanguageState(
+                            packOf(known, row.code),
+                            speechUi.parts[row.code],
+                            speechUi.serviceUpdatable,
+                            appRecognition =
+                                byId[SpeechCatalog.recognitionPack].takeIf {
+                                    row.code in
+                                        SpeechCatalog.recognition
+                                },
+                            appVoice =
+                                SpeechCatalog.voices[row.code]
+                                    ?.let { listOfNotNull(byId[it.pack], byId[SpeechCatalog.voiceDataPack]) }
+                                    .orEmpty(),
+                        )
                     }
                     LanguageList(ui, sections, state, actions, Modifier.weight(1f))
                 }

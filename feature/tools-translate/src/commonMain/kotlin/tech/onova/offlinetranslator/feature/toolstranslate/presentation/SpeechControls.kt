@@ -23,11 +23,15 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_nothing_heard
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_ok
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speak
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_can_download
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_can_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_not_installed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_unsupported
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_stop_listening
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_can_download
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_downloading
 
 /** The voice's state and what its controls do; [permissionGate] is the microphone's, shown above the text. */
 internal class SpeechControls(
@@ -80,6 +84,8 @@ internal fun SpeechNotice(
             SpeechProblem.UNSUPPORTED,
             SpeechProblem.LANGUAGE_MISSING,
             SpeechProblem.NO_VOICE,
+            SpeechProblem.APP_CAN_DOWNLOAD,
+            SpeechProblem.APP_VOICE_CAN_DOWNLOAD,
             -> stringResource(Res.string.translator_manage_languages)
 
             else -> null
@@ -140,4 +146,22 @@ private fun problemText(
         SpeechProblem.NO_ENGINE -> {
             stringResource(Res.string.translator_no_speech_engine)
         }
+
+        else -> {
+            appProblemText(problem, source, target)
+        }
+    }
+
+/** The app's own speech (spec 082): where to get it, or that it's on its way. */
+@Composable
+private fun appProblemText(
+    problem: SpeechProblem,
+    source: String,
+    target: String,
+): String =
+    when (problem) {
+        SpeechProblem.APP_CAN_DOWNLOAD -> stringResource(Res.string.translator_speech_app_can_download, source)
+        SpeechProblem.APP_DOWNLOADING -> stringResource(Res.string.translator_speech_app_downloading)
+        SpeechProblem.APP_VOICE_CAN_DOWNLOAD -> stringResource(Res.string.translator_voice_app_can_download, target)
+        else -> stringResource(Res.string.translator_voice_app_downloading, target)
     }

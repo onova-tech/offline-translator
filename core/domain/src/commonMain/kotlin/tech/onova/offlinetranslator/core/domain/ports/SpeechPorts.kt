@@ -31,6 +31,12 @@ public enum class RecognitionSupport {
 
     /** The phone can't tell before trying (Android 12 and 12L). */
     UNKNOWN,
+
+    /** The phone can't, and the app's own recognition can, once its pack is downloaded (spec 082). */
+    APP_CAN_DOWNLOAD,
+
+    /** The app's own recognition is being downloaded (spec 082). */
+    APP_DOWNLOADING,
 }
 
 /** Whether the phone can read a language aloud without the network (spec 012 research R2). */
@@ -42,6 +48,12 @@ public enum class VoiceSupport {
 
     /** No text-to-speech engine at all. */
     NO_ENGINE,
+
+    /** The phone has no offline voice, and the app's own has one once its pack is downloaded (spec 082). */
+    APP_CAN_DOWNLOAD,
+
+    /** The app's own voice is being downloaded (spec 082). */
+    APP_DOWNLOADING,
 }
 
 /** Why listening stopped without a result. */

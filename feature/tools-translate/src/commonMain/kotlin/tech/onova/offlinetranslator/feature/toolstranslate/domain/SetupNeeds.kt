@@ -14,7 +14,7 @@ internal data class SideSupport(
 }
 
 /** The kinds of speech notice a half's language can have; with its half, a notice the person dismissed (its ×). */
-internal enum class SetupKind { RECOGNITION, NOT_INSTALLED, VOICE, NO_RECOGNITION }
+internal enum class SetupKind { RECOGNITION, NOT_INSTALLED, VOICE, NO_RECOGNITION, APP_RECOGNITION, APP_VOICE }
 
 internal data class SetupKey(
     val kind: SetupKind,
@@ -57,6 +57,22 @@ internal sealed interface SetupNeed {
         val side: Side,
     ) : SetupNeed {
         override val key: SetupKey get() = SetupKey(SetupKind.VOICE, side)
+    }
+
+    /** The phone can't, and the app's own recognition can, once downloaded or when it's in ([downloading]) (spec 082). */
+    data class AppRecognition(
+        val side: Side,
+        val downloading: Boolean,
+    ) : SetupNeed {
+        override val key: SetupKey get() = SetupKey(SetupKind.APP_RECOGNITION, side)
+    }
+
+    /** No voice on the phone, and the app's own has one, once downloaded or when it's in ([downloading]) (spec 082). */
+    data class AppVoice(
+        val side: Side,
+        val downloading: Boolean,
+    ) : SetupNeed {
+        override val key: SetupKey get() = SetupKey(SetupKind.APP_VOICE, side)
     }
 
     /** The phone can't recognize the language of [side] offline, and can't get it. */
@@ -102,6 +118,9 @@ internal object SetupNeeds {
                 supportOf(side).recognition.onItsWay()?.let { downloading ->
                     add(SetupNeed.Recognition(side, downloading))
                 }
+                supportOf(side).recognition.appOnItsWay()?.let { downloading ->
+                    add(SetupNeed.AppRecognition(side, downloading))
+                }
             }
             SIDES
                 .filter { supportOf(it).recognition == RecognitionSupport.NOT_INSTALLED }
@@ -109,6 +128,13 @@ internal object SetupNeeds {
             SIDES
                 .filter { voices && supportOf(it).voice == VoiceSupport.NO_OFFLINE_VOICE }
                 .forEach { add(SetupNeed.Voice(it)) }
+            SIDES.forEach { side ->
+                supportOf(side)
+                    .voice
+                    .appOnItsWay()
+                    ?.takeIf { voices }
+                    ?.let { add(SetupNeed.AppVoice(side, it)) }
+            }
             SIDES
                 .filter { supportOf(it).cantHave() }
                 .forEach { add(SetupNeed.NoRecognition(it)) }
@@ -124,18 +150,36 @@ internal object SetupNeeds {
         far: SideSupport,
     ): Boolean =
         listOf(near, far).any {
-            it.recognition.onItsWay() != null || it.recognition == RecognitionSupport.NOT_INSTALLED
+            it.recognition.onItsWay() != null || it.recognition == RecognitionSupport.NOT_INSTALLED ||
+                it.recognition.appOnItsWay() != null || it.voice.appOnItsWay() != null
         }
 }
 
 /** The phone can't recognize this language and can't get it (not merely not yet). */
 private fun SideSupport.cantHave(): Boolean =
-    !canListen && recognition.onItsWay() == null && recognition != RecognitionSupport.NOT_INSTALLED
+    !canListen && recognition.onItsWay() == null && recognition != RecognitionSupport.NOT_INSTALLED &&
+        recognition.appOnItsWay() == null
 
 /** Null when nothing is coming; else whether it's downloading now (true) or can be asked for (false). */
 private fun RecognitionSupport.onItsWay(): Boolean? =
     when (this) {
         RecognitionSupport.CAN_DOWNLOAD -> false
         RecognitionSupport.DOWNLOADING -> true
+        else -> null
+    }
+
+/** The app's own recognition (spec 082): null when it isn't the way; else whether it's downloading now. */
+private fun RecognitionSupport.appOnItsWay(): Boolean? =
+    when (this) {
+        RecognitionSupport.APP_CAN_DOWNLOAD -> false
+        RecognitionSupport.APP_DOWNLOADING -> true
+        else -> null
+    }
+
+/** The app's own voice (spec 082): null when it isn't the way; else whether it's downloading now. */
+private fun VoiceSupport.appOnItsWay(): Boolean? =
+    when (this) {
+        VoiceSupport.APP_CAN_DOWNLOAD -> false
+        VoiceSupport.APP_DOWNLOADING -> true
         else -> null
     }

@@ -103,4 +103,18 @@ class SetupNeedsTest {
         assertFalse(SetupNeeds.waiting(ready, noVoice))
         assertFalse(SetupNeeds.waiting(cantRecognize, ready))
     }
+
+    /** Spec 082: where the phone can't, the app's own recognition and voice are offered, then followed until they're in. */
+    @Test
+    fun theAppsOwnSpeechIsOfferedWhereThePhoneCant() {
+        val appCanHear = SideSupport(recognition = RecognitionSupport.APP_CAN_DOWNLOAD)
+        val appHearing = SideSupport(recognition = RecognitionSupport.APP_DOWNLOADING)
+        val appCanSpeak = SideSupport(voice = VoiceSupport.APP_CAN_DOWNLOAD)
+        assertEquals(SetupNeed.AppRecognition(Side.NEAR, downloading = false), first(appCanHear, ready))
+        assertEquals(SetupNeed.AppRecognition(Side.FAR, downloading = true), first(ready, appHearing))
+        assertEquals(SetupNeed.AppVoice(Side.FAR, downloading = false), first(ready, appCanSpeak, voices = true))
+        assertNull(first(ready, appCanSpeak, voices = false))
+        assertTrue(SetupNeeds.waiting(appHearing, ready))
+        assertTrue(SetupNeeds.waiting(ready, appCanSpeak))
+    }
 }

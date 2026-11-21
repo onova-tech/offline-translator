@@ -24,9 +24,12 @@ import tech.onova.offlinetranslator.core.domain.ports.PackStatus
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
 import tech.onova.offlinetranslator.core.toolapi.ToolHelp
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.PackMessages
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.Res
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_basic_quality
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_built_in
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_cancel
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_enable_language
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_enable_language_supporting
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_get_language
@@ -38,6 +41,7 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_speech
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_translation
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_part_voice
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_can_get
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_can_get
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_getting
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_none
@@ -48,7 +52,9 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_status_partial_on
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_status_ready_off
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_status_ready_on
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_to_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_update_speech_service
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_can_get
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_no_app
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_none
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_settings
@@ -74,11 +80,16 @@ internal class PartActions(
     val speech: SpeechPartActions,
 )
 
-/** What the phone has for one language: its pack (none for English), its speech and voice once asked. */
+/**
+ * What the phone has for one language: its pack (none for English), its speech and voice once asked, and the app's own
+ * speech packs for it (spec 082): the recognition pack, and the voice with espeak-ng's data.
+ */
 internal class LanguageState(
     val pack: PackStatus?,
     val speech: SpeechParts?,
     val serviceUpdatable: Boolean,
+    val appRecognition: PackStatus? = null,
+    val appVoice: List<PackStatus> = emptyList(),
 )
 
 /** A language that is downloaded: all there or only in part, and whether it's in the lists. */
@@ -99,13 +110,21 @@ internal fun statusOf(
 ): LanguageStatus? {
     val downloaded = pack == null || pack.state == PackState.Installed
     if (!downloaded || speech == null) return null
-    val missing =
-        speech.recognition in GETTABLE_SPEECH || speech.voice == VoiceSupport.NO_OFFLINE_VOICE
+    val missing = speech.recognition in GETTABLE_SPEECH || speech.voice in GETTABLE_VOICES
     return LanguageStatus(complete = !missing, enabled = enabled)
 }
 
 private val GETTABLE_SPEECH =
-    setOf(RecognitionSupport.CAN_DOWNLOAD, RecognitionSupport.DOWNLOADING, RecognitionSupport.NOT_INSTALLED)
+    setOf(
+        RecognitionSupport.CAN_DOWNLOAD,
+        RecognitionSupport.DOWNLOADING,
+        RecognitionSupport.NOT_INSTALLED,
+        RecognitionSupport.APP_CAN_DOWNLOAD,
+        RecognitionSupport.APP_DOWNLOADING,
+    )
+
+private val GETTABLE_VOICES =
+    setOf(VoiceSupport.NO_OFFLINE_VOICE, VoiceSupport.APP_CAN_DOWNLOAD, VoiceSupport.APP_DOWNLOADING)
 
 /**
  * One language (owner, 2026-11-20): its name, its own name and "Basic quality" for the small models, its status mark
@@ -142,7 +161,7 @@ internal fun LanguageCard(
         )
         TranslationPart(row, state.pack, actions)
         SpeechPart(row, state, actions)
-        VoicePart(row, state.speech?.voice, actions)
+        VoicePart(row, state, actions)
     }
 }
 
@@ -211,18 +230,90 @@ private fun SpeechPart(
             }
 
             else -> {
-                emptyList()
+                appPackItems(
+                    recognition == RecognitionSupport.APP_CAN_DOWNLOAD,
+                    listOfNotNull(state.appRecognition),
+                    actions,
+                )
             }
         }
-    Part(row, stringResource(Res.string.translator_part_speech), speechText(recognition), items)
+    val text =
+        when (recognition) {
+            RecognitionSupport.APP_CAN_DOWNLOAD -> {
+                stringResource(
+                    Res.string.translator_speech_app_can_get,
+                    toDownload(listOfNotNull(state.appRecognition)),
+                )
+            }
+
+            RecognitionSupport.APP_DOWNLOADING -> {
+                state.appRecognition?.let { stateText(it) } ?: speechText(recognition)
+            }
+
+            else -> {
+                speechText(recognition)
+            }
+        }
+    Part(row, stringResource(Res.string.translator_part_speech), text, items)
+}
+
+/**
+ * The app's own speech packs' actions (spec 082): Download every one not in yet, when it can be got; Cancel the ones on
+ * their way.
+ */
+@Composable
+private fun appPackItems(
+    canGet: Boolean,
+    packs: List<PackStatus>,
+    actions: PartActions,
+): List<RowMenuItem> {
+    val coming =
+        packs.filter {
+            it.state is PackState.Downloading || it.state is PackState.Waiting ||
+                it.state == PackState.Installing
+        }
+    val missing = packs.filter { it.state != PackState.Installed }
+    return when {
+        coming.isNotEmpty() -> {
+            listOf(
+                RowMenuItem(stringResource(Res.string.translator_cancel), icon = null) {
+                    coming.forEach { actions.pack.onCancel(it.id) }
+                },
+            )
+        }
+
+        canGet && missing.isNotEmpty() -> {
+            listOf(
+                RowMenuItem(stringResource(Res.string.translator_download), icon = null) {
+                    missing.forEach { actions.pack.onDownload(it.id) }
+                },
+            )
+        }
+
+        else -> {
+            emptyList()
+        }
+    }
+}
+
+/** "153 MB to download": what the packs not in yet take, or "Checking…" before the store answers. */
+@Composable
+private fun toDownload(packs: List<PackStatus>): String {
+    val bytes = packs.filter { it.state != PackState.Installed }.map { it.downloadBytes }
+    return if (bytes.isEmpty() || bytes.any { it == null }) {
+        stringResource(Res.string.translator_part_checking)
+    } else {
+        stringResource(Res.string.translator_to_download, PackMessages.megabytes(bytes.sumOf { it ?: 0 }).toString())
+    }
 }
 
 @Composable
 private fun VoicePart(
     row: LanguageRow,
-    voice: VoiceSupport?,
+    state: LanguageState,
     actions: PartActions,
 ) {
+    val voice = state.speech?.voice
     val items =
         if (voice == VoiceSupport.NO_OFFLINE_VOICE) {
             listOf(
@@ -233,14 +324,34 @@ private fun VoicePart(
                 ),
             )
         } else {
-            emptyList()
+            appPackItems(voice == VoiceSupport.APP_CAN_DOWNLOAD, state.appVoice, actions)
         }
     val text =
         when (voice) {
-            null -> stringResource(Res.string.translator_part_checking)
-            VoiceSupport.READY -> stringResource(Res.string.translator_part_ready)
-            VoiceSupport.NO_OFFLINE_VOICE -> stringResource(Res.string.translator_voice_none)
-            VoiceSupport.NO_ENGINE -> stringResource(Res.string.translator_voice_no_app)
+            null -> {
+                stringResource(Res.string.translator_part_checking)
+            }
+
+            VoiceSupport.READY -> {
+                stringResource(Res.string.translator_part_ready)
+            }
+
+            VoiceSupport.NO_OFFLINE_VOICE -> {
+                stringResource(Res.string.translator_voice_none)
+            }
+
+            VoiceSupport.NO_ENGINE -> {
+                stringResource(Res.string.translator_voice_no_app)
+            }
+
+            VoiceSupport.APP_CAN_DOWNLOAD -> {
+                stringResource(Res.string.translator_voice_app_can_get, toDownload(state.appVoice))
+            }
+
+            VoiceSupport.APP_DOWNLOADING -> {
+                state.appVoice.firstOrNull { it.state != PackState.Installed }?.let { stateText(it) }
+                    ?: stringResource(Res.string.translator_part_checking)
+            }
         }
     Part(row, stringResource(Res.string.translator_part_voice), text, items)
 }
@@ -271,13 +382,25 @@ private fun speechText(recognition: RecognitionSupport?): String =
     stringResource(
         when (recognition) {
             null -> Res.string.translator_part_checking
+
             RecognitionSupport.READY -> Res.string.translator_part_ready
+
             RecognitionSupport.CAN_DOWNLOAD -> Res.string.translator_speech_can_get
+
             RecognitionSupport.DOWNLOADING -> Res.string.translator_speech_getting
+
             RecognitionSupport.NOT_INSTALLED -> Res.string.translator_speech_not_got
+
             RecognitionSupport.UNSUPPORTED, RecognitionSupport.NO_RECOGNIZER -> Res.string.translator_speech_none
+
             RecognitionSupport.SYSTEM_TOO_OLD -> Res.string.translator_speech_old_phone
+
             RecognitionSupport.UNKNOWN -> Res.string.translator_speech_tried
+
+            // Spec 082: the caller shows the app's pack instead.
+            RecognitionSupport.APP_CAN_DOWNLOAD,
+            RecognitionSupport.APP_DOWNLOADING,
+            -> Res.string.translator_part_checking
         },
     )
 
