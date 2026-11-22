@@ -1,9 +1,12 @@
 package tech.onova.offlinetranslator.feature.toolstranslate.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import tech.onova.offlinetranslator.core.domain.ports.ContentPacks
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
@@ -18,11 +21,26 @@ import tech.onova.offlinetranslator.core.domain.speech.AppSpeechPart
 import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 import tech.onova.offlinetranslator.core.domain.speech.SpeechTags
+import tech.onova.offlinetranslator.core.domain.speech.packs
+
+private val SPEECH_PACKS = SpeechCatalog.packs.toSet()
 
 /** Where the app's own models stand for each language, from their packs' states (spec 082). */
 internal class AppSpeechParts(
     private val packs: ContentPacks,
 ) {
+    /**
+     * Once each time one of the app's speech packs is in, gone or on its way (not each step of a download), after the
+     * first: the screens ask about speech again. At start that's the store's first answer (2026-11-22: the Conversation
+     * asked before it, saw no Whisper, and kept offering the phone's download).
+     */
+    val changes: Flow<Unit> =
+        packs.packs
+            .map { all -> all.filter { it.id in SPEECH_PACKS }.map { it.id to stage(it.state) } }
+            .distinctUntilChanged()
+            .drop(1)
+            .map { }
+
     fun recognition(language: LanguageCode?): AppSpeechPart =
         if (language == null || language !in SpeechCatalog.recognition) {
             AppSpeechPart.NONE
@@ -34,6 +52,25 @@ internal class AppSpeechParts(
         val voice = language?.let { SpeechCatalog.voices[it] } ?: return AppSpeechPart.NONE
         return partOf(listOf(voice.pack, SpeechCatalog.voiceDataPack))
     }
+
+    private fun stage(state: PackState): AppSpeechPart =
+        when {
+            state is PackState.Unavailable -> {
+                AppSpeechPart.NONE
+            }
+
+            state == PackState.Installed -> {
+                AppSpeechPart.READY
+            }
+
+            state is PackState.Downloading || state is PackState.Waiting || state == PackState.Installing -> {
+                AppSpeechPart.DOWNLOADING
+            }
+
+            else -> {
+                AppSpeechPart.NOT_DOWNLOADED
+            }
+        }
 
     /**
      * Ready when every pack is in; downloading when one is on its way; none when the store can never deliver them, or

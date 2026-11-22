@@ -143,31 +143,32 @@ public class AndroidSpeechInput(
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private suspend fun checkSupport(speechTag: String): RecognitionSupport {
         val recognizer = create() ?: return RecognitionSupport.NO_RECOGNIZER
-        return try {
-            suspendCancellableCoroutine { answer ->
-                recognizer.checkRecognitionSupport(
-                    intent(speechTag),
-                    context.mainExecutor,
-                    object : RecognitionSupportCallback {
-                        override fun onSupportResult(recognitionSupport: PhoneSupport) {
-                            val result =
-                                SpeechMapping.support(
-                                    speechTag = speechTag,
-                                    installed = recognitionSupport.installedOnDeviceLanguages,
-                                    pending = recognitionSupport.pendingOnDeviceLanguages,
-                                    supported = recognitionSupport.supportedOnDeviceLanguages,
-                                )
-                            if (answer.isActive) answer.resume(result)
-                        }
+        // Android queues the question until its service connects. Destroyed before it answers, the recognizer has no
+        // connection when Android gets to the question, and Android's own code crashes the app (the owner's phone,
+        // 2026-11-22, when Manage languages asked again). So it is destroyed once it answered, even unheard.
+        return suspendCancellableCoroutine { answer ->
+            recognizer.checkRecognitionSupport(
+                intent(speechTag),
+                context.mainExecutor,
+                object : RecognitionSupportCallback {
+                    override fun onSupportResult(recognitionSupport: PhoneSupport) {
+                        recognizer.destroy()
+                        val result =
+                            SpeechMapping.support(
+                                speechTag = speechTag,
+                                installed = recognitionSupport.installedOnDeviceLanguages,
+                                pending = recognitionSupport.pendingOnDeviceLanguages,
+                                supported = recognitionSupport.supportedOnDeviceLanguages,
+                            )
+                        if (answer.isActive) answer.resume(result)
+                    }
 
-                        override fun onError(error: Int) {
-                            if (answer.isActive) answer.resume(RecognitionSupport.UNKNOWN)
-                        }
-                    },
-                )
-            }
-        } finally {
-            recognizer.destroy()
+                    override fun onError(error: Int) {
+                        recognizer.destroy()
+                        if (answer.isActive) answer.resume(RecognitionSupport.UNKNOWN)
+                    }
+                },
+            )
         }
     }
 

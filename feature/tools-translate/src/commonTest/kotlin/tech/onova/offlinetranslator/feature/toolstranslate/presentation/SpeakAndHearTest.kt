@@ -17,9 +17,12 @@ import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.SpeechEvent
 import tech.onova.offlinetranslator.core.domain.ports.SpeechFailure
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationMachine
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SetupNeeds
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
+import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeContentPacks
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeSpeechInput
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeSpeechOutput
 import kotlin.test.AfterTest
@@ -37,6 +40,7 @@ class SpeakAndHearTest {
     private val speechIn = FakeSpeechInput()
     private val speechOut = FakeSpeechOutput()
     private val visible = MutableStateFlow(true)
+    private val packs = FakeContentPacks(FakeContentPacks.notInstalled(SpeechCatalog.recognitionPack))
     private val visibility =
         object : AppVisibility {
             override val isVisible = visible
@@ -58,7 +62,7 @@ class SpeakAndHearTest {
     /** The model with Portuguese (Brazil) to English (US), and everything it has put into the text field. */
     private fun TestScope.model(): Pair<SpeakAndHearViewModel, MutableList<String>> {
         downloads = SpeechDownloads { testScheduler.currentTime }
-        val model = SpeakAndHearViewModel(speechIn, speechOut, visibility, downloads)
+        val model = SpeakAndHearViewModel(speechIn, speechOut, visibility, downloads, AppSpeechParts(packs))
         val heard = mutableListOf<String>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.uiState.collect {} }
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.heard.collect { heard += it } }
@@ -299,6 +303,22 @@ class SpeakAndHearTest {
             model.setLanguages(source = "es-ES", target = "en-US")
             runCurrent()
             assertNull(model.uiState.value.problem)
+            assertEquals(RecognitionSupport.READY, model.uiState.value.recognition)
+        }
+
+    /**
+     * Spec 082 (the owner's phone, 2026-11-22): the app's recognition comes in while the screen is open, or the store
+     * answers after it first asked; the screen asks again, with nothing else to set it off.
+     */
+    @Test
+    fun aSpeechPackComingInIsAskedAboutAgain() =
+        runTest(dispatcher) {
+            speechIn.support["pt-BR"] = RecognitionSupport.APP_CAN_DOWNLOAD
+            val (model, _) = model()
+            assertEquals(RecognitionSupport.APP_CAN_DOWNLOAD, model.uiState.value.recognition)
+            speechIn.support["pt-BR"] = RecognitionSupport.READY
+            packs.put(FakeContentPacks.installed(SpeechCatalog.recognitionPack))
+            runCurrent()
             assertEquals(RecognitionSupport.READY, model.uiState.value.recognition)
         }
 }

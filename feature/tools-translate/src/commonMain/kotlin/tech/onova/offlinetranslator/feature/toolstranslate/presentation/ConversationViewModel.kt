@@ -23,6 +23,7 @@ import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.CheckedLanguages
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationEvent
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationMachine
@@ -220,6 +221,10 @@ internal class ConversationViewModel(
                 support.askNow()
                 support.watch()
             }
+        }
+        viewModelScope.launch {
+            // The app's speech packs in, gone or on their way (spec 082), the store's first answer among them.
+            AppSpeechParts(packs).changes.collect { support.askNow() }
         }
     }
 

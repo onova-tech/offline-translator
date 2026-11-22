@@ -21,6 +21,7 @@ import tech.onova.offlinetranslator.core.domain.ports.SpeechFailure
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationMachine
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
 
@@ -92,6 +93,8 @@ internal class SpeakAndHearViewModel(
     private val visibility: AppVisibility,
     /** Shared with the Manage languages page, where a language is got (owner, 2026-11-20). */
     private val downloads: SpeechDownloads,
+    /** The app's own speech packs (spec 082): when one is in or gone, what each language can do is asked again. */
+    private val appSpeech: AppSpeechParts,
 ) : ViewModel() {
     private val state = MutableStateFlow(SpeechUi())
     val uiState: StateFlow<SpeechUi> = state.asStateFlow()
@@ -160,6 +163,10 @@ internal class SpeakAndHearViewModel(
                 support.askNow()
                 support.watch()
             }
+        }
+        viewModelScope.launch {
+            // The app's speech packs in, gone or on their way (spec 082), the store's first answer among them.
+            appSpeech.changes.collect { support.askNow() }
         }
     }
 

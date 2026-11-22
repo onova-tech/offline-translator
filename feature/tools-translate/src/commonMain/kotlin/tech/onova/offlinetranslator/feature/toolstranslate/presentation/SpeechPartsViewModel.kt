@@ -21,6 +21,7 @@ import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
 import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 import tech.onova.offlinetranslator.core.domain.speech.packs
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineUse
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechChoices
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownloads
@@ -53,8 +54,6 @@ internal data class SpeechPartsUi(
  * own recognizer and voices can do, asked of the phone, never guessed; again every few seconds while one is on its way,
  * and when the screen comes back (from the store, the voice app). The downloads are the phone's: the app only asks.
  */
-private val speechPacks = SpeechCatalog.packs.toSet()
-
 internal class SpeechPartsViewModel(
     private val speechIn: SpeechInput,
     private val speechOut: SpeechOutput,
@@ -118,17 +117,12 @@ internal class SpeechPartsViewModel(
             }
         }
         state.update { it.copy(serviceUpdatable = speechIn.canUpdateService()) }
-        // Spec 082: when one of the app's speech packs moves (downloading, in, deleted), the languages' speech is asked
-        // again here, and the other screens are told to ask too.
+        // Spec 082: one of the app's speech packs in, gone or on its way: asked again here, and the other screens too.
         viewModelScope.launch {
-            packs.packs
-                .map { all -> all.filter { it.id in speechPacks }.map { it.id to it.state } }
-                .distinctUntilChanged()
-                .drop(1)
-                .collect {
-                    downloads.appSpeechChanged()
-                    support.askNow()
-                }
+            AppSpeechParts(packs).changes.collect {
+                downloads.appSpeechChanged()
+                support.askNow()
+            }
         }
     }
 

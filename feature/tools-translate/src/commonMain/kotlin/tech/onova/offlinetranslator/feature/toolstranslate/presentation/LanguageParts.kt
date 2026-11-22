@@ -342,7 +342,8 @@ private fun EngineChoice(
                 ChoiceOption(SpeechEngine.APP, stringResource(Res.string.translator_engine_app)),
             ),
         selected = use.shown,
-        onSelect = { engine -> actions.speech.onChoose(row.code, kind, engine) },
+        // Tapping what's already shown saves nothing: "Phone" at first is no choice (the owner's Japanese, 2026-11-22).
+        onSelect = { engine -> if (engine != use.shown) actions.speech.onChoose(row.code, kind, engine) },
         groupLabel = stringResource(Res.string.translator_engine_group, title, row.name),
         modifier = Modifier.fillMaxWidth(),
     )
