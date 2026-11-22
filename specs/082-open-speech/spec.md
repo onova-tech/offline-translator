@@ -34,6 +34,33 @@ When the phone has none for a language, or downloads one and never installs it, 
   on-demand packs, downloaded only when the person confirms, with the size first; then everything works in airplane
   mode.
 
+### Session 2026-11-22 (the owner's phone pass)
+
+The owner, after speaking and hearing Portuguese through the app's models: "the build is working as intended now",
+then the changes of user story 5.
+
+- Q: Where does the choice between the phone's speech and the app's go? → A: **Inside its part's card** (owner: "it
+  doesn't feel like a part of the Reconhecimento de fala option or the Voz option. It should be inside them"), under
+  the part's state line. The phone's side is named **Device** (pt-BR "Aparelho", es "Dispositivo"; owner: "Celular"
+  read strangely; "Nativo" was the other candidate, set aside because in a translator it reads as "native language").
+- Q: How is a voice of the phone's removed? → A: The app can't delete it: the Voice row's ⋮ opens the phone's voice
+  app's own list (as "Get a voice" does, `docs/ui-rules.md` C3), where Samsung's and Google's delete their voices.
+- Q: How does a half say who said what? → A: **Every turn the same size, with a small bold "Me:" or "You:"** before
+  it (owner), **in that half's language**, not the app's (owner: "they should follow the selected language for that
+  half of the screen. We can generate the list previously"). The words are a hand-written table of the catalog's 54
+  languages, one pair each (owner: option 1 of three; a build-time translation of single words and per-language
+  resource folders were set aside). "You" is the polite form a stranger is addressed with (Sie, Vous, Usted); where a
+  bare "you" sounds rude as a label (Japanese, Korean), the word for "the other person" (相手, 상대).
+- Q: What makes room? → A: **Share leaves both screens**; the Conversation's actions become **Copy | More options |
+  Clear** in one row (owner).
+- Q: How does a person catch a misheard turn before the other hears it? → A: **"Confirm before sending"**, a switch in
+  the Conversation's More options (owner: the app's recognition writes the text only once the person stopped, so a
+  mistake shows after the other person heard it). When it's on, the microphone becomes ^ once the turn is heard; ^
+  translates it and reads it aloud; the square drops it, and the microphone starts again (owner).
+- Q: How is a translation heard again? → A: **A small speaker button on each translated turn** (owner: option A of
+  two; the other, one button beside the microphone, replayed only the latest), shown even with "Read translations
+  aloud" off.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Speak a language the phone can't recognize (Priority: P1)
@@ -112,6 +139,42 @@ like a translation pack; Settings → About → Open-source licenses credits Whi
 **Independent Test**: Delete the app's recognition from Manage languages: the space used drops by its size, and a
 language the phone can't recognize offers the download again.
 
+---
+
+### User Story 5 - Check what was heard before the other person hears it (Priority: P2)
+
+The owner's phone pass (2026-11-22). A person speaking through the app's recognition sees the text only after they
+stop, so a mistake reaches the other person before it can be fixed. With "Confirm before sending" on, the heard turn
+waits in its half until it is sent, dropped or corrected. Every turn reads the same size, with who said it in front,
+and any translation can be heard again. The bottom of the Conversation takes one row less.
+
+**Why this priority**: The app's recognition (story 1) is only trusted in a real conversation once a mistake can be
+caught before it is said aloud.
+
+**Independent Test**: Turn on "Confirm before sending", speak a sentence: it waits in the half with ^ in the
+microphone's place and nothing in the other half; tap the square: it's gone and the microphone is back; speak again
+and tap ^: it's translated and read aloud. Tap the speaker on a translated turn with "Read translations aloud" off: it's
+read in that half's language.
+
+**Acceptance Scenarios**:
+
+1. **Given** "Confirm before sending" is on, **When** a turn is heard (a pause, or a tap on the microphone), **Then**
+   it shows in its half, marked as waiting, with ^ in the microphone's place and the square beside it, and the other
+   half shows nothing of it yet.
+2. **Given** a waiting turn, **When** the person taps ^, **Then** it is translated, shown in the other half and read
+   aloud as any turn.
+3. **Given** a waiting turn, **When** the person taps the square, **Then** it is dropped and the microphone is back;
+   **When** they tap the waiting text, **Then** they can correct it by typing, and it keeps waiting.
+4. **Given** "Confirm before sending" is off (at first), **Then** turns are translated as soon as they are heard.
+5. **Given** a translated turn, **Then** a speaker button beside it reads it aloud in its half's language, whether
+   "Read translations aloud" is on or not; while it reads, the button stops it. It is enabled only when that
+   language's voice is ready, and disabled (not hidden) otherwise.
+6. **Given** any turn, **Then** it reads in one size with a small bold "Me:" (this half's speaker) or "You:" (the other
+   person) in front, both in the half's language, for each of the catalog's languages.
+7. **Given** the Conversation, **Then** its bottom row is Copy | More options | Clear, and neither screen has Share.
+8. **Given** Manage languages, **Then** a part's Device | App choice sits inside the part's card; the device's voice
+   offers its voice app's list behind ⋮; and the page opens without a flash.
+
 ### Edge Cases
 
 - A language neither the phone nor the app can recognize or speak keeps today's notes (spec 080 C2).
@@ -120,6 +183,11 @@ language the phone can't recognize offers the download again.
 - Storage too full for a model: the download fails with the store's message, nothing half-installed stays.
 - The phone's recognizer starts working later (an update): with the choice at "Phone", the phone's is used again.
 - A Piper voice whose licence forbids this use is never offered, even if it exists.
+- A waiting turn (story 5) when its half's language changes is dropped: it was heard in the other language. When the
+  screen is hidden or a call comes, it keeps waiting. "Confirm before sending" switched off while a turn waits leaves
+  it waiting: nothing is said without a tap.
+- While a turn waits, is translated or is read aloud, the other microphone and the speaker buttons wait too (one turn
+  at a time, as today). A speaker button reads even with TalkBack on: the person asked for it.
 
 ## Requirements *(mandatory)*
 
@@ -141,11 +209,29 @@ language the phone can't recognize offers the download again.
 - **FR-009**: Settings → About → Open-source licenses MUST credit the speech engine and every model and voice shipped,
   with their licences.
 - **FR-010**: Every new string MUST exist in English, Portuguese (Brazil) and Spanish.
+- **FR-011**: On Manage languages, the Device | App choice MUST sit inside its part's card, and the phone's side MUST
+  be named "Device" ("Aparelho", "Dispositivo").
+- **FR-012**: The Voice row of a language the device speaks MUST offer, behind ⋮, the device's voice app's own list,
+  where its voices are removed.
+- **FR-013**: Manage languages MUST open without a flash: no frame of another colour, or of the page empty, between
+  the screen it opens from and the page.
+- **FR-014**: Each Conversation turn MUST read in one size, with a small bold "Me:" or "You:" in front in its half's
+  language; every language of the catalog MUST have both words.
+- **FR-015**: Type or speak and the Conversation MUST have no Share; the Conversation's bottom row MUST be Copy |
+  More options | Clear.
+- **FR-016**: The Conversation's More options MUST have "Confirm before sending", off at first and remembered. When
+  on, a heard turn MUST wait in its half, unseen by the other half, until ^ sends it (translated, then read aloud as
+  any turn), the square drops it, or the person corrects it by typing.
+- **FR-017**: Each translated turn MUST have a speaker button that reads it aloud in its half's language, whatever
+  "Read translations aloud" says. It MUST be enabled only when that language's voice is ready (the phone's or the
+  app's, as routed), and disabled otherwise, so it doesn't come and go (owner, 2026-11-22: "only be enabled if the TTS
+  for this language is properly configured"); while it reads, no microphone listens.
 
 ### Key Entities
 
 - **Speech model**: the recognition model or a voice (one Piper voice), with its languages, size, licence and pack.
 - **Speech choice**: for a language, which recognition and which voice are used (phone or app).
+- **Turn labels**: for each language of the catalog, its words for "Me" and "You", hand-written (story 5).
 
 ## Success Criteria *(mandatory)*
 

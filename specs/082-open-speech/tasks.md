@@ -81,3 +81,75 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
   removed right after their download: `EngineSession` opens the translation packs only (`EngineSessionTest`)
 - [X] T026 The journeys put local testing's packs back after the app started; with the speech packs (about 900 MB)
   the store asked mid-copy and called every pack unavailable. `restoreLocalPacks` restarts the app after the copy
+
+## Owner's phone, 2026-11-22
+
+- [X] T027 Manage languages crashed when it asked the phone's recognizer again: the recognizer was destroyed before
+  Android answered, and Android then ran the queued question on a dead connection. `AndroidSpeechInput.checkSupport`
+  destroys it once it answered (or failed)
+- [X] T028 Japanese stayed on the phone: tapping "Phone", already shown, saved it as a choice. Tapping the option
+  already shown saves nothing (`LanguageParts.EngineChoice`)
+- [X] T029 The Conversation and Type or speak ask about speech again when one of the app's speech packs comes in, goes
+  or is on its way, the store's first answer at start among them (`AppSpeechParts.changes`;
+  `SpeakAndHearTest.aSpeechPackComingInIsAskedAboutAgain`)
+
+## Phase 7: User story 5, check what was heard before the other person hears it (P2)
+
+Spec: user story 5, FR-011 to FR-017, the clarifications of 2026-11-22. Each task updates `docs/ui-rules.md` where it
+changes a rule, re-records the screenshots it changes (looked at before committing), and ends with
+`./gradlew :feature:tools-translate:allTests :androidApp:testDebugUnitTest` passing, then a commit.
+
+Review focus (what no line below names, most likely first; each one's test goes in the task named): an Arabic half,
+whose label and text read right to left together (T034); the far half turned, with ^, the square and the speaker
+turned with it and still tapped where drawn (T036, T037); 200 % text in a short half, where the label, the text and the
+speaker must fit without clipping (T038, `LayoutFitTest`); Clear while a turn waits, which empties everything and
+brings the microphone back (T036); Stop on a replay read by the app's voice (Piper), which must stop at once (T037).
+
+- [ ] T030 Manage languages opens without a flash (FR-013): record the opening on the emulator (`adb shell
+  screenrecord`, Settings → Offline languages and a Conversation notice's "Manage languages"), find the frame that
+  flashes and its cause before changing anything, fix it, and pin it with a test where one can see it
+- [ ] T031 The Device | App choice inside its part's card (FR-011): `InfoRow` and `MenuSettingsRow` (core/designsystem
+  `SettingsRows.kt`) take `below: (@Composable ColumnScope.() -> Unit)? = null`, drawn under the state line on the
+  same surface; `SpeechPart` and `VoicePart` pass `EngineChoice` there. `translator_engine_phone`: "Device",
+  "Aparelho", "Dispositivo". `ManageLanguagesPageTest`: the choice is inside the part's row (its bounds within the
+  row's); C4 rewritten; `translator_manage_app_speech_*` re-recorded
+- [ ] T032 The device's voice behind ⋮ (FR-012): a ready voice of the phone's gets one item, "Manage voices on the
+  device" / "Gerenciar vozes do aparelho" / "Gestionar voces del dispositivo" (`translator_voice_manage`), calling
+  `SpeechPartActions.onVoice` (`SpeechOutput.openVoiceSettings`, the voice app's list). `ManageLanguagesPageTest`:
+  the item is there and calls it; C3 updated
+- [ ] T033 [P] Turn labels (FR-014): `core/domain/.../translation/TurnLabels.kt`, `data class TurnLabel(val me:
+  String, val you: String)` and `object TurnLabels { fun of(language: LanguageCode): TurnLabel }`, one hand-written
+  pair per catalog language, each with its own punctuation (`"Eu:"`, `"Moi :"`, `"我："`); the polite "you", and "the
+  other person" for ja and ko. `TurnLabelsTest`: every `LanguageCatalog.all` code has a pair, neither blank, the two
+  different. `docs/ui-rules.md` Exceptions: X1, with the reason (the words follow the half's language)
+- [ ] T034 Every turn one size, with its label (FR-014): `OwnTurn` and `OtherTurn` become one `TurnText(label: String,
+  text: String)`: the label in bold `labelLarge`, then the text in `bodyLarge`, one `AnnotatedString` in its own
+  direction; labels from `TurnLabels.of(languageOf(side))`; a tap on one's own still corrects it.
+  `ConversationScreenTest`: a Portuguese half reads "Eu: …" for its own turn and "Você: …" for the other's; C1
+  updated; Conversation screenshots re-recorded
+- [ ] T035 Room at the bottom (FR-015): Share leaves both screens (`Send.SHARE`, `TranslatorOutputs.sharer` and the
+  `TextSharer` port and binding when nothing else uses them; the tests that share). `MoreControls` (core/tool-api)
+  splits into `rememberMoreControlsState()`, `MoreControlsPanel(state, options)` above the row and
+  `RowScope.MoreOptionsAction(state)`, an outlined compact `BottomAction` reading "More options" / "Fewer options";
+  the one-option rule (A4) stays. The Conversation: Copy | More options | Clear. `MoreControlsTest` for the row
+  button; `UiRulesTest` A3 lets "More options" sit in the action row; A3 and A4 updated with the owner's decision
+- [ ] T036 Confirm before sending (FR-016): `TranslatorSettings.confirmBeforeSending` (false, stored as
+  `farHalfTurned` is) and `ConversationOption.CONFIRM`, a third switch in More options ("Confirm before sending" /
+  "Confirmar antes de enviar" / "Confirmar antes de enviar"). The machine: `ConversationState.confirm`,
+  `ConversationPhase.Waiting(turnId)`, `ConversationEvent.ConfirmChanged(on)` and `ConversationEvent.Send(side)`;
+  a heard turn goes to `Waiting` when `confirm`, else to `Translating` as today; `Send` moves `Waiting` to
+  `Translating`; the square (`TapMicrophone(discard = true)`) removes the waiting turn; `Edited` on it changes its
+  words and keeps it waiting; its half's `LanguageChanged` drops it; `Interrupted` leaves it waiting; `ConfirmChanged`
+  never sends it. `ConversationMachineTest`, one test per line above. The screen: `SendButton` (core/designsystem,
+  `PocketIcons.ArrowUp`, the microphone's size and colours, "Send" / "Enviar" / "Enviar") in the microphone's place
+  with the square beside it; the waiting turn italic in its half, absent from the other half and from Copy.
+  `ConversationScreenTest`: speak, ^, square; C1 updated
+- [ ] T037 Hear a translation again (FR-017): `PocketIcons.Speaker`; `ConversationEvent.Replay(turnId)` (from Idle
+  to `Speaking(turnId)`) and `ConversationEvent.StopSpeaking` (Speaking to Idle). Each translated turn ends with a
+  speaker `IconButton` ("Hear it again" / "Ouvir de novo" / "Escuchar de nuevo"), enabled only when its half's voice
+  is `VoiceSupport.READY` and nothing else is happening; while that turn is read it shows Stop. It reads with
+  TalkBack on and with "Read translations aloud" off. `ConversationMachineTest` (Replay, StopSpeaking, Replay ignored
+  while listening) and `ConversationScreenTest` (enabled only with a ready voice); C1 updated
+- [ ] T038 Polish: screenshots looked at, `LayoutFitTest`, `ModeStabilityTest`, the accessibility audit, then
+  `scripts/ci.sh check` and `scripts/ci.sh device` (both journeys)
+- [ ] T039 [phone] The owner's pass of story 5, with T022
