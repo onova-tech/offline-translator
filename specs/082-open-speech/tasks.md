@@ -79,3 +79,5 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
   Translator's download memory (`SpeechDownloads.neverInstalls`, read only) and offers the app's recognition
 - [X] T025 The translation engine opened every installed pack, so the app's speech packs were called damaged and
   removed right after their download: `EngineSession` opens the translation packs only (`EngineSessionTest`)
+- [X] T026 The journeys put local testing's packs back after the app started; with the speech packs (about 900 MB)
+  the store asked mid-copy and called every pack unavailable. `restoreLocalPacks` restarts the app after the copy

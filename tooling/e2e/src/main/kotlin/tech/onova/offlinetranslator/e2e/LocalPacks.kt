@@ -7,13 +7,18 @@ import kotlin.test.fail
 /** Where scripts/ci.sh keeps local testing's packs, out of the wipe's reach. */
 internal const val LOCAL_PACKS = "/data/local/tmp/offlinetranslator-local-testing"
 
-/** The wipe also deletes local testing's packs (they live in the app's external files): they're put back. */
+/**
+ * The wipe also deletes local testing's packs (they live in the app's external files): they're put back, then the app
+ * starts again, so the store reads them whole (with the speech packs, about 900 MB: the store asked while they were
+ * still being copied, and called every pack unavailable).
+ */
 internal fun AppDriver.restoreLocalPacks() {
     val kept = shell("ls $LOCAL_PACKS").trim()
     assumeTrue("The app wasn't installed through local testing: run scripts/ci.sh e2e", kept.isNotEmpty())
     val files = "/sdcard/Android/data/$APP_PACKAGE/files"
     shell("mkdir -p $files")
     shell("cp -r $LOCAL_PACKS $files/local_testing")
+    restart()
 }
 
 internal fun AppDriver.airplaneMode(on: Boolean) {
