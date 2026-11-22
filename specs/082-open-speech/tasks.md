@@ -61,7 +61,9 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 
 ## Phase 6: Polish
 
-- [ ] T019 Screen tests, screenshots (looked at before committing), layout fit, accessibility audit, mode stability
+- [X] T019 Screen tests, screenshots (looked at before committing), layout fit, accessibility audit, mode stability:
+  `ManageLanguagesPageTest` (the choice and the app's download; Delete asks first), two screenshots of a card with
+  both (`translator_manage_app_speech_*`); the full check passes
 - [ ] T020 [P] e2e on the emulator: the app's recognition and a voice through local testing, in airplane mode
 - [ ] T021 `scripts/ci.sh check`, then `device`
 - [ ] T022 [phone] The owner's pass: Arabic spoken, a Piper voice heard, the choice switched, in airplane mode

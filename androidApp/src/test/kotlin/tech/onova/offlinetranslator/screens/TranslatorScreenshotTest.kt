@@ -5,6 +5,7 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
@@ -25,10 +26,12 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
+import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.SpeechEvent
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.feature.settings.SettingsScreen
 import tech.onova.offlinetranslator.feature.toolstranslate.presentation.OfflineLanguagesSection
 import tech.onova.offlinetranslator.support.AppUiTest
@@ -245,6 +248,48 @@ class TranslatorScreenshotTest : AppUiTest() {
         compose.onNode(hasSetTextAction() and hasAnyAncestor(isDialog())).performTextReplacement("en")
         compose.waitForIdle()
         captureTop("translator_languages_two_dark_font200")
+    }
+
+    /**
+     * Spec 082 (ui-rules C4): a language both the phone and the app can do, its recognition switched to the app's
+     * (installed, with Delete behind ⋮) and its voice still the phone's, the app's offered under it.
+     */
+    private fun showAppSpeech(darkTheme: Boolean = false) {
+        fakes.contentPacks.put(FakeContentPacks.installed(SpeechCatalog.recognitionPack))
+        fakes.contentPacks.put(FakeContentPacks.notInstalled(SpeechCatalog.voices.getValue(LanguageCode("pt")).pack))
+        fakes.contentPacks.put(FakeContentPacks.notInstalled(SpeechCatalog.voiceDataPack))
+        showTool(darkTheme)
+        openLanguages(search = "portu")
+        compose.onNode(hasText("Portuguese") and hasClickAction() and hasAnyAncestor(isDialog())).performClick()
+        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: phone or app"))
+        waitFor("Phone")
+        compose.onNode(hasText("App") and choice and hasAnyAncestor(isDialog())).performClick()
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            compose
+                .onAllNodes(
+                    hasText("Installed · 48 MB") and hasAnyAncestor(isDialog()),
+                ).fetchSemanticsNodes()
+                .size ==
+                2
+        }
+        compose
+            .onNode(hasScrollToNodeAction() and hasAnyAncestor(isDialog()))
+            .performScrollToNode(hasContentDescription("Voice for Portuguese: phone or app"))
+        compose.waitForIdle()
+    }
+
+    @Test
+    fun theAppsSpeechOnALanguage() {
+        showAppSpeech()
+        captureTop("translator_manage_app_speech_light")
+    }
+
+    @Test
+    fun theAppsSpeechOnALanguageLargeTextDark() {
+        RuntimeEnvironment.setFontScale(2f)
+        showAppSpeech(darkTheme = true)
+        captureTop("translator_manage_app_speech_dark_font200")
     }
 
     private companion object {
