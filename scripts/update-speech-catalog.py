@@ -198,6 +198,20 @@ def rows():
 
 
 DATASETS = {}
+MAX_LINE = 120
+
+
+def voice_entry(language, pack, voice, quality, licence):
+    """One voice of SpeechCatalog.voices, wrapped the way ktlint formats it, so its check passes on the file as written."""
+    key = f'            LanguageCode("{language}") to'
+    args = [f'PackId("{pack}")', f'"{voice}"', f'"{quality}"', f'"{licence}"']
+    one = f"{key} AppVoice({', '.join(args)}),"
+    if len(one) <= MAX_LINE:
+        return [one]
+    inner = f"                AppVoice({', '.join(args)}),"
+    if len(inner) <= MAX_LINE:
+        return [key, inner]
+    return [key, "                AppVoice("] + [f"                    {arg}," for arg in args] + ["                ),"]
 LIBRARIES = os.path.join(REPO, "config", "libraries", "libraries")
 
 
@@ -284,7 +298,7 @@ def kotlin_text(languages, packs):
     ]
     for pack, _, language, voice, quality, licence, base, *_ in voices:
         safe = licence.replace("\\", "\\\\").replace("\"", "\\\"")
-        lines.append(f"            LanguageCode(\"{language}\") to AppVoice(PackId(\"{pack}\"), \"{voice}\", \"{quality}\", \"{safe}\"),")
+        lines.extend(voice_entry(language, pack, voice, quality, safe))
     lines += ["        )", "}", ""]
     return "\n".join(lines)
 
