@@ -11,6 +11,7 @@ import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.PackState
 import tech.onova.offlinetranslator.core.domain.ports.Route
+import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeContentPacks
 import tech.onova.offlinetranslator.feature.toolstranslate.fakes.FakeTranslationEngine
 import kotlin.test.Test
@@ -54,6 +55,26 @@ class EngineSessionTest {
             runCurrent()
             assertEquals(1, engine.closes)
             assertEquals(EngineSession.State.Closed, session.state.value)
+        }
+
+    /**
+     * The emulator's journey, 2026-11-22: the app's speech packs, once in, were opened as translation packs, called
+     * damaged and removed. The engine opens the translation packs only, and keeps its hands off the others.
+     */
+    @Test
+    fun theAppsSpeechPacksAreNoTranslationPacks() =
+        runTest {
+            val packs =
+                FakeContentPacks(
+                    FakeContentPacks.installed(packPt),
+                    FakeContentPacks.installed(SpeechCatalog.recognitionPack),
+                    FakeContentPacks.installed(SpeechCatalog.voiceDataPack),
+                )
+            val engine = FakeTranslationEngine()
+            session(packs, engine).acquire()
+            runCurrent()
+            assertEquals(listOf(mapOf(packPt to "packs/translate_pt")), engine.opened)
+            assertEquals(emptyList(), packs.removed)
         }
 
     @Test

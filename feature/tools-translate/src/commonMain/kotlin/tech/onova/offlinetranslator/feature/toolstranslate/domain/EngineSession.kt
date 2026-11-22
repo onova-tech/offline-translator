@@ -84,8 +84,14 @@ internal class EngineSession(
         running.launch {
             packs.refresh()
             packs.packs
-                .map { statuses -> statuses.filter { it.state == PackState.Installed }.map { it.id }.toSet() }
-                .distinctUntilChanged()
+                // Only the translation packs: the app's speech packs (spec 082) hold no translation model, and the
+                // engine would call them damaged, which removed them right after their download (2026-11-22).
+                .map { statuses ->
+                    statuses
+                        .filter { it.state == PackState.Installed && Routes.languageOf(it.id) != null }
+                        .map { it.id }
+                        .toSet()
+                }.distinctUntilChanged()
                 .collect { installed -> open(installed) }
         }
     }
