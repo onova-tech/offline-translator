@@ -1,6 +1,8 @@
 package tech.onova.offlinetranslator.feature.toolstranslate.domain
 
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
+import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
+import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
 import tech.onova.offlinetranslator.core.domain.speech.SpeechEngine
 
 /** A language's speech recognition or its voice. */
@@ -15,14 +17,11 @@ internal class SpeechChoices(
     private val output: RoutedSpeechOutput,
     private val settings: TranslatorSettingsRepository,
 ) {
-    suspend fun use(
-        kind: SpeechKind,
-        speechTag: String,
-    ): EngineUse =
-        when (kind) {
-            SpeechKind.RECOGNITION -> input.use(speechTag)
-            SpeechKind.VOICE -> output.use(speechTag)
-        }
+    /** A language's recognition as the screens show it, and who hears it: the phone is asked once. */
+    suspend fun recognition(speechTag: String): Pair<RecognitionSupport, EngineUse> = input.supportAndUse(speechTag)
+
+    /** A language's voice as the screens show it, and who speaks it: the phone is asked once. */
+    suspend fun voice(speechTag: String): Pair<VoiceSupport, EngineUse> = output.voiceAndUse(speechTag)
 
     suspend fun choose(
         language: LanguageCode,

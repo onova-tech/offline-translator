@@ -158,14 +158,17 @@ class RoutedSpeechTest {
             phoneIn.support["pt-BR"] = RecognitionSupport.READY
             phoneIn.support["ar-SA"] = RecognitionSupport.UNSUPPORTED
             val input = input(packs())
-            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), input.use("pt-BR"))
-            assertEquals(EngineUse(SpeechEngine.APP, null, choosable = false), input.use("ar-SA"))
+            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), input.supportAndUse("pt-BR").second)
+            assertEquals(EngineUse(SpeechEngine.APP, null, choosable = false), input.supportAndUse("ar-SA").second)
             val choices = SpeechChoices(input, output(packs()), settings)
             choices.choose(LanguageCode("pt"), SpeechKind.RECOGNITION, SpeechEngine.APP)
-            assertEquals(EngineUse(SpeechEngine.PHONE, SpeechEngine.APP, choosable = true), input.use("pt-BR"))
-            assertEquals(true, input.use("pt-BR").app, "the row offers the app's download")
+            assertEquals(
+                EngineUse(SpeechEngine.PHONE, SpeechEngine.APP, choosable = true),
+                input.supportAndUse("pt-BR").second,
+            )
+            assertEquals(true, input.supportAndUse("pt-BR").second.app, "the row offers the app's download")
             phoneOut.voices["pt-BR"] = VoiceSupport.READY
-            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), choices.use(SpeechKind.VOICE, "pt-BR"))
+            assertEquals(EngineUse(SpeechEngine.PHONE, null, choosable = true), choices.voice("pt-BR").second)
         }
 
     /** A pack this build doesn't have (no Spanish voice among the test's packs) is no app speech at all. */

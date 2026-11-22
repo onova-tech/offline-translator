@@ -67,7 +67,7 @@ of git; a pack counts as fetched when its folder holds anything besides pack.jso
 - [X] T020 [P] e2e on the emulator: the app's recognition and a voice through local testing, in airplane mode
   (`SpeechJourney`: Spanish's translation, Whisper and Spanish's voice downloaded on Manage languages; then a
   translation read aloud by Piper and Whisper loaded on the emulator's silent microphone). It found T025
-- [ ] T021 `scripts/ci.sh check`, then `device`
+- [X] T021 `scripts/ci.sh check`, then `device`: check OK; a11y OK (6); e2e OK (2: `SpeechJourney`, `TranslatorJourney`)
 - [ ] T022 [phone] The owner's pass: Arabic spoken, a Piper voice heard, the choice switched, in airplane mode
 
 ## Owner's phone, 2026-11-21 (first install with the app's speech)

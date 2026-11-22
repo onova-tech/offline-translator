@@ -244,7 +244,10 @@ class TranslatorScreenTest : AppUiTest() {
         assertTrue(fakes.speechInput.listenedTo.isEmpty(), "nothing listens before the permission")
         fakes.permissions.answers += PermissionStatus.GRANTED
         compose.onNodeWithText("Allow").performClick()
-        compose.waitUntil(WAIT_MILLIS) { fakes.speechInput.listenedTo.isNotEmpty() }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.isNotEmpty()
+        }
         assertEquals(listOf("en-US"), fakes.speechInput.listenedTo)
         compose.onNodeWithContentDescription("Stop listening").assertExists()
         fakes.speechInput.hear(SpeechEvent.Final("Good morning"))

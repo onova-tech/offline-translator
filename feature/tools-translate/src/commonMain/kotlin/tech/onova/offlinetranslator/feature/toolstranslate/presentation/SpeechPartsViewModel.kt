@@ -75,17 +75,23 @@ internal class SpeechPartsViewModel(
             scope = viewModelScope,
             visibility = visibility,
             ask = {
-                val asked =
+                // One question to the phone per part: what it shows, and who does it (spec 082).
+                val answers =
                     languages.associateWith { language ->
                         val tag = tagOf(language)
-                        SpeechParts(downloads.read(tag, speechIn.support(tag)), speechOut.voice(tag))
+                        val (recognition, hears) = choices.recognition(tag)
+                        val (voice, speaks) = choices.voice(tag)
+                        SpeechParts(downloads.read(tag, recognition), voice) to SpeechUses(hears, speaks)
                     }
-                val uses =
-                    languages.associateWith { language ->
-                        val tag = tagOf(language)
-                        SpeechUses(choices.use(SpeechKind.RECOGNITION, tag), choices.use(SpeechKind.VOICE, tag))
-                    }
-                state.update { it.copy(parts = asked, uses = uses) }
+                state.update {
+                    it.copy(
+                        parts =
+                            answers.mapValues { (_, both) ->
+                                both.first
+                            },
+                        uses = answers.mapValues { (_, both) -> both.second },
+                    )
+                }
             },
             downloading = {
                 state.value.parts.values

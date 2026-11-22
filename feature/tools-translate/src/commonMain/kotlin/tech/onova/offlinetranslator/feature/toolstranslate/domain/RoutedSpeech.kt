@@ -96,8 +96,11 @@ internal class RoutedSpeechInput(
 ) : SpeechInput {
     private suspend fun route(speechTag: String): RecognitionRoute = decide(speechTag).first
 
-    /** Who hears [speechTag]'s language, for the Manage languages page's Phone/App choice. */
-    suspend fun use(speechTag: String): EngineUse = decide(speechTag).second
+    /** What the screens show and who hears it (the Manage languages page's Phone/App choice), from one question. */
+    suspend fun supportAndUse(speechTag: String): Pair<RecognitionSupport, EngineUse> {
+        val (route, use) = decide(speechTag)
+        return route.support to use
+    }
 
     private suspend fun decide(speechTag: String): Pair<RecognitionRoute, EngineUse> {
         val language = SpeechTags.languageOf(speechTag)
@@ -166,8 +169,11 @@ internal class RoutedSpeechOutput(
 ) : SpeechOutput {
     private suspend fun route(speechTag: String): VoiceRoute = decide(speechTag).first
 
-    /** Who speaks [speechTag]'s language, for the Manage languages page's Phone/App choice. */
-    suspend fun use(speechTag: String): EngineUse = decide(speechTag).second
+    /** What the screens show and who speaks it (the Manage languages page's Phone/App choice), from one question. */
+    suspend fun voiceAndUse(speechTag: String): Pair<VoiceSupport, EngineUse> {
+        val (route, use) = decide(speechTag)
+        return route.support to use
+    }
 
     private suspend fun decide(speechTag: String): Pair<VoiceRoute, EngineUse> {
         val language = SpeechTags.languageOf(speechTag)
