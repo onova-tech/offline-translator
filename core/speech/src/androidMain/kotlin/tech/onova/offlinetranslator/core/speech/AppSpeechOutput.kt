@@ -26,9 +26,11 @@ public class AppSpeechOutput(
     private var voice: SherpaVoice? = null
     private var voiceFrom: String? = null
 
-    @Volatile private var stopped = false
-
     @Volatile private var track: AudioTrack? = null
+
+    /** Sentence by sentence; a Stop ends the reading it came during and no later one (spec 082, the final review). */
+    private val reader =
+        SentenceReader<VoiceAudio>(make = { checkNotNull(voice).speak(it) }, play = ::play)
 
     override suspend fun voice(speechTag: String): VoiceSupport =
         if (folders(speechTag) != null) VoiceSupport.READY else VoiceSupport.NO_OFFLINE_VOICE
@@ -38,23 +40,23 @@ public class AppSpeechOutput(
         speechTag: String,
     ): SpeechEnd {
         val (folder, espeak) = folders(speechTag) ?: return SpeechEnd.FAILED
-        stopped = false
+        // Taken here, before waiting for the piper thread: a reading still finishing there is over from now on.
+        val reading = reader.begin()
         return withContext(dispatcher) {
             runCatching {
-                val piper = voiceFrom(folder, espeak)
-                sentences(text).forEach { sentence ->
-                    if (stopped) return@runCatching
-                    play(piper.speak(sentence))
-                }
+                voiceFrom(folder, espeak)
+                reader.read(reading, sentences(text))
             }.fold(onSuccess = { SpeechEnd.DONE }, onFailure = { SpeechEnd.FAILED })
         }
     }
 
     override fun stop() {
-        stopped = true
-        track?.run {
-            pause()
-            flush()
+        reader.stop()
+        // The piper thread may be releasing this track right now; a released track refuses pause().
+        val playing = track ?: return
+        runCatching {
+            playing.pause()
+            playing.flush()
         }
     }
 
@@ -80,9 +82,12 @@ public class AppSpeechOutput(
         }
     }
 
-    /** Plays [audio] to its end, or until [stop]. */
-    private fun play(audio: VoiceAudio) {
-        if (audio.samples.isEmpty() || stopped) return
+    /** Plays [audio] to its end, or until its reading is stopped. */
+    private fun play(
+        audio: VoiceAudio,
+        stillReading: () -> Boolean,
+    ) {
+        if (audio.samples.isEmpty() || !stillReading()) return
         val player =
             AudioTrack
                 .Builder()
@@ -106,7 +111,7 @@ public class AppSpeechOutput(
         try {
             player.play()
             player.write(audio.samples, 0, audio.samples.size, AudioTrack.WRITE_BLOCKING)
-            while (!stopped && player.playbackHeadPosition < audio.samples.size) Thread.sleep(POLL_MILLIS)
+            while (stillReading() && player.playbackHeadPosition < audio.samples.size) Thread.sleep(POLL_MILLIS)
         } finally {
             track = null
             player.release()

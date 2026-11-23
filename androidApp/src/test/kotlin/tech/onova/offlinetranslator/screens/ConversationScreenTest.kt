@@ -1,6 +1,7 @@
 package tech.onova.offlinetranslator.screens
 
 import android.os.Looper
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
@@ -10,6 +11,7 @@ import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.isOff
@@ -21,8 +23,12 @@ import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.ResolvedTextDirection
 import androidx.compose.ui.unit.dp
 import org.junit.Test
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import tech.onova.offlinetranslator.core.designsystem.components.UiRole
@@ -319,6 +325,108 @@ class ConversationScreenTest : AppUiTest() {
         speakNear("Good morning")
         waitForText("Usted: [es] Good morning")
         compose.onNodeWithContentDescription(HEAR_AGAIN).assertIsNotEnabled()
+    }
+
+    /**
+     * M1–M3 (owner, 2026-11-19) and the final review of spec 082: the room beside the microphone is kept before the
+     * first turn too, so at 200 % text the language button keeps its width when the square or the speaker comes.
+     */
+    @Test
+    fun theRoomBesideTheMicrophoneIsKeptSoTheLanguageButtonNeverChangesWidth() {
+        RuntimeEnvironment.setFontScale(2f)
+        showConversation()
+        val width = {
+            val bounds = compose.onNodeWithContentDescription("Your language").getUnclippedBoundsInRoot()
+            bounds.right - bounds.left
+        }
+        val before = width()
+        compose.onNodeWithContentDescription("Speak English").performClick()
+        waitForText(DISCARD)
+        assertEquals(before, width(), "while listening")
+        fakes.speechInput.hear(SpeechEvent.Final("Good morning"))
+        waitForText("Usted: [es] Good morning")
+        fakes.speechOutput.done()
+        compose.waitForIdle()
+        assertEquals(before, width(), "with a translation to hear again")
+    }
+
+    /** The plan's review focus (T034): an Arabic half's label and words read right to left together. */
+    @Test
+    fun anArabicHalfReadsItsLabelAndWordsRightToLeft() {
+        fakes.contentPacks.put(FakeContentPacks.installed(PackId("translate_ar")))
+        showConversation()
+        val inList = hasAnyAncestor(isPopup()) and hasClickAction()
+        val inPage = hasAnyAncestor(isDialog())
+        compose.onNodeWithContentDescription("The other person's language").performClick()
+        compose.waitForIdle()
+        compose.onNode(inList and hasText("Manage languages…")).performClick()
+        waitForText("Downloaded languages")
+        compose.onNode(hasText("Arabic") and hasClickAction() and !hasSetTextAction() and inPage).performClick()
+        compose.waitForIdle()
+        val enable = hasText("Enable language") and isToggleable() and inPage
+        if (compose.onAllNodes(enable and isOn()).fetchSemanticsNodes().isEmpty()) {
+            compose.onNode(enable).performClick()
+        }
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            compose.onAllNodes(enable and isOn()).fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNode(hasContentDescription("Back") and inPage).performClick()
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription("The other person's language").performClick()
+        compose.waitForIdle()
+        compose.onNode(inList and hasText("Arabic")).performClick()
+        waitForText("Speak Arabic")
+        speakNear("Good morning")
+        waitForText("أنت: [ar] Good morning")
+        val layouts = mutableListOf<TextLayoutResult>()
+        compose
+            .onNodeWithText("أنت: [ar] Good morning")
+            .performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
+        assertEquals(ResolvedTextDirection.Rtl, layouts.single().getParagraphDirection(0))
+    }
+
+    /** The plan's review focus (T036): in the far half, turned to the person across, ^ sends and the square drops. */
+    @Test
+    fun inTheTurnedFarHalfTheArrowSendsAndTheSquareDrops() {
+        showConversation()
+        switchOption("Confirm before sending", on = true)
+        compose.onNodeWithContentDescription("Speak Spanish").performClick()
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.size == 1
+        }
+        fakes.speechInput.hear(SpeechEvent.Final("Buenos días"))
+        waitForText(SEND)
+        compose.onNodeWithContentDescription(DISCARD).performClick()
+        compose.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+        compose.onNodeWithText("Yo: Buenos días").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Speak Spanish").performClick()
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.size == 2
+        }
+        fakes.speechInput.hear(SpeechEvent.Final("Buenas tardes"))
+        waitForText(SEND)
+        compose.onNodeWithContentDescription(SEND).performClick()
+        waitForText("You: [en] Buenas tardes")
+    }
+
+    /** The plan's review focus (T036): Clear while a turn waits empties everything and brings the microphone back. */
+    @Test
+    fun clearWhileATurnWaitsBringsTheMicrophoneBack() {
+        showConversation()
+        switchOption("Confirm before sending", on = true)
+        speakNear("Good morning")
+        waitForText(SEND)
+        compose.onNodeWithText("Clear").performClick()
+        compose.onAllNodesWithText("Clear").onLast().performClick()
+        compose.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+        compose.onNodeWithText("Me: Good morning").assertDoesNotExist()
+        compose.onNodeWithContentDescription(SEND).assertDoesNotExist()
+        compose.onNodeWithContentDescription("Speak English").assertIsEnabled()
     }
 
     /**

@@ -54,6 +54,20 @@ class HelpTextsTest {
         assertEquals(emptyList(), problems, "Split these into shorter blocks")
     }
 
+    /**
+     * Spec 082 FR-015 (owner, 2026-11-22): Share left the Translator's screens, so its help mustn't send anyone looking
+     * for it, in any language (the final review found "Copy, Share or Read aloud" still there).
+     */
+    @Test
+    fun theTranslatorsHelpNamesNoShare() {
+        val share = Regex("""\b(Share|compartilh\w*|compart\w*)\b""", RegexOption.IGNORE_CASE)
+        val problems =
+            helps
+                .filterKeys { it.startsWith("translator_") }
+                .flatMap { (key, texts) -> texts.filterValues { share.containsMatchIn(it) }.keys.map { "$key ($it)" } }
+        assertEquals(emptyList(), problems, "The help still names Share")
+    }
+
     @Test
     fun aLineBreakIsWrittenAsAnEscape() {
         val problems = helps.flatMap { (key, texts) -> texts.filterValues { '\n' in it }.keys.map { "$key ($it)" } }

@@ -394,6 +394,12 @@ private fun HalfSlot(
                     enabled = ui.canReplay(side),
                 )
             }
+
+            // Nothing to show yet: the button's size still holds the room, hidden, so the language button keeps its
+            // width when the square or the speaker comes (M1–M3; the final review of spec 082).
+            else -> {
+                HearAgainButton(label = stringResource(Res.string.translator_hear_again), onClick = {}, enabled = false)
+            }
         }
     }
 }
