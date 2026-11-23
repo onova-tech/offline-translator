@@ -52,6 +52,14 @@ public object PocketTypography {
         @Composable @ReadOnlyComposable
         get() = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Monospace)
 
+    /**
+     * Who said a Conversation turn, before its words ("Me:", "You:"): a label's size, bold (spec 082, owner,
+     * 2026-11-22: "add just a small bold You:/Me:"). It follows the window through the label role.
+     */
+    public val speakerLabel: TextStyle
+        @Composable @ReadOnlyComposable
+        get() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+
     internal fun readoutAt(fraction: Float): TextStyle = readoutAtMax.at(READOUT_MIN, fraction)
 
     internal fun readoutMediumAt(fraction: Float): TextStyle = readoutMediumAtMax.at(READOUT_MEDIUM_MIN, fraction)

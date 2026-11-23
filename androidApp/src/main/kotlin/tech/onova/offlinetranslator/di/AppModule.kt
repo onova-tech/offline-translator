@@ -31,7 +31,6 @@ import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.ports.TranslationEngine
 import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.core.domain.speech.packs
@@ -46,7 +45,6 @@ import tech.onova.offlinetranslator.core.platform.AppCompatLanguageController
 import tech.onova.offlinetranslator.core.platform.CurrentActivityTracker
 import tech.onova.offlinetranslator.core.platform.ProcessAppVisibility
 import tech.onova.offlinetranslator.core.platform.TaskVisibility
-import tech.onova.offlinetranslator.core.platform.display.AndroidTextSharer
 import tech.onova.offlinetranslator.core.platform.sensors.AndroidScreenAwake
 import tech.onova.offlinetranslator.core.platform.speech.AndroidScreenReader
 import tech.onova.offlinetranslator.core.platform.speech.AndroidSpeechInput
@@ -73,7 +71,6 @@ val appModule =
         single<DeviceCapabilities> { AndroidDeviceCapabilities(androidContext()) }
         single<AppLanguageController> { AppCompatLanguageController() }
         single<ClipboardWriter> { AndroidClipboardWriter(androidContext()) }
-        single<TextSharer> { AndroidTextSharer(androidContext()) }
         single { CurrentActivityTracker() }
         single<MonotonicClock> { AndroidMonotonicClock(androidContext()) }
         single<ProcessVisibility> { ProcessAppVisibility() }

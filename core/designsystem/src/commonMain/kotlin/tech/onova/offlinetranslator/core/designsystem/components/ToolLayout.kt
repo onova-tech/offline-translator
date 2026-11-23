@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -247,14 +248,22 @@ public fun BottomAction(
             OutlinedButton(onClick, size, enabled, PocketShapes.card, contentPadding = padding, content = body)
         }
 
+        BottomActionStyle.Tonal -> {
+            FilledTonalButton(onClick, size, enabled, PocketShapes.card, contentPadding = padding, content = body)
+        }
+
         BottomActionStyle.Text -> {
             TextButton(onClick, size, enabled, PocketShapes.card, contentPadding = padding, content = body)
         }
     }
 }
 
-/** How a [BottomAction] looks: at most one [Primary] on a screen (spec 018), and outlined beside it. */
-public enum class BottomActionStyle { Primary, Outlined, Text }
+/**
+ * How a [BottomAction] looks: at most one [Primary] on a screen (spec 018), and outlined beside it; [Text] for a
+ * dialog's Cancel; [Tonal] for a "More options" in the actions' row, which opens controls rather than acting, so it
+ * reads apart from them (owner, 2026-11-22).
+ */
+public enum class BottomActionStyle { Primary, Outlined, Text, Tonal }
 
 @Composable
 private fun ActionBody(

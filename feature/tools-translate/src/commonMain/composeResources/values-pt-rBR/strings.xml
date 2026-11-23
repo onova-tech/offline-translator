@@ -41,7 +41,6 @@
     <string name="translator_pack_needed">Para traduzir %1$s, baixe o pacote do idioma (%2$s MB).</string>
     <string name="translator_pack_needed_no_size">Para traduzir %1$s, baixe o pacote do idioma.</string>
     <string name="translator_copy">Copiar</string>
-    <string name="translator_share">Compartilhar</string>
     <string name="translator_read_aloud">Ler em voz alta</string>
     <string name="translator_copied">Tradução copiada</string>
     <string name="translator_pack_checking">Procurando o pacote do idioma…</string>
@@ -161,10 +160,15 @@
     <string name="translator_voice_app_downloading">A voz do app para %1$s está sendo baixada. Funciona quando terminar.</string>
     <string name="translator_speech_app_can_get">O app pode reconhecer · %1$s</string>
     <string name="translator_voice_app_can_get">O app tem uma voz para ele · %1$s</string>
-    <string name="translator_engine_phone">Celular</string>
+    <string name="translator_engine_phone">Aparelho</string>
     <string name="translator_engine_app">App</string>
-    <string name="translator_engine_group">%1$s para %2$s: celular ou app</string>
+    <string name="translator_engine_group">%1$s para %2$s: aparelho ou app</string>
     <string name="translator_delete_recognition_title">Apagar o reconhecimento de fala do app?</string>
     <string name="translator_delete_recognition_text">Todos os idiomas o usam. Isso libera %1$s MB. Você pode baixar de novo quando precisar.</string>
     <string name="translator_delete_voice_title">Apagar a voz do app para %1$s?</string>
+    <string name="translator_confirm_send">Confirmar antes de enviar</string>
+    <string name="translator_send">Enviar</string>
+    <string name="translator_hear_again">Ouvir de novo</string>
+    <string name="translator_voice_manage">Gerenciar vozes do aparelho</string>
+    <string name="translator_keep_correction">Salvar</string>
 </resources>

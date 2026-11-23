@@ -45,7 +45,7 @@ public val toolsTranslateModule =
         single<DataPart>(named("data-part:translator")) { get<DataStoreTranslatorSettings>().dataPart() }
         single<ToolEntry>(named(TranslatorEntry.ID)) { TranslatorEntry() }
         single { EngineSession(get(), get()) }
-        factory { TranslatorOutputs(get(), get()) }
+        factory { TranslatorOutputs(get()) }
         viewModelOf(::TranslatorViewModel)
         viewModelOf(::PacksViewModel)
         viewModelOf(::SpeakAndHearViewModel)

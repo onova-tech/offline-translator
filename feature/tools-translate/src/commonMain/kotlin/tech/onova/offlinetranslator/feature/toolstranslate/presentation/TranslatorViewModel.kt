@@ -27,7 +27,6 @@ import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackState
 import tech.onova.offlinetranslator.core.domain.ports.PackStatus
 import tech.onova.offlinetranslator.core.domain.ports.Route
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.translation.LanguageCatalog
 import tech.onova.offlinetranslator.core.domain.translation.LanguageQuality
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineSession
@@ -80,8 +79,6 @@ internal data class LanguageOption(
 
 internal enum class LanguageSide { SOURCE, TARGET }
 
-internal enum class Send { COPY, SHARE }
-
 internal sealed interface TranslatorEffect {
     /** The phone didn't confirm the copy itself, so the screen does. */
     data object Copied : TranslatorEffect
@@ -99,14 +96,13 @@ internal data class TranslatorUi(
     val count: Int get() = TextLimit.count(text)
     val overLimit: Boolean get() = TextLimit.isOver(count)
 
-    /** What Copy, Share and Read aloud send: the translation on the screen. */
+    /** What Copy and Read aloud take: the translation on the screen. */
     val translation: String? get() = (view as? TranslationView.Shown)?.text
 }
 
-/** Where a translation goes besides the screen. */
+/** Where a translation goes besides the screen: the clipboard (Share left the Translator, spec 082 FR-015). */
 internal class TranslatorOutputs(
     val clipboard: ClipboardWriter,
-    val sharer: TextSharer,
 )
 
 /** One translation's inputs, compared as a whole so only a change that matters starts another. */
@@ -214,21 +210,10 @@ internal class TranslatorViewModel(
         update { it.copy(mode = mode) }
     }
 
-    /** [label] names the clip for the system. */
-    fun send(
-        how: Send,
-        label: String,
-    ) {
+    /** Copies the translation; [label] names the clip for the system. */
+    fun copy(label: String) {
         val translation = uiState.value.translation ?: return
-        when (how) {
-            Send.COPY -> {
-                if (!outputs.clipboard.copy(label, translation)) effectChannel.tryEmit(TranslatorEffect.Copied)
-            }
-
-            Send.SHARE -> {
-                outputs.sharer.share(translation)
-            }
-        }
+        if (!outputs.clipboard.copy(label, translation)) effectChannel.tryEmit(TranslatorEffect.Copied)
     }
 
     override fun onCleared() {

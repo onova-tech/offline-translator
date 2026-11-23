@@ -101,6 +101,13 @@ public object PocketIcons {
             "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3",
         )
 
+    /** Lucide's "volume-2": hear a translated turn again (spec 082, the Conversation; owner, 2026-11-22). */
+    public val Speaker: ImageVector =
+        pocketIcon(
+            "Speaker",
+            "M11 5L6 9H2v6h4l5 4z M15.5 8.5a5 5 0 0 1 0 7 M19 5a10 10 0 0 1 0 14",
+        )
+
     /** A square: stop, and drop what was being heard (spec 012, the Conversation's halves; owner, 2026-11-19). */
     public val Stop: ImageVector = pocketIcon("Stop", "M6 6h12v12H6z")
 

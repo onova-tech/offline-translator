@@ -21,7 +21,6 @@ import tech.onova.offlinetranslator.core.domain.ports.PackStatus
 import tech.onova.offlinetranslator.core.domain.ports.PackUnavailable
 import tech.onova.offlinetranslator.core.domain.ports.PackWait
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPage
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineSession
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.PackOffer
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TextLimit
@@ -74,11 +73,7 @@ class PackOfferTest {
 
     /** The translator with "Bom dia" typed, and the packs' actions. */
     private fun TestScope.screen(): Pair<TranslatorViewModel, PacksViewModel> {
-        val sharer =
-            object : TextSharer {
-                override fun share(text: String) = Unit
-            }
-        val outputs = TranslatorOutputs(ClipboardWriter { _, _ -> false }, sharer)
+        val outputs = TranslatorOutputs(ClipboardWriter { _, _ -> false })
         val session = EngineSession(packs, engine, dispatcher)
         val translator = TranslatorViewModel(settings, packs, session, outputs, FakeAppVisibility())
         translator.setAppLanguage("pt")

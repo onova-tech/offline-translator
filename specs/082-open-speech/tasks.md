@@ -108,32 +108,33 @@ brings the microphone back (T036); Stop on a replay read by the app's voice (Pip
 - [ ] T030 Manage languages opens without a flash (FR-013): record the opening on the emulator (`adb shell
   screenrecord`, Settings → Offline languages and a Conversation notice's "Manage languages"), find the frame that
   flashes and its cause before changing anything, fix it, and pin it with a test where one can see it
-- [ ] T031 The Device | App choice inside its part's card (FR-011): `InfoRow` and `MenuSettingsRow` (core/designsystem
+- [X] T031 The Device | App choice inside its part's card (FR-011): `InfoRow` and `MenuSettingsRow` (core/designsystem
   `SettingsRows.kt`) take `below: (@Composable ColumnScope.() -> Unit)? = null`, drawn under the state line on the
   same surface; `SpeechPart` and `VoicePart` pass `EngineChoice` there. `translator_engine_phone`: "Device",
   "Aparelho", "Dispositivo". `ManageLanguagesPageTest`: the choice is inside the part's row (its bounds within the
   row's); C4 rewritten; `translator_manage_app_speech_*` re-recorded
-- [ ] T032 The device's voice behind ⋮ (FR-012): a ready voice of the phone's gets one item, "Manage voices on the
+- [X] T032 The device's voice behind ⋮ (FR-012): a ready voice of the phone's gets one item, "Manage voices on the
   device" / "Gerenciar vozes do aparelho" / "Gestionar voces del dispositivo" (`translator_voice_manage`), calling
   `SpeechPartActions.onVoice` (`SpeechOutput.openVoiceSettings`, the voice app's list). `ManageLanguagesPageTest`:
   the item is there and calls it; C3 updated
-- [ ] T033 [P] Turn labels (FR-014): `core/domain/.../translation/TurnLabels.kt`, `data class TurnLabel(val me:
+- [X] T033 [P] Turn labels (FR-014): `core/domain/.../translation/TurnLabels.kt`, `data class TurnLabel(val me:
   String, val you: String)` and `object TurnLabels { fun of(language: LanguageCode): TurnLabel }`, one hand-written
   pair per catalog language, each with its own punctuation (`"Eu:"`, `"Moi :"`, `"我："`); the polite "you", and "the
   other person" for ja and ko. `TurnLabelsTest`: every `LanguageCatalog.all` code has a pair, neither blank, the two
   different. `docs/ui-rules.md` Exceptions: X1, with the reason (the words follow the half's language)
-- [ ] T034 Every turn one size, with its label (FR-014): `OwnTurn` and `OtherTurn` become one `TurnText(label: String,
+- [X] T034 Every turn one size, with its label (FR-014): `OwnTurn` and `OtherTurn` become one `TurnText(label: String,
   text: String)`: the label in bold `labelLarge`, then the text in `bodyLarge`, one `AnnotatedString` in its own
   direction; labels from `TurnLabels.of(languageOf(side))`; a tap on one's own still corrects it.
   `ConversationScreenTest`: a Portuguese half reads "Eu: …" for its own turn and "Você: …" for the other's; C1
   updated; Conversation screenshots re-recorded
-- [ ] T035 Room at the bottom (FR-015): Share leaves both screens (`Send.SHARE`, `TranslatorOutputs.sharer` and the
+- [X] T035 Room at the bottom (FR-015): Share leaves both screens (`Send.SHARE`, `TranslatorOutputs.sharer` and the
   `TextSharer` port and binding when nothing else uses them; the tests that share). `MoreControls` (core/tool-api)
   splits into `rememberMoreControlsState()`, `MoreControlsPanel(state, options)` above the row and
   `RowScope.MoreOptionsAction(state)`, an outlined compact `BottomAction` reading "More options" / "Fewer options";
-  the one-option rule (A4) stays. The Conversation: Copy | More options | Clear. `MoreControlsTest` for the row
+  the one-option rule (A4) stays. The Conversation: Clear | More options (tonal, `BottomActionStyle.Tonal`) | Copy;
+  Type or speak: Read aloud (with `PocketIcons.Speaker`) | Copy; Copy the main action on both (owner, 2026-11-22). `MoreControlsTest` for the row
   button; `UiRulesTest` A3 lets "More options" sit in the action row; A3 and A4 updated with the owner's decision
-- [ ] T036 Confirm before sending (FR-016): `TranslatorSettings.confirmBeforeSending` (false, stored as
+- [X] T036 Confirm before sending (FR-016): `TranslatorSettings.confirmBeforeSending` (false, stored as
   `farHalfTurned` is) and `ConversationOption.CONFIRM`, a third switch in More options ("Confirm before sending" /
   "Confirmar antes de enviar" / "Confirmar antes de enviar"). The machine: `ConversationState.confirm`,
   `ConversationPhase.Waiting(turnId)`, `ConversationEvent.ConfirmChanged(on)` and `ConversationEvent.Send(side)`;
@@ -144,10 +145,12 @@ brings the microphone back (T036); Stop on a replay read by the app's voice (Pip
   `PocketIcons.ArrowUp`, the microphone's size and colours, "Send" / "Enviar" / "Enviar") in the microphone's place
   with the square beside it; the waiting turn italic in its half, absent from the other half and from Copy.
   `ConversationScreenTest`: speak, ^, square; C1 updated
-- [ ] T037 Hear a translation again (FR-017): `PocketIcons.Speaker`; `ConversationEvent.Replay(turnId)` (from Idle
-  to `Speaking(turnId)`) and `ConversationEvent.StopSpeaking` (Speaking to Idle). Each translated turn ends with a
-  speaker `IconButton` ("Hear it again" / "Ouvir de novo" / "Escuchar de nuevo"), enabled only when its half's voice
-  is `VoiceSupport.READY` and nothing else is happening; while that turn is read it shows Stop. It reads with
+- [X] T037 Hear a translation again (FR-017): `PocketIcons.Speaker`; `ConversationEvent.Replay(turnId)` (from Idle
+  to `Speaking(turnId)`) and `ConversationEvent.StopSpeaking` (Speaking to Idle). In the square's place beside each
+  microphone, `HearAgainButton` ("Hear it again" / "Ouvir de novo" / "Escuchar de nuevo", tertiary colours) reads the
+  half's latest translation, enabled only when its voice is `VoiceSupport.READY` and nothing else is happening; while
+  it reads, the red `StopButton` there stops it. (A speaker on each turn, tried first, made the lines taller: owner,
+  2026-11-22.) It reads with
   TalkBack on and with "Read translations aloud" off. `ConversationMachineTest` (Replay, StopSpeaking, Replay ignored
   while listening) and `ConversationScreenTest` (enabled only with a ready voice); C1 updated
 - [ ] T038 Polish: screenshots looked at, `LayoutFitTest`, `ModeStabilityTest`, the accessibility audit, then

@@ -53,7 +53,7 @@ internal class ConversationTurns(
             is ConversationPhase.Listening -> if (old !is ConversationPhase.Listening) listen(new.side)
             is ConversationPhase.Translating -> translate(new.turnId)
             is ConversationPhase.Speaking -> speak(new.turnId)
-            ConversationPhase.Idle, is ConversationPhase.Paused -> Unit
+            ConversationPhase.Idle, is ConversationPhase.Paused, is ConversationPhase.Waiting -> Unit
         }
     }
 

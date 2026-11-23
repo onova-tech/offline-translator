@@ -17,7 +17,6 @@ import tech.onova.offlinetranslator.core.domain.ports.ClipboardWriter
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.Route
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.EngineSession
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.PackOffer
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TextLimit
@@ -53,11 +52,8 @@ class TranslatorViewModelTest {
         }
     }
 
-    private class Outputs :
-        ClipboardWriter,
-        TextSharer {
+    private class Outputs : ClipboardWriter {
         val copied = mutableListOf<String>()
-        val shared = mutableListOf<String>()
         var confirmsCopy = false
 
         override fun copy(
@@ -66,10 +62,6 @@ class TranslatorViewModelTest {
         ): Boolean {
             copied += text
             return confirmsCopy
-        }
-
-        override fun share(text: String) {
-            shared += text
         }
     }
 
@@ -91,7 +83,7 @@ class TranslatorViewModelTest {
 
     private fun TestScope.model(repository: TranslatorSettingsRepository = settings): TranslatorViewModel {
         val session = EngineSession(packs, engine, dispatcher)
-        val model = TranslatorViewModel(repository, packs, session, TranslatorOutputs(outputs, outputs), visibility)
+        val model = TranslatorViewModel(repository, packs, session, TranslatorOutputs(outputs), visibility)
         model.setAppLanguage("en")
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.uiState.collect {} }
         runCurrent()
@@ -307,16 +299,14 @@ class TranslatorViewModelTest {
         }
 
     @Test
-    fun copyAndShareSendTheTranslation() =
+    fun copyPutsTheTranslationOnTheClipboard() =
         runTest(dispatcher) {
             val model = model()
             val effects = mutableListOf<TranslatorEffect>()
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.effects.collect { effects += it } }
             typeAndWait(model, "Bom dia")
-            model.send(Send.COPY, label = "Translation")
-            model.send(Send.SHARE, label = "Translation")
+            model.copy(label = "Translation")
             assertEquals(listOf("[en] Bom dia"), outputs.copied)
-            assertEquals(listOf("[en] Bom dia"), outputs.shared)
             assertEquals(listOf<TranslatorEffect>(TranslatorEffect.Copied), effects, "no system confirmation: ours")
         }
 
@@ -371,7 +361,7 @@ class TranslatorViewModelTest {
         runTest(dispatcher) {
             val fresh = InMemorySettings()
             val session = EngineSession(packs, engine, dispatcher)
-            val model = TranslatorViewModel(fresh, packs, session, TranslatorOutputs(outputs, outputs), visibility)
+            val model = TranslatorViewModel(fresh, packs, session, TranslatorOutputs(outputs), visibility)
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.uiState.collect {} }
             runCurrent()
             assertEquals(false, model.uiState.value.loaded, "the defaults wait for the app's language")

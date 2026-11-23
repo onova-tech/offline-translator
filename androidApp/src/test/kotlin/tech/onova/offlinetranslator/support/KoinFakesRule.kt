@@ -23,7 +23,6 @@ import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.ports.TranslationEngine
 import tech.onova.offlinetranslator.di.appModule
 import tech.onova.offlinetranslator.feature.settings.settingsModule
@@ -44,7 +43,6 @@ class KoinFakesRule(
     val clipboard = FakeClipboard()
     val clock = FakeMonotonicClock()
     val visibility = FakeAppVisibility()
-    val textSharer = FakeTextSharer()
     val settingsPages = FakeSettingsPages()
     val permissions = FakePermissionController()
     val screenAwake = FakeScreenAwake()
@@ -85,7 +83,6 @@ class KoinFakesRule(
             single<DeviceCapabilities> { capabilities }
             single { AppInfo(versionName = "1.0.0-test", deviceModel = "Test Phone") }
             single<ClipboardWriter> { clipboard }
-            single<TextSharer> { textSharer }
             single<SettingsPages> { settingsPages }
             single<MonotonicClock> { clock }
             single<Clock> { wallClock }

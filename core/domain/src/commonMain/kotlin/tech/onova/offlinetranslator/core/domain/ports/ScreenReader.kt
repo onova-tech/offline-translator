@@ -9,7 +9,3 @@ import kotlinx.coroutines.flow.StateFlow
 public interface ScreenReader {
     public val on: StateFlow<Boolean>
 }
-
-public interface TextSharer {
-    public fun share(text: String)
-}

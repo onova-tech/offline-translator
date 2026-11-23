@@ -132,7 +132,13 @@ added there.
   then "More options", then the actions. No field, toggle, slider, selector or "More options" goes below the actions,
   so opening "More options" or changing a mode never moves them. *Owner, 2026-11-05 and 2026-11-08.* Checked by
   `UiRulesTest` (A3). A "More options" under a list stays at the bottom when the list is empty: the room the list
-  leaves goes above it, not below (the Intervals tab; *owner, 2026-11-09*).
+  leaves goes above it, not below (the Intervals tab; *owner, 2026-11-09*). Where the screen is short of room,
+  "More options" may be a button in the actions' row itself, tonal (`BottomActionStyle.Tonal`) so it reads apart from
+  the actions, its options opening above the row, so the actions still end the screen: the Conversation's **Clear |
+  More options | Copy** (`MoreOptionsAction` with `MoreControlsPanel`; *owner, 2026-11-22*: "Make up some screen
+  space … make the "More options" the middle button in the Chat screen"; "More options should have a distinct
+  color"). Copy is the Translator's main action, last on the right, on both screens: Read aloud | Copy (*owner,
+  2026-11-22*: "Make copy the right button on both screens").
 - **A4. Rarely used controls go behind "More options"** (`MoreControls`): smoothing, resetting a calibration, a
   compass's declination. What the tool is for keeps its room. *Owner, 2026-11-01.* **Only two or more:** a button that
   opens a single control only adds a tap, so a single option shows from the start (the snooze length, the tone's big
@@ -279,7 +285,17 @@ added there.
 ## 10. Two people at one phone
 
 - **C1. Conversation: two facing halves,** each with its turns, then its own language (a `MenuChoice`) beside its large
-  microphone (`MicrophoneButton`) at the speaker's own edge; nothing else inside the halves (`FacingHalves`). A window
+  microphone (`MicrophoneButton`) at the speaker's own edge; nothing else inside the halves (`FacingHalves`). Every turn reads in one size, `bodyLarge`, after a small bold
+  label in the half's own language: "Me:" for the half's speaker, "You:" for the other person (`TurnLabels`; owner,
+  2026-11-22: "Instead of displaying the other person text with a big font and in bold, add just a small bold
+  You:/Me:"). Beside each microphone, in the square button's place, a round speaker (`HearAgainButton`, in its own
+  colour) reads the half's latest translation again, whether "Read translations aloud" is on or not, enabled only when
+  that language's voice is ready; while a translation is read in a half, the red square stops it there. A speaker on
+  each turn was tried first and dropped: it made every line taller (owner, 2026-11-22). The square
+  (`StopButton`) is red, since it means stop (owner, 2026-11-22). With "Confirm before sending" on (More options), a heard turn waits in its
+  half, in italics, and the microphone's place holds ^ (`SendButton`, the microphone's size): ^ sends it, the square
+  beside it drops it, a tap on it corrects it by typing; the other half sees nothing of it until it is sent (owner,
+  2026-11-22: "the user will only be able to know if there was an error in the transcript to later"). A window
   too short for both halves scrolls them (`PocketSizes.facingHalfLeastHeight`). The far half is turned to face the
   person across the phone, and More options turns it upright for someone beside you; the turn is only drawn, so screen
   readers read both halves in the normal order. What the phone's owner sets up (a language pack, the phone's speech or a
@@ -308,10 +324,13 @@ added there.
   engine's download list (Samsung's and Google's both have one), the phone's voice settings only when the engine has
   none; an app can't download a voice itself. A recognition language the phone downloads and never installs reads
   "The phone didn't install it", with "Update" for the phone's speech service in Google Play where the phone has one,
-  instead of offering the same download again. *Owner's phone pass, 2026-11-20.*
-- **C4. The phone's speech or the app's, per language** (spec 082): on Manage languages, where both the phone and the
-  app can recognize a language (or speak it), a `SegmentedChoice` "Phone | App" sits under that part's row, "Phone" at
-  first; it shows the person's choice even while the app's model downloads, when the row offers that download with its
+  instead of offering the same download again. *Owner's phone pass, 2026-11-20.* A voice the device already has
+  shows "Manage voices on the device" behind its ⋮, the same list, where the voice app deletes it: the app can't
+  (*owner's phone pass, 2026-11-22*).
+- **C4. The device's speech or the app's, per language** (spec 082): on Manage languages, where both the device and
+  the app can recognize a language (or speak it), a `SegmentedChoice` "Device | App" sits inside that part's card,
+  under its state line (the row's `below`; owner, 2026-11-22: "it doesn't feel like a part of the Reconhecimento de
+  fala option or the Voz option. It should be inside them"; "Celular" became "Aparelho"), "Device" at first; it shows the person's choice even while the app's model downloads, when the row offers that download with its
   size and the phone's is used meanwhile. Where only the app can, its row reads the app's state with no choice. The
   app's model is deleted from its row's ⋮ after a confirmation; the recognition model is every language's, and says so;
   a voice takes espeak-ng's data with it when it was the last of the app's voices. *Owner, 2026-11-20: "Fallback, with
@@ -328,6 +347,7 @@ added there.
 | Heart rate | R3 | The medical notice stays on screen, whole (owner, 2026-11-07). |
 | Metronome, Pitch tuner | M1 | The beats and the strings share the row's width, and their count follows the signature or the instrument (specs 025, 026). So do the Tuner's tunings (spec 045): `ModeStabilityTest` compares a segment only among the same choices. |
 | Ruler | M1 | The end marker starts on a round mark of each unit: 5 cm and 2 in aren't the same length. |
+| Translator, Conversation | X1 | Each half's "Me:" and "You:" are in that half's language, not the app's (`TurnLabels` in core/domain, one hand-written pair for each of the catalog's 54 languages; owner, 2026-11-22: "they should follow the selected language for that half of the screen"). `TurnLabelsTest` fails when a language of the catalog has none. |
 | Financial calculator | L7 | Its graph (spec 071) has no least height (`PocketSizes.graphLeastHeight`): on a shorter phone with the values open, or with many results, it isn't drawn rather than make the screen scroll; folding the values shows it (owner, 2026-11-13: "Hide until folded"). |
 | Area & volume | M1 | Each shape's lengths come from the top, as many as it has: a Height is where its shape puts it (spec 068). The reading and the rows above keep their place between Area and Volume. |
 | Translator | M1 | The two languages sit side by side above the text in Type or speak, and each in its own half, beside its microphone, in Conversation (C1): that mode is two people's, so each gets their own (spec 012). `ModeStabilityTest` allows the language menus only. |
@@ -339,13 +359,13 @@ added there.
 |---|---|
 | `ToolLayout`, `AdaptiveToolLayout`, `DialToolLayout`, `FitColumn` | L1–L3, L7–L10 |
 | `BottomAction`, `BottomActionRow`, `BottomActionStyle` | A1, A2 |
-| `MoreControls` (its options as a list) | A3, A4 |
+| `MoreControls` (its options as a list); `MoreControlsPanel` with `MoreOptionsAction` (the button in the actions' row) | A3, A4 |
 | `FoldLine`, `FoldAway` | A3, A7 |
 | `MenuRow`, `RowMenu` (⋮, or its own icon: the Notepad's Aa), `ReorderableRow` (its `actions`) | A6 |
 | `FieldToggleColumn`, `FieldWithToggle`, `ToggleCaption`, `ToggleChoice` | T1–T6, T9 |
 | `MenuChoice`, `ChoiceWithOption` | T2, T9 |
-| `FacingHalves`, `MicrophoneButton` | C1 |
-| `SegmentedChoice` (on Manage languages, under a speech part) | C4 |
+| `FacingHalves`, `MicrophoneButton`, `SendButton`, `PocketTypography.speakerLabel` | C1 |
+| `SegmentedChoice` in an `InfoRow`'s or `MenuSettingsRow`'s `below` (on Manage languages, inside a speech part) | C4 |
 | `Notice` (`onClose`) | C2 |
 | `ExpandableCard`, `StatusMark`, `HelpSheet` | S6 |
 | `CheckRow`, `MenuEntry` (`MenuChoice`'s `last`), `MenuSettingsRow` | S6 |
@@ -512,3 +532,10 @@ added there.
   a gray "Ignore" text button instead of the ×.
 - **2026-11-21 (spec 082):** C4, "Phone | App" for a language's recognition and voice on Manage languages, where both
   can; the app's models deleted from their row.
+- **2026-11-22 (spec 082, owner's phone pass):** C1, every Conversation turn at one size after a small bold "Me:" or
+  "You:" in the half's language (the words a hand-written table, an exception to X1), a speaker button on each
+  half's latest translation heard again from the square's place beside its microphone (a speaker on each turn was
+  dropped: taller lines), a red square, and "Confirm before sending" with ^ in the microphone's place; A3, "More
+  options" may sit in the actions' row, tonal (the Conversation's Clear | More options | Copy), Copy the main action
+  on the right of both Translator screens (Read aloud | Copy, Read aloud with a speaker), and Share left both; C3,
+  the device's own voice offers its voice app's list; C4, "Device | App" inside its part's card.

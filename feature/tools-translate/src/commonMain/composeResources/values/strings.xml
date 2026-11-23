@@ -41,7 +41,6 @@
     <string name="translator_pack_needed">To translate %1$s, download its language pack (%2$s MB).</string>
     <string name="translator_pack_needed_no_size">To translate %1$s, download its language pack.</string>
     <string name="translator_copy">Copy</string>
-    <string name="translator_share">Share</string>
     <string name="translator_read_aloud">Read aloud</string>
     <string name="translator_copied">Translation copied</string>
     <string name="translator_pack_checking">Looking for the language pack…</string>
@@ -161,10 +160,15 @@
     <string name="translator_voice_app_downloading">The app's voice for %1$s is downloading. It works once that ends.</string>
     <string name="translator_speech_app_can_get">The app can recognize it · %1$s</string>
     <string name="translator_voice_app_can_get">The app has a voice for it · %1$s</string>
-    <string name="translator_engine_phone">Phone</string>
+    <string name="translator_engine_phone">Device</string>
     <string name="translator_engine_app">App</string>
-    <string name="translator_engine_group">%1$s for %2$s: phone or app</string>
+    <string name="translator_engine_group">%1$s for %2$s: device or app</string>
     <string name="translator_delete_recognition_title">Delete the app's speech recognition?</string>
     <string name="translator_delete_recognition_text">Every language uses it. This frees %1$s MB. You can download it again when you need it.</string>
     <string name="translator_delete_voice_title">Delete the app's voice for %1$s?</string>
+    <string name="translator_confirm_send">Confirm before sending</string>
+    <string name="translator_send">Send</string>
+    <string name="translator_hear_again">Hear it again</string>
+    <string name="translator_voice_manage">Manage voices on the device</string>
+    <string name="translator_keep_correction">Save</string>
 </resources>

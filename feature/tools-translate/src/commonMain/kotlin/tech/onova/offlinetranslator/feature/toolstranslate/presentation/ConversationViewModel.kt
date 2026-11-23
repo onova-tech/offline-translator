@@ -2,11 +2,8 @@ package tech.onova.offlinetranslator.feature.toolstranslate.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,6 +20,7 @@ import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.ScreenReader
 import tech.onova.offlinetranslator.core.domain.ports.SpeechInput
 import tech.onova.offlinetranslator.core.domain.ports.SpeechOutput
+import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.AppSpeechParts
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.CheckedLanguages
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationEvent
@@ -43,9 +41,10 @@ import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechDownload
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.SpeechRegions
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorDefaults
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.TranslatorSettingsRepository
+import tech.onova.offlinetranslator.feature.toolstranslate.domain.Turn
 
-/** The two switches under More options. */
-internal enum class ConversationOption { FAR_TURNED, READ_ALOUD }
+/** The switches under More options; CONFIRM is "Confirm before sending" (spec 082 FR-016). */
+internal enum class ConversationOption { FAR_TURNED, READ_ALOUD, CONFIRM }
 
 /** The phone's speech and what decides when it may speak; [downloads] is shared with the Manage languages page. */
 internal class ConversationSpeech(
@@ -83,6 +82,13 @@ internal data class ConversationUi(
         }
 
     fun supportOf(side: Side): SideSupport = if (side == Side.NEAR) near else far
+
+    /** The turn waiting for ^ (spec 082 FR-016), if one is. */
+    val waiting: Turn? get() = conversation.waiting
+
+    /** A translated turn's speaker button (FR-017): enabled with a ready voice while nothing else happens. */
+    fun canReplay(side: Side): Boolean =
+        conversation.phase == ConversationPhase.Idle && supportOf(side).voice == VoiceSupport.READY
 
     /** What the phone's owner sets up next, upright in the near half, one thing at a time (owner, 2026-11-19). */
     val setup: SetupNeed?
@@ -123,8 +129,9 @@ internal class ConversationViewModel(
     private val checked = MutableStateFlow(CheckedLanguages.DEFAULT)
     private val ui = MutableStateFlow(ConversationUi())
     val uiState: StateFlow<ConversationUi> = ui.asStateFlow()
-    private val effectChannel = MutableSharedFlow<TranslatorEffect>(extraBufferCapacity = EFFECT_BUFFER)
-    val effects: SharedFlow<TranslatorEffect> = effectChannel.asSharedFlow()
+
+    /** Copy, with the app's own "copied" when the system shows none. */
+    val clipboard = CopyOutput(outputs)
 
     /** A language's speech tag, with the phone's languages for its region (research R9). */
     private val tagOf: (LanguageCode) -> String = { language ->
@@ -169,6 +176,9 @@ internal class ConversationViewModel(
                 val first = !ui.value.loaded
                 ui.update { it.copy(loaded = true, farTurned = resolved.farHalfTurned) }
                 if (first) ui.update { it.copy(conversation = ConversationState.start(resolved.near, resolved.far)) }
+                if (resolved.confirmBeforeSending != ui.value.conversation.confirm) {
+                    dispatch(ConversationEvent.ConfirmChanged(resolved.confirmBeforeSending))
+                }
                 if (resolved.near != ui.value.conversation.near) {
                     ui.update { it.undismissed(Side.NEAR) }
                     dispatch(ConversationEvent.LanguageChanged(Side.NEAR, resolved.near))
@@ -246,7 +256,9 @@ internal class ConversationViewModel(
     ) {
         val state = ui.value
         if (state.offer != null || state.unavailable != null) return
-        dispatch(ConversationEvent.TapMicrophone(side, discard))
+        // ^ stands in the microphone's place while the half's turn waits (spec 082 FR-016).
+        val sends = !discard && state.waiting?.side == side
+        dispatch(if (sends) ConversationEvent.SendTurn(side) else ConversationEvent.TapMicrophone(side, discard))
     }
 
     /** A misheard turn, corrected by the person: translated again (story 5, scenario 4). */
@@ -269,9 +281,25 @@ internal class ConversationViewModel(
         on: Boolean,
     ) {
         when (option) {
-            ConversationOption.FAR_TURNED -> viewModelScope.launch { repository.update { it.copy(farHalfTurned = on) } }
-            ConversationOption.READ_ALOUD -> ui.update { it.copy(readAloud = on) }
+            ConversationOption.FAR_TURNED -> {
+                viewModelScope.launch { repository.update { it.copy(farHalfTurned = on) } }
+            }
+
+            ConversationOption.READ_ALOUD -> {
+                ui.update { it.copy(readAloud = on) }
+            }
+
+            ConversationOption.CONFIRM -> {
+                viewModelScope.launch { repository.update { it.copy(confirmBeforeSending = on) } }
+            }
         }
+    }
+
+    /** A translated turn's speaker button: read it again, or stop it while it reads (spec 082 FR-017). */
+    fun replay(turnId: Long) {
+        val phase = ui.value.conversation.phase
+        val reading = phase == ConversationPhase.Speaking(turnId)
+        dispatch(if (reading) ConversationEvent.StopSpeaking else ConversationEvent.Replay(turnId))
     }
 
     /**
@@ -285,18 +313,6 @@ internal class ConversationViewModel(
 
     fun clear() = dispatch(ConversationEvent.Clear)
 
-    /** [text] is the conversation as the screen shows it (ConversationText); [label] names the clip. */
-    fun send(
-        how: Send,
-        label: String,
-        text: String,
-    ) {
-        when (how) {
-            Send.COPY -> if (!outputs.clipboard.copy(label, text)) effectChannel.tryEmit(TranslatorEffect.Copied)
-            Send.SHARE -> outputs.sharer.share(text)
-        }
-    }
-
     override fun onCleared() {
         turns.stopAll()
         session.release()
@@ -307,9 +323,5 @@ internal class ConversationViewModel(
         val after = ConversationMachine.reduce(before, event)
         ui.update { it.copy(conversation = after) }
         if (after.phase != before.phase) turns.follow(before.phase, after.phase)
-    }
-
-    private companion object {
-        const val EFFECT_BUFFER = 8
     }
 }

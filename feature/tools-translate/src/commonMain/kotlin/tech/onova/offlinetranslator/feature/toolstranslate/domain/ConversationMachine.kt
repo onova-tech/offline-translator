@@ -55,6 +55,11 @@ internal sealed interface ConversationPhase {
         val partial: String,
     ) : ConversationPhase
 
+    /** A heard turn kept in its half until ^ sends it, the square drops it, or it's corrected (spec 082 FR-016). */
+    data class Waiting(
+        val turnId: Long,
+    ) : ConversationPhase
+
     data class Translating(
         val turnId: Long,
     ) : ConversationPhase
@@ -120,6 +125,24 @@ internal sealed interface ConversationEvent {
     ) : ConversationEvent
 
     data object Clear : ConversationEvent
+
+    /** "Confirm before sending" (spec 082 FR-016): switching it never sends a turn that waits. */
+    data class ConfirmChanged(
+        val on: Boolean,
+    ) : ConversationEvent
+
+    /** ^ in a half's microphone place: its waiting turn is translated and said. */
+    data class SendTurn(
+        val side: Side,
+    ) : ConversationEvent
+
+    /** A translated turn's speaker button (spec 082 FR-017): read it aloud again. */
+    data class Replay(
+        val turnId: Long,
+    ) : ConversationEvent
+
+    /** The speaker button while it reads: stop at once. */
+    data object StopSpeaking : ConversationEvent
 }
 
 /** A conversation: its two languages, every turn (Copy keeps them all) and its phase. Never stored (FR-027). */
@@ -130,11 +153,20 @@ internal data class ConversationState(
     val phase: ConversationPhase,
     val message: SideMessage? = null,
     val nextId: Long = 1,
+    /** "Confirm before sending": a heard turn waits for ^ (spec 082 FR-016). */
+    val confirm: Boolean = false,
 ) {
     /** What the halves show: the latest turns only. */
     val shownTurns: List<Turn> get() = turns.takeLast(ConversationMachine.MAX_TURNS_SHOWN)
 
     fun languageOf(side: Side): LanguageCode = if (side == Side.NEAR) near else far
+
+    /** The turn waiting for ^ (spec 082 FR-016), if one is. */
+    val waiting: Turn?
+        get() {
+            val id = (phase as? ConversationPhase.Waiting)?.turnId ?: return null
+            return turns.firstOrNull { it.id == id }
+        }
 
     companion object {
         fun start(
@@ -197,7 +229,7 @@ internal object ConversationMachine {
             }
 
             is ConversationEvent.LanguageChanged -> {
-                if (event.side == Side.NEAR) state.copy(near = event.language) else state.copy(far = event.language)
+                TurnExtras.languageChanged(state, event)
             }
 
             ConversationEvent.Clear -> {
@@ -208,6 +240,14 @@ internal object ConversationMachine {
                     nextId = 1,
                 )
             }
+
+            is ConversationEvent.ConfirmChanged,
+            is ConversationEvent.SendTurn,
+            is ConversationEvent.Replay,
+            ConversationEvent.StopSpeaking,
+            -> {
+                TurnExtras.reduce(state, event)
+            }
         }
 
     private fun tap(
@@ -216,7 +256,13 @@ internal object ConversationMachine {
     ): ConversationState {
         val phase = state.phase
         val listensHere = phase is ConversationPhase.Listening && phase.side == event.side
+        val waiting = state.waiting
         return when {
+            // The square button beside a waiting turn drops it (spec 082 FR-016).
+            event.discard && waiting != null -> {
+                if (waiting.side == event.side) TurnExtras.drop(state, waiting) else state
+            }
+
             // The square button: listening stops, and what was heard goes untranslated.
             event.discard -> {
                 if (listensHere) state.copy(phase = ConversationPhase.Idle, message = null) else state
@@ -257,11 +303,8 @@ internal object ConversationMachine {
         val heard = text.trim()
         if (heard.isEmpty()) return idleWith(state, SideMessage(side, ConversationProblem.NOTHING_HEARD))
         val turn = Turn(state.nextId, side, state.languageOf(side), state.languageOf(side.other), heard)
-        return state.copy(
-            turns = state.turns + turn,
-            phase = ConversationPhase.Translating(turn.id),
-            nextId = state.nextId + 1,
-        )
+        val next = if (state.confirm) ConversationPhase.Waiting(turn.id) else ConversationPhase.Translating(turn.id)
+        return state.copy(turns = state.turns + turn, phase = next, nextId = state.nextId + 1)
     }
 
     private fun listeningFailed(
@@ -307,20 +350,42 @@ internal object ConversationMachine {
         state: ConversationState,
         reason: PauseReason,
     ): ConversationState =
-        if (state.phase == ConversationPhase.Idle) state else state.copy(phase = ConversationPhase.Paused(reason))
+        // A waiting turn keeps waiting through a call or a hidden screen: nothing is said without a tap.
+        if (state.phase == ConversationPhase.Idle || state.phase is ConversationPhase.Waiting) {
+            state
+        } else {
+            state.copy(phase = ConversationPhase.Paused(reason))
+        }
 
     private fun edited(
         state: ConversationState,
         event: ConversationEvent.Edited,
     ): ConversationState {
         val text = event.text.trim()
-        if (state.phase != ConversationPhase.Idle || text.isEmpty()) return state
-        if (state.turns.none { it.id == event.turnId }) return state
-        val turns =
-            state.turns.map {
-                if (it.id == event.turnId) it.copy(heard = text, translation = null, edited = true) else it
+        val known = state.turns.any { it.id == event.turnId }
+        return when {
+            text.isEmpty() || !known -> {
+                state
             }
-        return state.copy(turns = turns, phase = ConversationPhase.Translating(event.turnId), message = null)
+
+            // A waiting turn corrected by typing keeps waiting for ^ (spec 082 FR-016).
+            state.phase == ConversationPhase.Waiting(event.turnId) -> {
+                val turns = state.turns.map { if (it.id == event.turnId) it.copy(heard = text, edited = true) else it }
+                state.copy(turns = turns)
+            }
+
+            state.phase != ConversationPhase.Idle -> {
+                state
+            }
+
+            else -> {
+                val turns =
+                    state.turns.map {
+                        if (it.id == event.turnId) it.copy(heard = text, translation = null, edited = true) else it
+                    }
+                state.copy(turns = turns, phase = ConversationPhase.Translating(event.turnId), message = null)
+            }
+        }
     }
 
     private fun idleWith(

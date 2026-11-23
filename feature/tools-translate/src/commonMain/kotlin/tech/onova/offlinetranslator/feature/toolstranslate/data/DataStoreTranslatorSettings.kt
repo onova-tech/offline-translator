@@ -37,6 +37,8 @@ internal data class TranslatorDocument(
     val languages: List<String>? = null,
     /** Spec 082: language code to its choice, "phone" or "app" for each part; optional, as [languages]. */
     val speech: Map<String, SpeechChoiceDocument> = emptyMap(),
+    /** Spec 082 FR-016: "Confirm before sending"; optional, as [languages]. */
+    val confirmBeforeSending: Boolean = false,
 ) {
     fun toDomain() =
         TranslatorSettings(
@@ -52,6 +54,7 @@ internal data class TranslatorDocument(
                 speech
                     .mapNotNull { (code, choice) -> code.toLanguage()?.let { it to choice.toDomain() } }
                     .toMap(),
+            confirmBeforeSending = confirmBeforeSending,
         )
 
     companion object {
@@ -72,6 +75,7 @@ internal data class TranslatorDocument(
                         .filterValues { it.recognition != null || it.voice != null }
                         .map { (language, choice) -> language.value to SpeechChoiceDocument.from(choice) }
                         .toMap(),
+                confirmBeforeSending = settings.confirmBeforeSending,
             )
 
         private fun String?.toLanguage(): LanguageCode? = this?.trim()?.takeIf { it.isNotEmpty() }?.let(::LanguageCode)

@@ -80,7 +80,7 @@ internal fun TranslatorContent(
                         onText = viewModel::setText,
                         onLanguage = viewModel::choose,
                         onSwap = viewModel::swap,
-                        onSend = viewModel::send,
+                        onCopy = viewModel::copy,
                         moreLanguages = moreLanguages,
                     ),
                 packActions = PackActions(onDownload = packs::download, onCancel = packs::cancel, onOpen = packs::open),
@@ -153,7 +153,7 @@ internal class TypeOrSpeakActions(
     val onText: (String) -> Unit,
     val onLanguage: (LanguageSide, LanguageCode) -> Unit,
     val onSwap: () -> Unit,
-    val onSend: (Send, String) -> Unit,
+    val onCopy: (String) -> Unit,
     /** "Other languages…" at the end of each list (spec 080). */
     val moreLanguages: MenuEntry,
 )

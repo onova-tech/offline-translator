@@ -57,9 +57,14 @@ then the changes of user story 5.
   the Conversation's More options (owner: the app's recognition writes the text only once the person stopped, so a
   mistake shows after the other person heard it). When it's on, the microphone becomes ^ once the turn is heard; ^
   translates it and reads it aloud; the square drops it, and the microphone starts again (owner).
-- Q: How is a translation heard again? → A: **A small speaker button on each translated turn** (owner: option A of
-  two; the other, one button beside the microphone, replayed only the latest), shown even with "Read translations
-  aloud" off.
+- Q: How is a translation heard again? → A: **A speaker button beside each half's microphone, in the square button's
+  place and in another colour**, reading the half's latest translation, shown even with "Read translations aloud" off
+  and enabled only when the language's voice is ready. The owner first chose a speaker on each translated turn (option
+  A), then, on seeing it, dropped it: "The sound icon on the text make the lines bigger. So I'll drop this idea and go
+  to the other option". The square turns red, "since it means stop", and stops a translation being read too.
+- Q: Which button is the main one at the bottom? → A: **Copy, on the right of both screens** (owner, 2026-11-22):
+  Read aloud | Copy in Type or speak, Read aloud with a speaker icon; Clear | More options | Copy in the Conversation,
+  More options in a colour of its own.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -166,12 +171,14 @@ read in that half's language.
 3. **Given** a waiting turn, **When** the person taps the square, **Then** it is dropped and the microphone is back;
    **When** they tap the waiting text, **Then** they can correct it by typing, and it keeps waiting.
 4. **Given** "Confirm before sending" is off (at first), **Then** turns are translated as soon as they are heard.
-5. **Given** a translated turn, **Then** a speaker button beside it reads it aloud in its half's language, whether
-   "Read translations aloud" is on or not; while it reads, the button stops it. It is enabled only when that
-   language's voice is ready, and disabled (not hidden) otherwise.
+5. **Given** a half with a translated turn, **Then** a speaker button in the square's place beside its microphone
+   reads the latest one aloud in the half's language, whether "Read translations aloud" is on or not; while it reads,
+   the red square in that place stops it. It is enabled only when that language's voice is ready, and disabled (not
+   hidden) otherwise.
 6. **Given** any turn, **Then** it reads in one size with a small bold "Me:" (this half's speaker) or "You:" (the other
    person) in front, both in the half's language, for each of the catalog's languages.
-7. **Given** the Conversation, **Then** its bottom row is Copy | More options | Clear, and neither screen has Share.
+7. **Given** the Conversation, **Then** its bottom row is Clear | More options | Copy, and Type or speak's is Read
+   aloud | Copy, Copy the main action on both; neither screen has Share.
 8. **Given** Manage languages, **Then** a part's Device | App choice sits inside the part's card; the device's voice
    offers its voice app's list behind ⋮; and the page opens without a flash.
 
@@ -217,15 +224,17 @@ read in that half's language.
   the screen it opens from and the page.
 - **FR-014**: Each Conversation turn MUST read in one size, with a small bold "Me:" or "You:" in front in its half's
   language; every language of the catalog MUST have both words.
-- **FR-015**: Type or speak and the Conversation MUST have no Share; the Conversation's bottom row MUST be Copy |
-  More options | Clear.
+- **FR-015**: Type or speak and the Conversation MUST have no Share; Copy MUST be the main action, last on the right:
+  Read aloud | Copy (Read aloud with a speaker icon) and Clear | More options | Copy, More options in a colour of its
+  own.
 - **FR-016**: The Conversation's More options MUST have "Confirm before sending", off at first and remembered. When
   on, a heard turn MUST wait in its half, unseen by the other half, until ^ sends it (translated, then read aloud as
   any turn), the square drops it, or the person corrects it by typing.
-- **FR-017**: Each translated turn MUST have a speaker button that reads it aloud in its half's language, whatever
-  "Read translations aloud" says. It MUST be enabled only when that language's voice is ready (the phone's or the
-  app's, as routed), and disabled otherwise, so it doesn't come and go (owner, 2026-11-22: "only be enabled if the TTS
-  for this language is properly configured"); while it reads, no microphone listens.
+- **FR-017**: Beside each half's microphone, in the square button's place, a speaker button MUST read the half's
+  latest translation aloud in its language, whatever "Read translations aloud" says. It MUST be enabled only when that
+  language's voice is ready (the phone's or the app's, as routed), and disabled otherwise (owner, 2026-11-22: "only be
+  enabled if the TTS for this language is properly configured"); while it reads, no microphone listens and the red
+  square stops it.
 
 ### Key Entities
 

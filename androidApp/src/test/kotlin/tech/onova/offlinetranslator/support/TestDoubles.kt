@@ -15,7 +15,6 @@ import tech.onova.offlinetranslator.core.domain.ports.ProcessVisibility
 import tech.onova.offlinetranslator.core.domain.ports.ScreenAwake
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPage
 import tech.onova.offlinetranslator.core.domain.ports.SettingsPages
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.settings.AppLanguage
 import tech.onova.offlinetranslator.core.domain.settings.AppSettings
 import kotlin.time.Clock
@@ -109,14 +108,6 @@ class FakeSettingsPages : SettingsPages {
 
     override fun open(page: SettingsPage) {
         opened += page
-    }
-}
-
-class FakeTextSharer : TextSharer {
-    var shared: String? = null
-
-    override fun share(text: String) {
-        shared = text
     }
 }
 

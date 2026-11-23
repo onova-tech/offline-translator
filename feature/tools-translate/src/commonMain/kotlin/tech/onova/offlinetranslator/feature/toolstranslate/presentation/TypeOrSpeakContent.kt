@@ -68,7 +68,6 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_note_through_english
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_over_limit
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_read_aloud
-import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_share
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_stop
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_swap
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_text
@@ -107,7 +106,7 @@ internal fun TypeOrSpeakContent(
                 listening = speech.ui.listening,
                 trailing = if (speech.canSpeak) ({ MicrophoneAction(speech) }) else null,
             )
-            TranslationActions(ui.translation != null, speech, onSend = { actions.onSend(it, clipLabel) })
+            TranslationActions(ui.translation != null, speech, onCopy = { actions.onCopy(clipLabel) })
         },
         snackbarHost = { PocketSnackbarHost(hostState = snackbarHostState) },
     ) {
@@ -128,37 +127,33 @@ internal fun TypeOrSpeakContent(
     }
 }
 
-/** Copy and Share outlined, then Read aloud filled and last, which reads Stop while it speaks (A1–A3, FR-024). */
+/**
+ * Read aloud outlined, with a speaker (a square while it speaks, when it reads Stop), then Copy, the main action,
+ * filled and last (A1–A3, FR-024; spec 082 FR-015, owner 2026-11-22: "Make copy the right button"; no Share).
+ */
 @Composable
 private fun TranslationActions(
     ready: Boolean,
     speech: SpeechControls,
-    onSend: (Send) -> Unit,
+    onCopy: () -> Unit,
 ) {
     BottomActionRow {
-        BottomAction(
-            label = stringResource(Res.string.translator_copy),
-            onClick = { onSend(Send.COPY) },
-            enabled = ready,
-            compact = true,
-            style = BottomActionStyle.Outlined,
-            modifier = Modifier.weight(1f),
-        )
-        BottomAction(
-            label = stringResource(Res.string.translator_share),
-            onClick = { onSend(Send.SHARE) },
-            enabled = ready,
-            compact = true,
-            style = BottomActionStyle.Outlined,
-            modifier = Modifier.weight(1f),
-        )
         BottomAction(
             label =
                 stringResource(
                     if (speech.ui.speaking) Res.string.translator_stop else Res.string.translator_read_aloud,
                 ),
             onClick = speech.onReadAloud,
+            icon = if (speech.ui.speaking) PocketIcons.Stop else PocketIcons.Speaker,
             enabled = ready || speech.ui.speaking,
+            compact = true,
+            style = BottomActionStyle.Outlined,
+            modifier = Modifier.weight(1f),
+        )
+        BottomAction(
+            label = stringResource(Res.string.translator_copy),
+            onClick = onCopy,
+            enabled = ready,
             compact = true,
             modifier = Modifier.weight(1f),
         )

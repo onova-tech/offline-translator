@@ -123,6 +123,8 @@ class TranslatorSettingsTest {
                     "languages",
                     // Spec 082 FR-007: the phone's or the app's speech, per language, where the person chose.
                     "speech",
+                    // Spec 082 FR-016: "Confirm before sending", remembered.
+                    "confirmBeforeSending",
                 ),
                 document.keys,
             )

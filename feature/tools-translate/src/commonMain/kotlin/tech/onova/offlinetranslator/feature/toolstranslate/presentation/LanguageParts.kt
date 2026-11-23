@@ -2,6 +2,7 @@ package tech.onova.offlinetranslator.feature.toolstranslate.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +67,7 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_to_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_update_speech_service
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_app_can_get
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_manage
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_no_app
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_none
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_voice_settings
@@ -228,9 +230,11 @@ private fun SpeechPart(
     val appSide =
         use?.app
             ?: (recognition == RecognitionSupport.APP_CAN_DOWNLOAD || recognition == RecognitionSupport.APP_DOWNLOADING)
+    val choice = engineChoice(row, title, SpeechKind.RECOGNITION, use, actions)
     if (appSide) {
         val packs = listOfNotNull(state.appRecognition)
-        AppPart(row, title, packs, stringResource(Res.string.translator_speech_app_can_get, toDownload(packs)), actions)
+        val offer = stringResource(Res.string.translator_speech_app_can_get, toDownload(packs))
+        AppPart(row, title, packs, offer, actions, choice)
     } else {
         val items =
             when {
@@ -257,9 +261,8 @@ private fun SpeechPart(
                     emptyList()
                 }
             }
-        Part(row, title, speechText(recognition), items)
+        Part(row, title, speechText(recognition), items, choice)
     }
-    if (use?.choosable == true) EngineChoice(row, title, SpeechKind.RECOGNITION, use, actions)
 }
 
 @Composable
@@ -272,25 +275,22 @@ private fun VoicePart(
     val voice = state.speech?.voice
     val use = state.uses?.voice
     val appSide = use?.app ?: (voice == VoiceSupport.APP_CAN_DOWNLOAD || voice == VoiceSupport.APP_DOWNLOADING)
+    val choice = engineChoice(row, title, SpeechKind.VOICE, use, actions)
     if (appSide) {
         val text = stringResource(Res.string.translator_voice_app_can_get, toDownload(state.appVoice))
-        AppPart(row, title, state.appVoice, text, actions)
+        AppPart(row, title, state.appVoice, text, actions, choice)
     } else {
-        val items =
-            if (voice == VoiceSupport.NO_OFFLINE_VOICE) {
-                listOf(
-                    RowMenuItem(
-                        stringResource(Res.string.translator_voice_settings),
-                        icon = null,
-                        onClick = actions.speech.onVoice,
-                    ),
-                )
-            } else {
-                emptyList()
+        // The device's voice app lists its voices: one to get, or (owner, 2026-11-22) one it has, to delete there.
+        val words =
+            when (voice) {
+                VoiceSupport.NO_OFFLINE_VOICE -> Res.string.translator_voice_settings
+                VoiceSupport.READY -> Res.string.translator_voice_manage
+                else -> null
             }
-        Part(row, title, voiceText(voice), items)
+        val items =
+            listOfNotNull(words?.let { RowMenuItem(stringResource(it), icon = null, onClick = actions.speech.onVoice) })
+        Part(row, title, voiceText(voice), items, choice)
     }
-    if (use?.choosable == true) EngineChoice(row, title, SpeechKind.VOICE, use, actions)
 }
 
 /**
@@ -305,6 +305,7 @@ private fun AppPart(
     packs: List<PackStatus>,
     offer: String,
     actions: PartActions,
+    choice: (@Composable ColumnScope.() -> Unit)?,
 ) {
     val installed = packs.isNotEmpty() && packs.all { it.state == PackState.Installed }
     val text =
@@ -323,10 +324,26 @@ private fun AppPart(
             actions.pack.onDelete(listOfNotNull(packs.firstOrNull()?.id))
         }
     val items = if (installed) listOf(delete) else appPackItems(packs, actions)
-    Part(row, title, text, items)
+    Part(row, title, text, items, choice)
 }
 
-/** "Phone" or "App" under its part, where both can do it (spec 082 US3); "Phone" at first. */
+/**
+ * "Device" or "App" inside its part's row, where both can do it (spec 082 US3); "Device" at first. Null where there's
+ * no choice to make.
+ */
+private fun engineChoice(
+    row: LanguageRow,
+    title: String,
+    kind: SpeechKind,
+    use: EngineUse?,
+    actions: PartActions,
+): (@Composable ColumnScope.() -> Unit)? =
+    if (use?.choosable == true) {
+        { EngineChoice(row, title, kind, use, actions) }
+    } else {
+        null
+    }
+
 @Composable
 private fun EngineChoice(
     row: LanguageRow,
@@ -421,9 +438,11 @@ private fun Part(
     title: String,
     text: String,
     items: List<RowMenuItem>,
+    /** The Device | App choice, inside the row (owner, 2026-11-22). */
+    choice: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     if (items.isEmpty()) {
-        InfoRow(title = title, value = text, modifier = Modifier.fillMaxWidth())
+        InfoRow(title = title, value = text, modifier = Modifier.fillMaxWidth(), below = choice)
     } else {
         MenuSettingsRow(
             title = title,
@@ -431,6 +450,7 @@ private fun Part(
             menuLabel = stringResource(Res.string.translator_part_menu, row.name, title),
             items = items,
             modifier = Modifier.fillMaxWidth(),
+            below = choice,
         )
     }
 }

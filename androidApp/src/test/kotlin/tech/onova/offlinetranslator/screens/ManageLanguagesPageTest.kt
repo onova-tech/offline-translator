@@ -7,6 +7,7 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
@@ -35,6 +36,7 @@ import tech.onova.offlinetranslator.core.domain.speech.SpeechCatalog
 import tech.onova.offlinetranslator.support.AppUiTest
 import tech.onova.offlinetranslator.support.FakeContentPacks
 import tech.onova.offlinetranslator.tool.ToolScreen
+import kotlin.math.abs
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -245,21 +247,54 @@ class ManageLanguagesPageTest : AppUiTest() {
         assertTrue(compose.onAllNodesWithText("Japanese").fetchSemanticsNodes().isEmpty())
     }
 
-    /** Spec 082 US3: where the phone and the app both recognize a language, its card offers "Phone" or "App". */
+    /**
+     * Spec 082 US3: where the device and the app both recognize a language, its part offers "Device" or "App", inside
+     * the part's own card, lined up with its title (owner, 2026-11-22: "It should be inside them").
+     */
     @Test
-    fun bothCanRecognizeSoTheCardOffersPhoneOrAppAndTheAppsDownload() {
+    fun bothCanRecognizeSoTheCardOffersDeviceOrAppAndTheAppsDownload() {
         fakes.contentPacks.put(FakeContentPacks.notInstalled(SpeechCatalog.recognitionPack))
         showTool()
         openPage()
         search("portu")
         open("Portuguese")
-        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: phone or app"))
-        waitFor(hasText("Phone") and choice and inDialog)
+        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: device or app"))
+        waitFor(hasText("Device") and choice and inDialog)
+        // The whole choice, not a segment's word (which sits inside the segment's own padding); the part's row is one
+        // node (Material merges a list item), whose text starts 16 dp in from its edge. Under the row, as before, the
+        // choice started at the edge itself.
+        val row =
+            compose
+                .onNode(hasContentDescription("Speech recognition for Portuguese: device or app") and inDialog)
+                .getUnclippedBoundsInRoot()
+        val part =
+            compose.onNode(hasText("Speech recognition", substring = true) and inDialog).getUnclippedBoundsInRoot()
+        assertTrue(
+            abs((row.left - part.left).value - ROW_TEXT_INSET) < 2f && row.top >= part.bottom,
+            "the choice is inside its part's card, under its text and lined up with it: " +
+                "${row.left} in a part at ${part.left}",
+        )
         compose.onNode(hasText("App") and choice and inDialog).performClick()
         waitFor(hasText("The app can recognize it · 48 MB to download") and inDialog)
         menu("Portuguese", "Speech recognition")
         compose.onAllNodesWithText("Download").onLast().performClick()
         waitUntil { fakes.contentPacks.downloads.any { it.first == SpeechCatalog.recognitionPack } }
+    }
+
+    /**
+     * Spec 082 story 5 (FR-012): a voice the device has can't be deleted by the app; its ⋮ opens the voice app's own
+     * list, where it can (owner, 2026-11-22).
+     */
+    @Test
+    fun aVoiceTheDeviceHasIsManagedInItsVoiceApp() {
+        showTool()
+        openPage()
+        search("spanish")
+        open("Spanish")
+        menu("Spanish", "Voice")
+        compose.onAllNodesWithText("Manage voices on the device").onLast().performClick()
+        compose.waitForIdle()
+        assertEquals(1, fakes.speechOutput.voiceSettingsOpened)
     }
 
     /** Spec 082 US4: the app's recognition is every language's, and the confirmation says so before it goes. */
@@ -287,5 +322,8 @@ class ManageLanguagesPageTest : AppUiTest() {
         const val OTHERS = "Other languages"
         const val AT_LEAST_TWO = "At least two languages stay in the lists."
         const val WAIT_MILLIS = 5_000L
+
+        /** How far a list item's text starts from its edge (Material's ListItem). */
+        const val ROW_TEXT_INSET = 16f
     }
 }

@@ -32,12 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.intl.LocaleList
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -47,6 +50,7 @@ import tech.onova.offlinetranslator.core.designsystem.components.BottomActionRow
 import tech.onova.offlinetranslator.core.designsystem.components.BottomActionStyle
 import tech.onova.offlinetranslator.core.designsystem.components.ConfirmScreen
 import tech.onova.offlinetranslator.core.designsystem.components.FacingHalves
+import tech.onova.offlinetranslator.core.designsystem.components.HearAgainButton
 import tech.onova.offlinetranslator.core.designsystem.components.MainReading
 import tech.onova.offlinetranslator.core.designsystem.components.MenuChoice
 import tech.onova.offlinetranslator.core.designsystem.components.MenuEntry
@@ -56,17 +60,21 @@ import tech.onova.offlinetranslator.core.designsystem.components.Notice
 import tech.onova.offlinetranslator.core.designsystem.components.PocketSnackbarHost
 import tech.onova.offlinetranslator.core.designsystem.components.PocketTextField
 import tech.onova.offlinetranslator.core.designsystem.components.ReservedSlot
+import tech.onova.offlinetranslator.core.designsystem.components.SendButton
 import tech.onova.offlinetranslator.core.designsystem.components.StopButton
 import tech.onova.offlinetranslator.core.designsystem.components.SwitchRow
 import tech.onova.offlinetranslator.core.designsystem.components.ToolLayout
 import tech.onova.offlinetranslator.core.designsystem.components.WaitingText
 import tech.onova.offlinetranslator.core.designsystem.tokens.PocketSpacing
+import tech.onova.offlinetranslator.core.designsystem.tokens.PocketTypography
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionController
 import tech.onova.offlinetranslator.core.domain.ports.EngineUnavailable
 import tech.onova.offlinetranslator.core.domain.ports.LanguageCode
+import tech.onova.offlinetranslator.core.domain.translation.TurnLabels
 import tech.onova.offlinetranslator.core.toolapi.KeepScreenOn
-import tech.onova.offlinetranslator.core.toolapi.MoreControls
+import tech.onova.offlinetranslator.core.toolapi.MoreControlsPanel
+import tech.onova.offlinetranslator.core.toolapi.MoreOptionsAction
 import tech.onova.offlinetranslator.core.toolapi.PermissionGate
 import tech.onova.offlinetranslator.core.toolapi.rememberPermissionGranted
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationPhase
@@ -80,6 +88,7 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_clear
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_clear_text
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_clear_title
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_confirm_send
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_conversation_start
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_conversation_unsupported
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_copied
@@ -91,6 +100,8 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_far_language
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_far_turned
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_far_turned_supporting
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_hear_again
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_keep_correction
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_listening
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_listening_failed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_manage_languages
@@ -103,13 +114,14 @@ import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_nothing_heard
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_paused
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_read_translations
-import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_share
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_send
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speak_language
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_can_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_app_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_can_download
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_downloading
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_speech_not_installed
+import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_stop
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_translate_again
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_turn_failed
 import tech.onova.offlinetranslator.feature.toolstranslate.resources.translator_unsupported
@@ -136,8 +148,14 @@ private class HalfActions(
     /** The square button beside a listening microphone: stop, and drop what was being heard. */
     val onDiscard: (Side) -> Unit,
     val setup: SetupActions,
-    val onCorrect: (Turn) -> Unit,
+    val turns: TurnActions,
     val packs: PackActions,
+)
+
+/** What a turn's taps do: one's own corrects it; the half's latest translation is read again or stopped (FR-017). */
+private class TurnActions(
+    val onCorrect: (Turn) -> Unit,
+    val onReplay: (Long) -> Unit,
 )
 
 /**
@@ -162,7 +180,7 @@ internal fun ConversationContent(
     LaunchedEffect(appLanguage, phoneLocales) { viewModel.start(appLanguage, phoneLocales) }
     val snackbarHostState = remember { SnackbarHostState() }
     val copied = stringResource(Res.string.translator_copied)
-    LaunchedEffect(viewModel) { viewModel.effects.collect { snackbarHostState.showSnackbar(copied) } }
+    LaunchedEffect(viewModel) { viewModel.clipboard.effects.collect { snackbarHostState.showSnackbar(copied) } }
     var correcting by rememberSaveable { mutableStateOf<Long?>(null) }
     var clearing by rememberSaveable { mutableStateOf(false) }
     val microphone = rememberMicrophoneGate(viewModel::tap)
@@ -172,7 +190,7 @@ internal fun ConversationContent(
             onMicrophone = microphone.onTap,
             onDiscard = { side -> viewModel.tap(side, discard = true) },
             setup = SetupActions(onManage = onManage, onDismiss = viewModel::dismiss),
-            onCorrect = { turn -> correcting = turn.id },
+            turns = TurnActions(onCorrect = { turn -> correcting = turn.id }, onReplay = viewModel::replay),
             packs = packActions,
         )
     val gate = microphone.gate
@@ -182,7 +200,7 @@ internal fun ConversationContent(
             ConversationControls(
                 ui = ui,
                 onOption = viewModel::setOption,
-                onSend = { how, label, text -> viewModel.send(how, label, text) },
+                onCopy = viewModel.clipboard::copy,
                 onClear = { clearing = true },
             )
         },
@@ -227,6 +245,7 @@ private fun Correction(
     }
     CorrectionDialog(
         heard = turn.heard,
+        waiting = ui.waiting?.id == id,
         onTranslate = { text ->
             onClose()
             onTranslate(id, text)
@@ -316,20 +335,64 @@ private fun ColumnScope.Half(
             )
             val phase = ui.conversation.phase
             val listening = phase is ConversationPhase.Listening && phase.side == side
-            // Shown while this half listens, in room always kept, so nothing moves (owner, 2026-11-19).
-            ReservedSlot(shown = listening, keepInSmallWindow = true) {
+            val waiting = ui.waiting?.side == side
+            HalfSlot(side, ui, listening || waiting, actions)
+            if (waiting) {
+                // In the microphone's place, so the microphone's tap sends it (spec 082 FR-016).
+                SendButton(label = stringResource(Res.string.translator_send), onClick = { actions.onMicrophone(side) })
+            } else {
+                MicrophoneButton(
+                    label = stringResource(Res.string.translator_speak_language, name),
+                    listening = listening,
+                    enabled = ui.microphoneEnabled(side) && ui.supportOf(side).canListen,
+                    onClick = { actions.onMicrophone(side) },
+                    listeningLabel = stringResource(Res.string.translator_listening),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Beside the microphone, in room always kept so nothing moves (owner, 2026-11-19): the red square while the half
+ * listens or its turn waits (stop and drop it), or while its translation is read (stop reading); otherwise the half's
+ * latest translation heard again (spec 082 FR-017, owner 2026-11-22: "Make it appear on the same position as the
+ * square button does, but with other color"), enabled only with the language's voice ready.
+ */
+@Composable
+private fun HalfSlot(
+    side: Side,
+    ui: ConversationUi,
+    hearing: Boolean,
+    actions: HalfActions,
+) {
+    val turns = ui.conversation.turns
+    val reading = (ui.conversation.phase as? ConversationPhase.Speaking)?.turnId
+    val readHere = reading != null && turns.firstOrNull { it.id == reading }?.side == side.other
+    val latest = turns.lastOrNull { it.side == side.other && it.translation != null }
+    ReservedSlot(shown = hearing || readHere || latest != null, keepInSmallWindow = true) {
+        when {
+            hearing -> {
                 StopButton(
                     label = stringResource(Res.string.translator_discard_turn),
                     onClick = { actions.onDiscard(side) },
                 )
             }
-            MicrophoneButton(
-                label = stringResource(Res.string.translator_speak_language, name),
-                listening = listening,
-                enabled = ui.microphoneEnabled(side) && ui.supportOf(side).canListen,
-                onClick = { actions.onMicrophone(side) },
-                listeningLabel = stringResource(Res.string.translator_listening),
-            )
+
+            readHere && reading != null -> {
+                StopButton(
+                    label = stringResource(Res.string.translator_stop),
+                    onClick = { actions.turns.onReplay(reading) },
+                )
+            }
+
+            latest != null -> {
+                HearAgainButton(
+                    label = stringResource(Res.string.translator_hear_again),
+                    onClick = { actions.turns.onReplay(latest.id) },
+                    enabled = ui.canReplay(side),
+                )
+            }
         }
     }
 }
@@ -372,7 +435,7 @@ private fun HalfMiddle(
                 if (ui.conversation.phase is ConversationPhase.Paused) {
                     Notice(text = stringResource(Res.string.translator_paused))
                 }
-                TurnList(side, ui, actions.onCorrect, modifier = Modifier.weight(1f))
+                TurnList(side, ui, actions, modifier = Modifier.weight(1f))
             }
         }
     }
@@ -448,19 +511,23 @@ private fun SetupNotice(
 }
 
 /**
- * The half's turns, the newest in view: its own as heard (small; a tap corrects one), the other half's as translated
- * into its language (large, announced once with TalkBack on), and the words being heard now.
+ * The half's turns, the newest in view, all at one size after "Me:" or "You:" in the half's language (spec 082
+ * FR-014): its own as heard (a tap corrects one), the other half's as translated into its language (announced once
+ * with TalkBack on), and the words being heard now.
  */
 @Composable
 private fun TurnList(
     side: Side,
     ui: ConversationUi,
-    onCorrect: (Turn) -> Unit,
+    actions: HalfActions,
     modifier: Modifier = Modifier,
 ) {
-    val turns = ui.conversation.shownTurns
+    val waiting = ui.waiting
+    // A turn waiting for ^ shows only in its own half: the other person hasn't been sent it (FR-016).
+    val turns = ui.conversation.shownTurns.filter { it.id != waiting?.id || it.side == side }
     val phase = ui.conversation.phase
     val partial = (phase as? ConversationPhase.Listening)?.takeIf { it.side == side }?.partial
+    val labels = TurnLabels.of(ui.conversation.languageOf(side))
     val list = rememberLazyListState()
     LaunchedEffect(turns.size, partial) { if (turns.isNotEmpty()) list.animateScrollToItem(turns.size) }
     val start = stringResource(Res.string.translator_conversation_start)
@@ -482,110 +549,134 @@ private fun TurnList(
         }
         items(turns, key = { it.id }) { turn ->
             if (turn.side == side) {
-                OwnTurn(turn, correctable = phase == ConversationPhase.Idle, onCorrect = onCorrect)
+                val waits = turn.id == waiting?.id
+                val correctable = phase == ConversationPhase.Idle || waits
+                OwnTurn(turn, labels.me, waits, correctable, actions.turns.onCorrect)
             } else {
-                OtherTurn(turn, newest = turn.id == turns.last().id, settled = phase == ConversationPhase.Idle)
+                OtherTurn(
+                    turn = turn,
+                    label = labels.you,
+                    newest = turn.id == turns.last().id,
+                    settled = phase == ConversationPhase.Idle,
+                )
             }
         }
         partial?.let { words ->
             item {
-                val style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic)
                 if (words.isEmpty()) {
                     // Before the first word: "Listening." "Listening.." "Listening..." (owner, 2026-11-19).
+                    val style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic)
                     WaitingText(word = stringResource(Res.string.translator_listening), style = style)
                 } else {
-                    Text(text = words, style = style.inItsOwnDirection(), modifier = Modifier.fillMaxWidth())
+                    TurnText(labels.me, words, italic = true)
                 }
             }
         }
     }
 }
 
-/** What this half's speaker said, as heard: small, and a tap corrects it. */
+/** What this half's speaker said, as heard, in italics while it waits for ^; a tap corrects it. */
 @Composable
 private fun OwnTurn(
     turn: Turn,
+    label: String,
+    waiting: Boolean,
     correctable: Boolean,
     onCorrect: (Turn) -> Unit,
 ) {
-    Text(
+    TurnText(
+        label = label,
         text = turn.heard,
-        style = MaterialTheme.typography.bodyMedium.inItsOwnDirection(),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        italic = waiting,
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .clickable(onClickLabel = stringResource(Res.string.translator_correct), enabled = correctable) {
-                    onCorrect(turn)
-                },
+            Modifier.clickable(
+                onClickLabel = stringResource(Res.string.translator_correct),
+                enabled = correctable,
+            ) { onCorrect(turn) },
     )
 }
 
-/** What the other person said, in this half's language: large; the newest is announced once it's translated. */
+/** What the other person said, in this half's language; the newest is announced once it's translated. */
 @Composable
 private fun OtherTurn(
     turn: Turn,
+    label: String,
     newest: Boolean,
     settled: Boolean,
 ) {
     val failed = stringResource(Res.string.translator_turn_failed)
-    Text(
+    TurnText(
+        label = label,
         text = turn.translation ?: if (settled) failed else NO_READING,
-        style = MaterialTheme.typography.titleLarge.inItsOwnDirection(),
         modifier =
-            Modifier.fillMaxWidth().semantics {
+            Modifier.semantics {
                 if (newest && turn.translation != null) liveRegion = LiveRegionMode.Polite
             },
     )
 }
 
-/** More options (turn the far half, read aloud), then Copy, Share and Clear, all outlined (A3 exception). */
+/**
+ * A turn's words after who said them, in a small bold label of the half's language, every turn at one size (owner,
+ * 2026-11-22: "Instead of displaying the other person text with a big font and in bold, add just a small bold
+ * You:/Me:"). One text, so a screen reader reads the label first and both take the words' direction.
+ */
+@Composable
+private fun TurnText(
+    label: String,
+    text: String,
+    modifier: Modifier = Modifier,
+    italic: Boolean = false,
+) {
+    val labelStyle = PocketTypography.speakerLabel.toSpanStyle()
+    val style = MaterialTheme.typography.bodyLarge
+    Text(
+        text =
+            buildAnnotatedString {
+                withStyle(labelStyle) { append(label) }
+                append(LABEL_GAP)
+                append(text)
+            },
+        style = (if (italic) style.copy(fontStyle = FontStyle.Italic) else style).inItsOwnDirection(),
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+private const val LABEL_GAP = " "
+
+/**
+ * More options' switches above the row Clear | More options | Copy: Copy the main action on the right, More options in
+ * a colour of its own and in the row to make room (owner, 2026-11-22; Share left).
+ */
 @Composable
 private fun ConversationControls(
     ui: ConversationUi,
     onOption: (ConversationOption, Boolean) -> Unit,
-    onSend: (Send, String, String) -> Unit,
+    onCopy: (String, String) -> Unit,
     onClear: () -> Unit,
 ) {
-    val farTurned: @Composable ColumnScope.() -> Unit = {
-        SwitchRow(
-            title = stringResource(Res.string.translator_far_turned),
-            supporting = stringResource(Res.string.translator_far_turned_supporting),
-            checked = ui.farTurned,
-            onCheckedChange = { onOption(ConversationOption.FAR_TURNED, it) },
-            modifier = Modifier.fillMaxWidth(),
+    val options =
+        listOf(
+            optionSwitch(
+                Res.string.translator_far_turned,
+                Res.string.translator_far_turned_supporting,
+                ui.farTurned,
+            ) { onOption(ConversationOption.FAR_TURNED, it) },
+            optionSwitch(Res.string.translator_read_translations, null, ui.readAloud) {
+                onOption(ConversationOption.READ_ALOUD, it)
+            },
+            optionSwitch(Res.string.translator_confirm_send, null, ui.conversation.confirm) {
+                onOption(ConversationOption.CONFIRM, it)
+            },
         )
-    }
-    val readAloud: @Composable ColumnScope.() -> Unit = {
-        SwitchRow(
-            title = stringResource(Res.string.translator_read_translations),
-            checked = ui.readAloud,
-            onCheckedChange = { onOption(ConversationOption.READ_ALOUD, it) },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-    MoreControls(listOf(farTurned, readAloud))
+    var more by rememberSaveable { mutableStateOf(false) }
+    MoreControlsPanel(shown = more, options = options)
     val names = ui.languages.associate { it.code to languageName(it.code) }
-    val text = ConversationText.format(ui.conversation.turns) { names[it] ?: it.value }
+    // A turn waiting for ^ hasn't been said: Copy leaves it out.
+    val said = ui.conversation.turns.filter { it.id != ui.waiting?.id }
+    val text = ConversationText.format(said) { names[it] ?: it.value }
     val label = stringResource(Res.string.translator_mode_conversation)
     val any = ui.conversation.turns.isNotEmpty()
     BottomActionRow {
-        BottomAction(
-            label = stringResource(Res.string.translator_copy),
-            onClick = { onSend(Send.COPY, label, text) },
-            enabled = any,
-            compact = true,
-            style = BottomActionStyle.Outlined,
-            modifier = Modifier.weight(1f),
-        )
-        BottomAction(
-            label = stringResource(Res.string.translator_share),
-            onClick = { onSend(Send.SHARE, label, text) },
-            enabled = any,
-            compact = true,
-            style = BottomActionStyle.Outlined,
-            modifier = Modifier.weight(1f),
-        )
         BottomAction(
             label = stringResource(Res.string.translator_clear),
             onClick = onClear,
@@ -594,13 +685,40 @@ private fun ConversationControls(
             style = BottomActionStyle.Outlined,
             modifier = Modifier.weight(1f),
         )
+        MoreOptionsAction(shown = more, onToggle = { more = !more })
+        BottomAction(
+            label = stringResource(Res.string.translator_copy),
+            onClick = { onCopy(label, text) },
+            enabled = said.isNotEmpty(),
+            compact = true,
+            modifier = Modifier.weight(1f),
+        )
     }
 }
+
+/** One of More options' switches. */
+private fun optionSwitch(
+    title: StringResource,
+    supporting: StringResource?,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit,
+): @Composable ColumnScope.() -> Unit =
+    {
+        SwitchRow(
+            title = stringResource(title),
+            supporting = supporting?.let { stringResource(it) },
+            checked = checked,
+            onCheckedChange = onChange,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 
 /** A misheard turn, corrected in a full-screen dialog (a text field never goes in a small one) and translated again. */
 @Composable
 private fun CorrectionDialog(
     heard: String,
+    /** A turn waiting for ^ keeps waiting once corrected: its button saves rather than translates (FR-016). */
+    waiting: Boolean,
     onTranslate: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -624,7 +742,14 @@ private fun CorrectionDialog(
                             modifier = Modifier.weight(1f),
                         )
                         BottomAction(
-                            label = stringResource(Res.string.translator_translate_again),
+                            label =
+                                stringResource(
+                                    if (waiting) {
+                                        Res.string.translator_keep_correction
+                                    } else {
+                                        Res.string.translator_translate_again
+                                    },
+                                ),
                             onClick = { onTranslate(text) },
                             enabled = text.isNotBlank(),
                             compact = true,

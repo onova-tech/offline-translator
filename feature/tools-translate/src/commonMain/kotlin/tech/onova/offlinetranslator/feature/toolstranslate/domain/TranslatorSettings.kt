@@ -29,6 +29,8 @@ internal data class TranslatorSettings(
     val languages: List<LanguageCode>? = null,
     /** Spec 082: who hears and speaks each language, where the person chose; a language not here is automatic. */
     val speech: Map<LanguageCode, SpeechChoice> = emptyMap(),
+    /** "Confirm before sending" (spec 082 FR-016): a Conversation turn waits for ^ before it's translated. */
+    val confirmBeforeSending: Boolean = false,
 )
 
 /** The person's choice of the phone's or the app's speech for one language (spec 082 US3); null is automatic. */
@@ -46,6 +48,7 @@ internal data class ResolvedSettings(
     val far: LanguageCode,
     val wifiOnly: Boolean,
     val farHalfTurned: Boolean,
+    val confirmBeforeSending: Boolean,
     /** The languages the lists show (spec 080), at least two. */
     val languages: List<LanguageCode>,
 )
@@ -73,6 +76,7 @@ internal object TranslatorDefaults {
             far = settings.far ?: target,
             wifiOnly = settings.wifiOnly,
             farHalfTurned = settings.farHalfTurned,
+            confirmBeforeSending = settings.confirmBeforeSending,
             languages = languages,
         )
     }

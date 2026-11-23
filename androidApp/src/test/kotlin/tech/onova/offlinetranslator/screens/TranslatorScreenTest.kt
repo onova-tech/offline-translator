@@ -25,6 +25,8 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.ResolvedTextDirection
 import org.junit.Test
 import org.robolectric.Shadows.shadowOf
+import tech.onova.offlinetranslator.core.designsystem.components.UiRole
+import tech.onova.offlinetranslator.core.designsystem.components.UiRoleKey
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
 import tech.onova.offlinetranslator.core.domain.ports.PackId
 import tech.onova.offlinetranslator.core.domain.ports.PackState
@@ -136,19 +138,22 @@ class TranslatorScreenTest : AppUiTest() {
         // so its line rightly reads left to right and can't show it here.
     }
 
+    /**
+     * Spec 082 story 5 (FR-015): Read aloud, then Copy, the main action on the right; Share left to make room (owner,
+     * 2026-11-22).
+     */
     @Test
-    fun withoutATranslationTheActionsWaitAndReadAloudIsLast() {
+    fun withoutATranslationTheActionsWaitAndCopyIsTheMainActionOnTheRight() {
         showTool()
-        compose.onNodeWithText("Copy").assertIsNotEnabled()
-        compose.onNodeWithText("Share").assertIsNotEnabled()
-        val share = compose.onNodeWithText("Share").getUnclippedBoundsInRoot()
+        compose.onNodeWithText("Share").assertDoesNotExist()
         val read = compose.onNodeWithText("Read aloud").assertIsNotEnabled().getUnclippedBoundsInRoot()
-        val copy = compose.onNodeWithText("Copy").getUnclippedBoundsInRoot()
-        assertTrue(copy.right <= share.left && share.right <= read.left, "Copy, Share, then Read aloud")
+        val copy = compose.onNodeWithText("Copy").assertIsNotEnabled().getUnclippedBoundsInRoot()
+        assertTrue(read.right <= copy.left, "Read aloud, then Copy")
+        compose.onNodeWithText("Copy").assert(SemanticsMatcher.expectValue(UiRoleKey, UiRole.MainAction))
     }
 
     @Test
-    fun copyConfirmsAndShareSendsTheTranslation() {
+    fun copyConfirmsTheTranslation() {
         showTool()
         typeAndPause("Good morning")
         waitForText("[es] Good morning")
@@ -156,8 +161,6 @@ class TranslatorScreenTest : AppUiTest() {
         compose.waitForIdle()
         assertEquals(listOf("[es] Good morning"), fakes.clipboard.copied)
         compose.onNodeWithText("Translation copied").assertExists()
-        compose.onNodeWithText("Share").performClick()
-        assertEquals("[es] Good morning", fakes.textSharer.shared)
     }
 
     @Test

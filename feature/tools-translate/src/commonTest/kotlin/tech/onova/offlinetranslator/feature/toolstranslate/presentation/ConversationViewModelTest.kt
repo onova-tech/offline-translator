@@ -20,7 +20,6 @@ import tech.onova.offlinetranslator.core.domain.ports.RecognitionSupport
 import tech.onova.offlinetranslator.core.domain.ports.SpeechEnd
 import tech.onova.offlinetranslator.core.domain.ports.SpeechEvent
 import tech.onova.offlinetranslator.core.domain.ports.SpeechFailure
-import tech.onova.offlinetranslator.core.domain.ports.TextSharer
 import tech.onova.offlinetranslator.core.domain.ports.VoiceSupport
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationMachine
 import tech.onova.offlinetranslator.feature.toolstranslate.domain.ConversationPhase
@@ -95,10 +94,6 @@ class ConversationViewModelTest {
             object : AppVisibility {
                 override val isVisible = visible
             }
-        val sharer =
-            object : TextSharer {
-                override fun share(text: String) = Unit
-            }
         val clipboard =
             ClipboardWriter { _, text ->
                 copied += text
@@ -110,7 +105,7 @@ class ConversationViewModelTest {
                 packs = packs,
                 session = EngineSession(packs, engine, dispatcher),
                 speech = ConversationSpeech(speechIn, speechOut, screenReader, visibility, downloads),
-                outputs = TranslatorOutputs(clipboard, sharer),
+                outputs = TranslatorOutputs(clipboard),
             )
         model.start(appLanguage = "pt", phoneLocales = listOf("pt-BR"))
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.uiState.collect {} }
@@ -326,7 +321,7 @@ class ConversationViewModelTest {
     fun copySendsTheTextTheScreenShows() =
         runTest(dispatcher) {
             val model = model()
-            model.send(Send.COPY, label = "Conversation", text = "Portuguese: Bom dia")
+            model.clipboard.copy(label = "Conversation", text = "Portuguese: Bom dia")
             assertEquals(listOf("Portuguese: Bom dia"), copied)
         }
 

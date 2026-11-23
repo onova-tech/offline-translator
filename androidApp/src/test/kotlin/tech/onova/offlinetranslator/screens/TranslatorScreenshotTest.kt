@@ -68,8 +68,9 @@ class TranslatorScreenshotTest : AppUiTest() {
         fakes.permissions.statuses[AppPermission.RECORD_AUDIO] = PermissionStatus.GRANTED
         compose.onNodeWithText("Conversation").performClick()
         waitFor("Speak English")
-        say("Speak English", "Where is the train station?", "[es] Where is the train station?")
-        say("Speak Spanish", "Está a dos calles de aquí.", "[en] Está a dos calles de aquí.")
+        // Each half names who spoke in its own language (spec 082 FR-014).
+        say("Speak English", "Where is the train station?", "Usted: [es] Where is the train station?")
+        say("Speak Spanish", "Está a dos calles de aquí.", "You: [en] Está a dos calles de aquí.")
     }
 
     private fun say(
@@ -261,8 +262,8 @@ class TranslatorScreenshotTest : AppUiTest() {
         showTool(darkTheme)
         openLanguages(search = "portu")
         compose.onNode(hasText("Portuguese") and hasClickAction() and hasAnyAncestor(isDialog())).performClick()
-        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: phone or app"))
-        waitFor("Phone")
+        val choice = hasAnyAncestor(hasContentDescription("Speech recognition for Portuguese: device or app"))
+        waitFor("Device")
         compose.onNode(hasText("App") and choice and hasAnyAncestor(isDialog())).performClick()
         compose.waitUntil(WAIT_MILLIS) {
             shadowOf(Looper.getMainLooper()).idle()
@@ -275,7 +276,7 @@ class TranslatorScreenshotTest : AppUiTest() {
         }
         compose
             .onNode(hasScrollToNodeAction() and hasAnyAncestor(isDialog()))
-            .performScrollToNode(hasContentDescription("Voice for Portuguese: phone or app"))
+            .performScrollToNode(hasContentDescription("Voice for Portuguese: device or app"))
         compose.waitForIdle()
     }
 
