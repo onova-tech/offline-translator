@@ -94,7 +94,8 @@ class TranslatorAccessibilityAuditTest : AppUiTest() {
             fakes.speechInput.listenedTo.isNotEmpty()
         }
         fakes.speechInput.hear(SpeechEvent.Final("Good morning"))
-        waitForText("[es] Good morning")
+        // Each half names who spoke in its own language (spec 082 FR-014).
+        waitForText("Usted: [es] Good morning")
         fakes.speechOutput.done()
         shadowOf(Looper.getMainLooper()).idle()
     }

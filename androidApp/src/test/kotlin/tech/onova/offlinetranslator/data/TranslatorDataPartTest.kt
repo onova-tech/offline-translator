@@ -30,6 +30,8 @@ class TranslatorDataPartTest : AppUiTest() {
                     "languages",
                     // Spec 082 FR-007: the phone's or the app's speech per language, a setting, never a pack.
                     "speech",
+                    // Spec 082 FR-016: "Confirm before sending", a setting.
+                    "confirmBeforeSending",
                 )
             assertTrue(document.keys.isNotEmpty() && settings.containsAll(document.keys), "keys: ${document.keys}")
             val text = document.toString()

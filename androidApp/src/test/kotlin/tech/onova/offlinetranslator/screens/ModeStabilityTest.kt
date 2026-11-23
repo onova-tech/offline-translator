@@ -309,6 +309,9 @@ abstract class ModeStabilityTest(
                 "translator: 'English'",
                 "translator: 'Portuguese'",
                 "translator: 'Spanish'",
+                // Copy is the main action, last on the right of both modes, beside one action in Type or speak (Read
+                // aloud) and two in the Conversation (Clear, More options): owner, 2026-11-22, spec 082 FR-015.
+                "translator: 'Copy'",
             )
     }
 }
