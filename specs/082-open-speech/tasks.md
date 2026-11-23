@@ -157,6 +157,6 @@ brings the microphone back (T036); Stop on a replay read by the app's voice (Pip
   2026-11-22.) It reads with
   TalkBack on and with "Read translations aloud" off. `ConversationMachineTest` (Replay, StopSpeaking, Replay ignored
   while listening) and `ConversationScreenTest` (enabled only with a ready voice); C1 updated
-- [ ] T038 Polish: screenshots looked at, `LayoutFitTest`, `ModeStabilityTest`, the accessibility audit, then
+- [X] T038 Polish: screenshots looked at, `LayoutFitTest`, `ModeStabilityTest`, the accessibility audit, then
   `scripts/ci.sh check` and `scripts/ci.sh device` (both journeys)
 - [ ] T039 [phone] The owner's pass of story 5, with T022
