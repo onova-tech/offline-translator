@@ -161,7 +161,8 @@ class TranslatorScreenshotTest : AppUiTest() {
         fakes.contentPacks.put(FakeContentPacks.notInstalled(PackId("translate_es")))
         show { SettingsScreen(onBack = {}, offlineLanguages = { OfflineLanguagesSection(it) }) }
         compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Manage languages"))
-        compose.waitForIdle()
+        // The space used comes from the store, read on another thread: idle alone caught "0 MB used" now and then.
+        waitFor("48 MB used")
         capture("translator_offline_languages_light")
     }
 
@@ -170,7 +171,7 @@ class TranslatorScreenshotTest : AppUiTest() {
         RuntimeEnvironment.setFontScale(2f)
         show(darkTheme = true) { SettingsScreen(onBack = {}, offlineLanguages = { OfflineLanguagesSection(it) }) }
         compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Manage languages"))
-        compose.waitForIdle()
+        waitFor("96 MB used")
         capture("translator_offline_languages_dark_font200")
     }
 
