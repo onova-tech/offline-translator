@@ -105,9 +105,13 @@ turned with it and still tapped where drawn (T036, T037); 200 % text in a short 
 speaker must fit without clipping (T038, `LayoutFitTest`); Clear while a turn waits, which empties everything and
 brings the microphone back (T036); Stop on a replay read by the app's voice (Piper), which must stop at once (T037).
 
-- [ ] T030 Manage languages opens without a flash (FR-013): record the opening on the emulator (`adb shell
-  screenrecord`, Settings → Offline languages and a Conversation notice's "Manage languages"), find the frame that
-  flashes and its cause before changing anything, fix it, and pin it with a test where one can see it
+- [X] T030 Manage languages opens without a flash (FR-013). Found on the emulator (pictures can't be captured from
+  this machine's headless emulator, so the window manager's own record): the page was a dialog window with
+  `fl=DIM_BEHIND fmt=TRANSPARENT` and the dialog grow-in animation, so the screen dimmed, stayed dark until the heavy
+  page's first frame, then the page grew in. `FullScreenPage` (core/designsystem; Android window settings in
+  `PlainPageWindow`) clears the dim and the animation and gives the window the page's colour; Manage languages,
+  `ConfirmScreen` and the Conversation's correction use it.
+  `ManageLanguagesPageTest.thePageOpensWithoutDimmingOrAnimatingItsWindow`; L5 updated
 - [X] T031 The Device | App choice inside its part's card (FR-011): `InfoRow` and `MenuSettingsRow` (core/designsystem
   `SettingsRows.kt`) take `below: (@Composable ColumnScope.() -> Unit)? = null`, drawn under the state line on the
   same surface; `SpeechPart` and `VoicePart` pass `EngineChoice` there. `translator_engine_phone`: "Device",

@@ -44,7 +44,10 @@ added there.
   scrolls instead. *Owner, 2026-11-08, twice: the second on the phone, in a pop-up window.* Use `KindForm`. Checked by
   `ModeStabilityTest` (phone size) and `KindFormWindowTest` (a 350x590 pop-up).
 - **L5. Full-screen dialogs follow the same rules** (add timer, add city, note editor, reminder editor): content in the
-  middle, confirm and cancel at the bottom. A dialog with a text field is always full screen. *Owner, 2026-10-23.*
+  middle, confirm and cancel at the bottom. A dialog with a text field is always full screen. *Owner, 2026-10-23.* A
+  page over the screen opens like a page, not a dialog: `FullScreenPage`, whose window dims nothing behind it, has no
+  grow-in animation and is opaque from its first frame. A plain `Dialog` did all three, and Manage languages "flashed"
+  as it opened (*owner's phone, 2026-11-22*). Checked by `ManageLanguagesPageTest`.
 - **L6. Empty states are text only;** the action that fills them carries the icon, like the "+" on New note. An icon in
   the empty state looked like a button. *Owner's phone pass.*
 - **L7. Fit, then scroll.** A tool works at every screen size mostly without scrolling. Only lists and long text scroll
@@ -375,7 +378,7 @@ added there.
 | `FirstTimeHint`, `PocketSnackbarHost` | S3, V3 |
 | `PickerField` | S4, T1 |
 | `ColorField`, `ColorGrid`, `Swatch` | S5 |
-| `NoticeScreen`, `ConfirmScreen` | F3, L5 |
+| `NoticeScreen`, `ConfirmScreen`, `FullScreenPage` | F3, L5 |
 | `Modifier.onLongPress`, `FavouriteMark` | S3 |
 | `ReservedSlot`, `ReservedLine` | M1–M3, R5 |
 | `MainReading`, `LiveReadout`, `ValueRow`, `ShortNote` | R1–R5, M4 |
@@ -538,4 +541,5 @@ added there.
   dropped: taller lines), a red square, and "Confirm before sending" with ^ in the microphone's place; A3, "More
   options" may sit in the actions' row, tonal (the Conversation's Clear | More options | Copy), Copy the main action
   on the right of both Translator screens (Read aloud | Copy, Read aloud with a speaker), and Share left both; C3,
-  the device's own voice offers its voice app's list; C4, "Device | App" inside its part's card.
+  the device's own voice offers its voice app's list; C4, "Device | App" inside its part's card; L5, a page over the
+  screen is a `FullScreenPage` (Manage languages, confirmations, the correction), no longer a flashing dialog window.

@@ -1,6 +1,8 @@
 package tech.onova.offlinetranslator.screens
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Looper
+import android.view.WindowManager
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.state.ToggleableState
@@ -27,6 +29,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextReplacement
 import org.junit.Test
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowDialog
 import tech.onova.offlinetranslator.core.domain.permissions.AppPermission
 import tech.onova.offlinetranslator.core.domain.permissions.PermissionStatus
 import tech.onova.offlinetranslator.core.domain.ports.PackId
@@ -104,6 +107,23 @@ class ManageLanguagesPageTest : AppUiTest() {
         scrollTo(hasContentDescription(label))
         compose.onNode(hasContentDescription(label) and inDialog).performClick()
         compose.waitForIdle()
+    }
+
+    /**
+     * Spec 082 FR-013 (the owner's phone, 2026-11-22: "the screen seems to flash when going to Gerenciar Idiomas"): the
+     * page was a dialog window that dimmed the screen behind it, stayed transparent until its first frame and grew in
+     * with the dialog animation (`fl=DIM_BEHIND fmt=TRANSPARENT wanim=...` on the emulator). It opens as a page: no
+     * dim, no window animation, its own opaque background from the start.
+     */
+    @Test
+    fun thePageOpensWithoutDimmingOrAnimatingItsWindow() {
+        showTool()
+        openPage()
+        val window = ShadowDialog.getLatestDialog().window!!
+        assertEquals(0, window.attributes.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND, "nothing dimmed behind")
+        assertEquals(0, window.attributes.windowAnimations, "no dialog animation")
+        val background = window.decorView.background as? ColorDrawable
+        assertEquals(OPAQUE, background?.alpha, "an opaque background before the first frame")
     }
 
     @Test
@@ -322,6 +342,8 @@ class ManageLanguagesPageTest : AppUiTest() {
         const val OTHERS = "Other languages"
         const val AT_LEAST_TWO = "At least two languages stay in the lists."
         const val WAIT_MILLIS = 5_000L
+
+        const val OPAQUE = 255
 
         /** How far a list item's text starts from its edge (Material's ListItem). */
         const val ROW_TEXT_INSET = 16f

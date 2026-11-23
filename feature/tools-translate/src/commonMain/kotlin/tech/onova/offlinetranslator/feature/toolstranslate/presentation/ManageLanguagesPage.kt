@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import tech.onova.offlinetranslator.core.designsystem.components.ConfirmScreen
+import tech.onova.offlinetranslator.core.designsystem.components.FullScreenPage
 import tech.onova.offlinetranslator.core.designsystem.components.IconAction
 import tech.onova.offlinetranslator.core.designsystem.components.MainReading
 import tech.onova.offlinetranslator.core.designsystem.components.NO_READING
@@ -106,25 +107,24 @@ internal fun ManageLanguagesPage(
         Sections(downloaded, expanded.toSet(), focus) { code, open ->
             expanded = if (open) expanded + code.value else expanded - code.value
         }
-    Dialog(onDismissRequest = onClose, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
-            ToolLayout(
-                top = { PageTop(ui.query, languages::search, onClose, onHelp = { helping = true }) },
-                scrollContent = false,
-            ) {
-                // Its room is kept, so the list doesn't jump when the last two lock (M1–M5).
-                ReservedSlot(shown = ui.atLeast, keepInSmallWindow = true) {
-                    ShortNote(
-                        text = stringResource(Res.string.translator_languages_two),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                if (ui.loaded && ui.rows.isEmpty()) {
-                    MainReading(value = NO_READING, caption = stringResource(Res.string.translator_languages_none))
-                } else {
-                    val state = { row: LanguageRow -> languageState(row.code, known, packUi.packs, speechUi) }
-                    LanguageList(ui, sections, state, actions, Modifier.weight(1f))
-                }
+    // A page over the screen, opened without a flash (spec 082 FR-013).
+    FullScreenPage(onDismissRequest = onClose) {
+        ToolLayout(
+            top = { PageTop(ui.query, languages::search, onClose, onHelp = { helping = true }) },
+            scrollContent = false,
+        ) {
+            // Its room is kept, so the list doesn't jump when the last two lock (M1–M5).
+            ReservedSlot(shown = ui.atLeast, keepInSmallWindow = true) {
+                ShortNote(
+                    text = stringResource(Res.string.translator_languages_two),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            if (ui.loaded && ui.rows.isEmpty()) {
+                MainReading(value = NO_READING, caption = stringResource(Res.string.translator_languages_none))
+            } else {
+                val state = { row: LanguageRow -> languageState(row.code, known, packUi.packs, speechUi) }
+                LanguageList(ui, sections, state, actions, Modifier.weight(1f))
             }
         }
         deleting?.let { ids ->

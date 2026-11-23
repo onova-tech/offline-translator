@@ -26,22 +26,22 @@ public fun ConfirmScreen(
     cancelLabel: String,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Dialog(onDismissRequest = onCancel, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
-            ToolLayout(
-                bottom = {
-                    BottomAction(label = confirmLabel, onClick = onConfirm)
-                    OutlinedButton(onClick = onCancel, modifier = Modifier.fillMaxWidth()) { Text(cancelLabel) }
-                },
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.fillMaxWidth().semantics { heading() },
-                )
-                Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.fillMaxWidth())
-            }
+    FullScreenPage(onDismissRequest = onCancel) {
+        ToolLayout(
+            modifier = modifier,
+            bottom = {
+                BottomAction(label = confirmLabel, onClick = onConfirm)
+                OutlinedButton(onClick = onCancel, modifier = Modifier.fillMaxWidth()) { Text(cancelLabel) }
+            },
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.fillMaxWidth().semantics { heading() },
+            )
+            Text(text = text, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.fillMaxWidth())
         }
     }
 }

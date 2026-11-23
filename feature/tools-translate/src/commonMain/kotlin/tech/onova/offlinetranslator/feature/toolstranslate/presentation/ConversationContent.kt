@@ -50,6 +50,7 @@ import tech.onova.offlinetranslator.core.designsystem.components.BottomActionRow
 import tech.onova.offlinetranslator.core.designsystem.components.BottomActionStyle
 import tech.onova.offlinetranslator.core.designsystem.components.ConfirmScreen
 import tech.onova.offlinetranslator.core.designsystem.components.FacingHalves
+import tech.onova.offlinetranslator.core.designsystem.components.FullScreenPage
 import tech.onova.offlinetranslator.core.designsystem.components.HearAgainButton
 import tech.onova.offlinetranslator.core.designsystem.components.MainReading
 import tech.onova.offlinetranslator.core.designsystem.components.MenuChoice
@@ -723,46 +724,44 @@ private fun CorrectionDialog(
     onCancel: () -> Unit,
 ) {
     var text by rememberSaveable { mutableStateOf(heard) }
-    Dialog(onDismissRequest = onCancel, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
-            ToolLayout(
-                bottom = {
-                    PocketTextField(
-                        value = text,
-                        onValueChange = { text = it },
-                        label = { Text(stringResource(Res.string.translator_what_was_said)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    BottomActionRow {
-                        BottomAction(
-                            label = stringResource(Res.string.translator_cancel),
-                            onClick = onCancel,
-                            compact = true,
-                            style = BottomActionStyle.Outlined,
-                            modifier = Modifier.weight(1f),
-                        )
-                        BottomAction(
-                            label =
-                                stringResource(
-                                    if (waiting) {
-                                        Res.string.translator_keep_correction
-                                    } else {
-                                        Res.string.translator_translate_again
-                                    },
-                                ),
-                            onClick = { onTranslate(text) },
-                            enabled = text.isNotBlank(),
-                            compact = true,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                },
-            ) {
-                Text(
-                    text = stringResource(Res.string.translator_correct),
-                    style = MaterialTheme.typography.headlineSmall,
+    FullScreenPage(onDismissRequest = onCancel) {
+        ToolLayout(
+            bottom = {
+                PocketTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text(stringResource(Res.string.translator_what_was_said)) },
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            }
+                BottomActionRow {
+                    BottomAction(
+                        label = stringResource(Res.string.translator_cancel),
+                        onClick = onCancel,
+                        compact = true,
+                        style = BottomActionStyle.Outlined,
+                        modifier = Modifier.weight(1f),
+                    )
+                    BottomAction(
+                        label =
+                            stringResource(
+                                if (waiting) {
+                                    Res.string.translator_keep_correction
+                                } else {
+                                    Res.string.translator_translate_again
+                                },
+                            ),
+                        onClick = { onTranslate(text) },
+                        enabled = text.isNotBlank(),
+                        compact = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            },
+        ) {
+            Text(
+                text = stringResource(Res.string.translator_correct),
+                style = MaterialTheme.typography.headlineSmall,
+            )
         }
     }
 }
