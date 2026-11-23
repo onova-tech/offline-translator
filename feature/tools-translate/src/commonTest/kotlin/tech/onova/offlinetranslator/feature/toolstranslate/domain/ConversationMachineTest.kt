@@ -155,6 +155,25 @@ class ConversationMachineTest {
     }
 
     @Test
+    fun aCorrectedEarlierTurnIsTranslatedAgainWithoutBeingReadAloud() {
+        // Owner, 2026-11-23: "Translate again should only trigger the automatic TTS if it's the last message".
+        val two =
+            start.after(
+                TapMicrophone(Side.NEAR),
+                HeardFinal("Bom dia"),
+                Translated(1, "Buenos días", speak = false),
+                TapMicrophone(Side.FAR),
+                HeardFinal("Hola"),
+                Translated(2, "Olá", speak = false),
+            )
+        val earlier = two.after(Edited(1, "Bom dia!"), Translated(1, "¡Buenos días!", speak = true))
+        assertEquals(Idle, earlier.phase, "an earlier turn's new translation isn't read by itself")
+        assertEquals("¡Buenos días!", earlier.turns.first().translation)
+        val latest = two.after(Edited(2, "Hola!"), Translated(2, "Olá!", speak = true))
+        assertEquals(Speaking(2), latest.phase, "the latest turn is read as before")
+    }
+
+    @Test
     fun aCorrectedTurnIsTranslatedAgain() {
         val done = start.after(TapMicrophone(Side.NEAR), HeardFinal("Onde fica a estacão"), Translated(1, "x", false))
         val edited = done.after(Edited(1, "Onde fica a estação?"))

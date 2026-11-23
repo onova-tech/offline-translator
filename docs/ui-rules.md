@@ -44,7 +44,10 @@ added there.
   scrolls instead. *Owner, 2026-11-08, twice: the second on the phone, in a pop-up window.* Use `KindForm`. Checked by
   `ModeStabilityTest` (phone size) and `KindFormWindowTest` (a 350x590 pop-up).
 - **L5. Full-screen dialogs follow the same rules** (add timer, add city, note editor, reminder editor): content in the
-  middle, confirm and cancel at the bottom. A dialog with a text field is always full screen. *Owner, 2026-10-23.* A
+  middle, confirm and cancel at the bottom. A dialog with a text field is always full screen. *Owner, 2026-10-23.*
+  One exception, the owner's: the Conversation's "Correct what was heard" is a `PopupCard` in the middle of the screen,
+  turned with its half (C1; *owner, 2026-11-23*: "should become a popup on the middle of the screen, with the text
+  rotated to the side that's being corrected"). A
   page over the screen opens like a page, not a dialog: `FullScreenPage`, whose window dims nothing behind it, has no
   grow-in animation and is opaque from its first frame. A plain `Dialog` did all three, and Manage languages "flashed"
   as it opened (*owner's phone, 2026-11-22*). Checked by `ManageLanguagesPageTest`.
@@ -297,7 +300,8 @@ added there.
   each turn was tried first and dropped: it made every line taller (owner, 2026-11-22). The square
   (`StopButton`) is red, since it means stop (owner, 2026-11-22). With "Confirm before sending" on (More options), a heard turn waits in its
   half, in italics, and the microphone's place holds ^ (`SendButton`, the microphone's size): ^ sends it, the square
-  beside it drops it, a tap on it corrects it by typing; the other half sees nothing of it until it is sent (owner,
+  beside it drops it, a tap on it corrects it by typing (a tap on any turn of one's own does: a `PopupCard` in the
+  middle, turned to the person across for the far half's turn while that half is turned; owner, 2026-11-23); the other half sees nothing of it until it is sent (owner,
   2026-11-22: "the user will only be able to know if there was an error in the transcript to later"). A window
   too short for both halves scrolls them (`PocketSizes.facingHalfLeastHeight`). The far half is turned to face the
   person across the phone, and More options turns it upright for someone beside you; the turn is only drawn, so screen
@@ -379,7 +383,7 @@ added there.
 | `FirstTimeHint`, `PocketSnackbarHost` | S3, V3 |
 | `PickerField` | S4, T1 |
 | `ColorField`, `ColorGrid`, `Swatch` | S5 |
-| `NoticeScreen`, `ConfirmScreen`, `FullScreenPage` | F3, L5 |
+| `NoticeScreen`, `ConfirmScreen`, `FullScreenPage`; `PopupCard` (the Conversation's correction) | F3, L5, C1 |
 | `Modifier.onLongPress`, `FavouriteMark` | S3 |
 | `ReservedSlot`, `ReservedLine` | M1–M3, R5 |
 | `MainReading`, `LiveReadout`, `ValueRow`, `ShortNote` | R1–R5, M4 |
@@ -543,4 +547,6 @@ added there.
   options" may sit in the actions' row, tonal (the Conversation's Clear | More options | Copy), Copy the main action
   on the right of both Translator screens (Read aloud | Copy, Read aloud with a speaker), and Share left both; C3,
   the device's own voice offers its voice app's list; C4, "Device | App" inside its part's card; L5, a page over the
-  screen is a `FullScreenPage` (Manage languages, confirmations, the correction), no longer a flashing dialog window.
+  screen is a `FullScreenPage` (Manage languages, confirmations), no longer a flashing dialog window.
+- **2026-11-23 (spec 082, owner):** L5 and C1, the Conversation's correction becomes a `PopupCard` in the middle,
+  turned to the person across for the far half's turn while that half is turned.

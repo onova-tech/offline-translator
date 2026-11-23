@@ -160,3 +160,12 @@ brings the microphone back (T036); Stop on a replay read by the app's voice (Pip
 - [X] T038 Polish: screenshots looked at, `LayoutFitTest`, `ModeStabilityTest`, the accessibility audit, then
   `scripts/ci.sh check` and `scripts/ci.sh device` (both journeys)
 - [ ] T039 [phone] The owner's pass of story 5, with T022
+- [X] T040 The correction as a popup (owner, 2026-11-23): `PopupCard` (core/designsystem), a card in the middle of the
+  screen, turned 180° for the far half's own turn while "Turn the top half to the other person" is on;
+  `ConversationScreenTest.aCorrectionOfTheFarHalfIsAPopupTurnedToThePersonAcross` and
+  `aCorrectionIsUprightForTheNearHalfAndWhenTheFarHalfIsntTurned`; L5 and C1 updated. The card takes its own width
+  (`usePlatformDefaultWidth = false`, at most 560 dp, as Material's dialogs): at the platform's default dialog width a
+  text field never let the screen settle in the tests. `LayoutFitTest` gains the correction (`ModeSurface`
+  "translator-correction"), as L7 asks of every dialog
+- [X] T041 "Translate again" reads aloud by itself only the latest turn (owner, 2026-11-23): `ConversationMachine`'s
+  `translated()`; `ConversationMachineTest.aCorrectedEarlierTurnIsTranslatedAgainWithoutBeingReadAloud`

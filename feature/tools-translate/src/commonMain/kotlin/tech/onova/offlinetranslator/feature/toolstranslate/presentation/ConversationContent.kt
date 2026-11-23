@@ -60,6 +60,7 @@ import tech.onova.offlinetranslator.core.designsystem.components.NO_READING
 import tech.onova.offlinetranslator.core.designsystem.components.Notice
 import tech.onova.offlinetranslator.core.designsystem.components.PocketSnackbarHost
 import tech.onova.offlinetranslator.core.designsystem.components.PocketTextField
+import tech.onova.offlinetranslator.core.designsystem.components.PopupCard
 import tech.onova.offlinetranslator.core.designsystem.components.ReservedSlot
 import tech.onova.offlinetranslator.core.designsystem.components.SendButton
 import tech.onova.offlinetranslator.core.designsystem.components.StopButton
@@ -247,6 +248,7 @@ private fun Correction(
     CorrectionDialog(
         heard = turn.heard,
         waiting = ui.waiting?.id == id,
+        turned = turn.side == Side.FAR && ui.farTurned,
         onTranslate = { text ->
             onClose()
             onTranslate(id, text)
@@ -720,53 +722,49 @@ private fun optionSwitch(
         )
     }
 
-/** A misheard turn, corrected in a full-screen dialog (a text field never goes in a small one) and translated again. */
+/**
+ * A misheard turn, corrected in a popup in the middle of the screen and translated again (owner, 2026-11-23, an
+ * exception to L5's full-screen dialogs), turned to the person across for their own turn when their half is turned.
+ */
 @Composable
 private fun CorrectionDialog(
     heard: String,
     /** A turn waiting for ^ keeps waiting once corrected: its button saves rather than translates (FR-016). */
     waiting: Boolean,
+    /** The far half's turn, that half turned to the person across: the popup faces them too (owner, 2026-11-23). */
+    turned: Boolean,
     onTranslate: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
     var text by rememberSaveable { mutableStateOf(heard) }
-    FullScreenPage(onDismissRequest = onCancel) {
-        ToolLayout(
-            bottom = {
-                PocketTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    label = { Text(stringResource(Res.string.translator_what_was_said)) },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                BottomActionRow {
-                    BottomAction(
-                        label = stringResource(Res.string.translator_cancel),
-                        onClick = onCancel,
-                        compact = true,
-                        style = BottomActionStyle.Outlined,
-                        modifier = Modifier.weight(1f),
-                    )
-                    BottomAction(
-                        label =
-                            stringResource(
-                                if (waiting) {
-                                    Res.string.translator_keep_correction
-                                } else {
-                                    Res.string.translator_translate_again
-                                },
-                            ),
-                        onClick = { onTranslate(text) },
-                        enabled = text.isNotBlank(),
-                        compact = true,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-            },
-        ) {
-            Text(
-                text = stringResource(Res.string.translator_correct),
-                style = MaterialTheme.typography.headlineSmall,
+    PopupCard(onDismissRequest = onCancel, turned = turned) {
+        Text(
+            text = stringResource(Res.string.translator_correct),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        PocketTextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(stringResource(Res.string.translator_what_was_said)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        BottomActionRow {
+            BottomAction(
+                label = stringResource(Res.string.translator_cancel),
+                onClick = onCancel,
+                compact = true,
+                style = BottomActionStyle.Outlined,
+                modifier = Modifier.weight(1f),
+            )
+            BottomAction(
+                label =
+                    stringResource(
+                        if (waiting) Res.string.translator_keep_correction else Res.string.translator_translate_again,
+                    ),
+                onClick = { onTranslate(text) },
+                enabled = text.isNotBlank(),
+                compact = true,
+                modifier = Modifier.weight(1f),
             )
         }
     }

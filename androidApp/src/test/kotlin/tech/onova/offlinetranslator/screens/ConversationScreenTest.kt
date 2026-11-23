@@ -17,8 +17,10 @@ import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.isOff
 import androidx.compose.ui.test.isOn
 import androidx.compose.ui.test.isPopup
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -26,6 +28,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.ResolvedTextDirection
+import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
@@ -429,6 +432,77 @@ class ConversationScreenTest : AppUiTest() {
         compose.onNodeWithContentDescription("Speak English").assertIsEnabled()
     }
 
+    /** The far half (Spanish) says "Buenos días", translated and read; its own turn reads "Yo: Buenos días". */
+    private fun farSaysGoodMorning() {
+        compose.onNodeWithContentDescription("Speak Spanish").performClick()
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.size == 1
+        }
+        fakes.speechInput.hear(SpeechEvent.Final("Buenos días"))
+        waitForText("You: [en] Buenos días")
+        fakes.speechOutput.done()
+        compose.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+    }
+
+    /** The correction's title and field, in the popup's window. */
+    private fun correctionTitleAndField(): Pair<DpRect, DpRect> {
+        waitForText(CORRECT)
+        val inPopup = hasAnyAncestor(isDialog())
+        val title = compose.onNode(hasText(CORRECT) and inPopup).getUnclippedBoundsInRoot()
+        val field = compose.onNode(hasSetTextAction() and inPopup).getUnclippedBoundsInRoot()
+        return title to field
+    }
+
+    /**
+     * Owner, 2026-11-23: correcting what was heard is a popup in the middle of the screen, not a page, turned to the
+     * person across when it corrects the far half's turn and that half is turned.
+     */
+    @Test
+    fun aCorrectionOfTheFarHalfIsAPopupTurnedToThePersonAcross() {
+        showConversation()
+        farSaysGoodMorning()
+        compose.onNodeWithText("Yo: Buenos días").performClick()
+        val (title, field) = correctionTitleAndField()
+        assertTrue(title.top > field.top, "turned: the title is lowest on the screen ($title, $field)")
+        val screen = compose.onAllNodes(isRoot()).onFirst().getUnclippedBoundsInRoot()
+        val popup = compose.onAllNodes(isRoot()).onLast().getUnclippedBoundsInRoot()
+        assertTrue(
+            popup.bottom - popup.top < (screen.bottom - screen.top) / 2,
+            "a popup, not a page: $popup in $screen",
+        )
+    }
+
+    /** The near half's turn, and the far half's with the half upright, are corrected in an upright popup. */
+    @Test
+    fun aCorrectionIsUprightForTheNearHalfAndWhenTheFarHalfIsntTurned() {
+        showConversation()
+        speakNear("Good morning")
+        waitForText("Usted: [es] Good morning")
+        fakes.speechOutput.done()
+        compose.waitForIdle()
+        compose.onNodeWithText("Me: Good morning").performClick()
+        val (title, field) = correctionTitleAndField()
+        assertTrue(title.top < field.top, "upright for the near half")
+        compose.onNode(hasText("Cancel") and hasAnyAncestor(isDialog())).performClick()
+        compose.waitForIdle()
+        switchOption("Turn the top half to the other person", on = false)
+        compose.onNodeWithText("Fewer options").performClick()
+        compose.onNodeWithContentDescription("Speak Spanish").performClick()
+        compose.waitUntil(WAIT_MILLIS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            fakes.speechInput.listenedTo.size == 2
+        }
+        fakes.speechInput.hear(SpeechEvent.Final("Buenos días"))
+        waitForText("You: [en] Buenos días")
+        fakes.speechOutput.done()
+        compose.waitForIdle()
+        compose.onNodeWithText("Yo: Buenos días").performClick()
+        val (farTitle, farField) = correctionTitleAndField()
+        assertTrue(farTitle.top < farField.top, "upright when the far half isn't turned")
+    }
+
     /**
      * The owner's phone, 2026-11-20: in a short half the notice's text and × squeezed its button to a sliver. The ×
      * is in the buttons' row now, and a notice taller than its room scrolls: its button keeps its height.
@@ -488,6 +562,7 @@ class ConversationScreenTest : AppUiTest() {
     private companion object {
         const val DISCARD = "Stop and discard"
         const val SEND = "Send"
+        const val CORRECT = "Correct what was heard"
         const val HEAR_AGAIN = "Hear it again"
         const val NO_ENGLISH_VOICE = "There's no offline voice for English. The phone's voice app can download one."
 

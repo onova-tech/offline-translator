@@ -62,6 +62,13 @@ then the changes of user story 5.
   and enabled only when the language's voice is ready. The owner first chose a speaker on each translated turn (option
   A), then, on seeing it, dropped it: "The sound icon on the text make the lines bigger. So I'll drop this idea and go
   to the other option". The square turns red, "since it means stop", and stops a translation being read too.
+- Q: How is a heard turn corrected? → A: **In a popup in the middle of the screen** (owner, 2026-11-23: "The
+  correct what was heard screen should become a popup on the middle of the screen, with the text rotated to the side
+  that's being corrected (Rotate only if the rotate option is on)"): the far half's own turn is corrected in a popup
+  turned to the person across while that half is turned; the keyboard stays upright at the phone's bottom edge.
+  "Translate again" reads the new translation aloud by itself only for the latest turn (owner, 2026-11-23: "Translate
+  again should only trigger the automatic TTS if it's the last message"); an earlier one is translated quietly, and
+  Hear it again reads it on request.
 - Q: Which button is the main one at the bottom? → A: **Copy, on the right of both screens** (owner, 2026-11-22):
   Read aloud | Copy in Type or speak, Read aloud with a speaker icon; Clear | More options | Copy in the Conversation,
   More options in a colour of its own.

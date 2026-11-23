@@ -328,10 +328,13 @@ internal object ConversationMachine {
         event: ConversationEvent.Translated,
     ): ConversationState {
         val turns = state.turns.map { if (it.id == event.turnId) it.copy(translation = event.text) else it }
+        // A corrected earlier turn gets its new translation quietly; only the latest is read by itself (owner,
+        // 2026-11-23: "Translate again should only trigger the automatic TTS if it's the last message").
+        val latest = state.turns.lastOrNull()?.id == event.turnId
         val phase =
             when {
                 state.phase != ConversationPhase.Translating(event.turnId) -> state.phase
-                event.speak -> ConversationPhase.Speaking(event.turnId)
+                event.speak && latest -> ConversationPhase.Speaking(event.turnId)
                 else -> ConversationPhase.Idle
             }
         return state.copy(turns = turns, phase = phase)
